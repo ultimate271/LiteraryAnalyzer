@@ -12,7 +12,4 @@ namespace LiteraryAnalyzer {
 
 		public virtual List<Excerpt> Children { get; set; }
 	}
-	public class LiteraryAnalyzerContext : DbContext {
-		public DbSet<Excerpt> Excerpts { get; set; }
-	}
 }
