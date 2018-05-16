@@ -41,7 +41,7 @@ namespace LiteraryAnalyzer {
 		/// </summary>
 		/// <param name="markdown"></param>
 		public bool ParseMarkdown (String markdown) {
-			
+			return false;
 		}
 	}
 }
