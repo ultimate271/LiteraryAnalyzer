@@ -52,6 +52,7 @@
     <Compile Include="Controller.cs" />
     <Compile Include="Excerpt.cs" />
     <Compile Include="LiteraryAnalyzerContext.cs" />
+    <Compile Include="MarkdownFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
