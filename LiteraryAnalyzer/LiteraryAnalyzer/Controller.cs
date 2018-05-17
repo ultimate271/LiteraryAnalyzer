@@ -10,6 +10,7 @@ namespace LiteraryAnalyzer {
 		public Controller() {
 			db = new LiteraryAnalyzerContext();
 		}
+
 		public void DeveloperDebug (String markdown) {
 			String[] sentences = markdown.Split('.','?','!');
 			var lines = markdown.Replace("\r", "").Split('\n')
@@ -39,9 +40,10 @@ namespace LiteraryAnalyzer {
 		/// <summary>
 		/// Takes a markdown file and inserts records into the db for 
 		/// </summary>
-		/// <param name="markdown"></param>
-		public bool ParseMarkdown (String markdown) {
-			return false;
+		/// <param name="markdownFile"></param>
+		public void ParseMarkdownToDatabase(MarkdownFile file) {
+			file.ParseMarkdownToDatabase(this.db, file.Prefix);
+			this.db.SaveChanges();
 		}
 	}
 }
