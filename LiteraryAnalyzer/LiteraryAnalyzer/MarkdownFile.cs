@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer {
 	public class MarkdownFile {
-		public String GeneratedURI { get { return String.Format("{0}\\{1}{2:D2}{3}.md", BaseDir, Prefix, Count, Filename); } }
-		public String FullURI { get { return BaseDir + "\\" + Filename; } }
+		public delegate String URIGeneratorDelegate(MarkdownFile file);
+		public URIGeneratorDelegate URIGenerator = (m) => { return String.Format("{0}\\{1}{2:D2}{3}.md", m.BaseDir, m.Prefix, m.Count, m.Filename); };
+		public String GeneratedURI { get { return this.URIGenerator(this); } }
+		public String FullURI { get { return this.BaseDir + "\\" + this.Filename; } }
 		public String Filename { get; set; }
 		public String Markdown { get; set; }
 		public String Prefix { get; set; }
