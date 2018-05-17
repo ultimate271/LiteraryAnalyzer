@@ -22,8 +22,8 @@ namespace LiteraryAnalyzer {
 			//BaseDir most likely stays intact as is
 			var source = new MarkdownFile {
 				Filename = "tolkien\\sil08.md",
-				BaseDir = @"C:\Users\Brett\Source\Repos\notes",
-				Prefix = "orwell\\nineteen",
+				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
+				Prefix = "tolkien\\sil",
 				Count = 0
 			};
 			c.ParseMarkdownToDatabase(source);

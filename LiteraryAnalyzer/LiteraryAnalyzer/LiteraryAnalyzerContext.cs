@@ -18,7 +18,7 @@ namespace LiteraryAnalyzer {
 		public Token GetTokenWithWrite(String TokenID) {
 			var query = this.Tokens.Where(t => t.TokenID.Equals(TokenID));
 			if (query.Count() == 0) {
-				var contentToken = new Token { TokenID = TokenID, Description = "The actual text of the work" };
+				var contentToken = new Token { TokenID = TokenID };
 				this.Tokens.Add(contentToken);
 				this.SaveChanges();
 				return contentToken;
