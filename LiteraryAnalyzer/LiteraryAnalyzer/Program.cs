@@ -15,16 +15,19 @@ namespace LiteraryAnalyzer {
 	//}
 	class Program {
 		static void Main(string[] args) {
+			Controller c = new Controller();
 			//Instructions for use.
 			//Replace Filename with the source txt, annotated with markdown
 			//Replace Prefix with where you want the output to be saved
 			//BaseDir most likely stays intact as is
 			var source = new MarkdownFile {
-				Filename = "source\\1984 - George Orwel.txt",
+				Filename = "tolkien\\sil08.md",
 				BaseDir = @"C:\Users\Brett\Source\Repos\notes",
 				Prefix = "orwell\\nineteen",
 				Count = 0
 			};
+			c.ParseMarkdownToDatabase(source);
+			return;
 			//Handcraft a contents file, with one line for each markdown header
 			//In the source itself, each header should have a newline follow by some number of # symbols, then a filename identifier
 			//The contents file should be a list of these identifiers, exactly as they appear on the line in source

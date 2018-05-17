@@ -9,7 +9,9 @@ namespace LiteraryAnalyzer {
 	public class Excerpt {
 		public int ExcerptID { get; set; }
 		public string ExcerptText { get; set; }
+		public String TokenID { get; set; }
 
-		public virtual List<Excerpt> Children { get; set; }
+		public virtual List<Excerpt> Children { get; set; } = new List<Excerpt>();
+		public virtual Token Token { get; set; }
 	}
 }
