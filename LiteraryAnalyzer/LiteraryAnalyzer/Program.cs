@@ -15,14 +15,26 @@ namespace LiteraryAnalyzer {
 	//}
 	class Program {
 		static void Main(string[] args) {
+			//Instructions for use.
+			//Replace Filename with the source txt, annotated with markdown
+			//Replace Prefix with where you want the output to be saved
+			//BaseDir most likely stays intact as is
 			var source = new MarkdownFile {
-				Filename = "source\\Ready Player One - Cline, Ernest.txt",
+				Filename = "source\\1984 - George Orwel.txt",
 				BaseDir = @"C:\Users\Brett\Source\Repos\notes",
-				Prefix = "cline\\rpo",
+				Prefix = "orwell\\nineteen",
 				Count = 0
 			};
-			string contentsURI = @"C:\Users\Brett\Source\Repos\notes\cline\rpo00Contents.md";
-			foreach (var mdfile in source.ParseMarkdown(System.IO.File.ReadLines(contentsURI))) {
+			//Handcraft a contents file, with one line for each markdown header
+			//In the source itself, each header should have a newline follow by some number of # symbols, then a filename identifier
+			//The contents file should be a list of these identifiers, exactly as they appear on the line in source
+			//If shit doesn't match, exceptions will get thrown
+			//Replace the contentsURI with your contents file
+			//If the file can be parsed for markdown style headers, set this to null
+			IEnumerable<String> contents = null;//System.IO.File.ReadLines(@"C:\Users\Brett\Source\Repos\notes\cline\rpo00Contents.md");
+
+			//********* DO NOT EDIT ANYTHING BELOW THIS LINE ***********
+			foreach (var mdfile in source.ParseMarkdown(contents)) {
 				mdfile.PrintFile();
 			}
 			////************************ A Storm of Swords : Specialized Parse *****************************

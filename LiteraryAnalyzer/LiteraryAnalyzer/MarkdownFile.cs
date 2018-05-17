@@ -19,12 +19,22 @@ namespace LiteraryAnalyzer {
 		private void FetchMarkdown() {
 			this.Markdown = System.IO.File.ReadAllText(this.FullURI);
 		}
+		
+
+		public IEnumerable<String> ParseMarkdownForContents() {
+			return Markdown
+				.Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
+				.Where(line => line.StartsWith("#"));
+		}
 		public IEnumerable<MarkdownFile> ParseMarkdown (IEnumerable<String> contents) {
 			try {
 				this.FetchMarkdown();
 			}
 			catch {
 				return null;
+			}
+			if (contents == null) {
+				contents = this.ParseMarkdownForContents();
 			}
 			var retVal = new List<MarkdownFile>();
 			String prev = null;
