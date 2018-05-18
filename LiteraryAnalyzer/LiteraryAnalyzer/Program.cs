@@ -21,12 +21,12 @@ namespace LiteraryAnalyzer {
 			//Replace Prefix with where you want the output to be saved
 			//BaseDir most likely stays intact as is
 			var source = new MarkdownFile {
-				Filename = "tolkien\\sil08.md",
+				Filename = "source\\Neuromancer - William Gibson.txt",
 				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
-				Prefix = "tolkien\\sil",
+				Prefix = "gibson\\neuromancer",
 				Count = 0
 			};
-			c.ParseMarkdownToDatabase(source);
+			c.ParseMarkdownToFileSystem(source);
 			return;
 			//Handcraft a contents file, with one line for each markdown header
 			//In the source itself, each header should have a newline follow by some number of # symbols, then a filename identifier
@@ -34,12 +34,12 @@ namespace LiteraryAnalyzer {
 			//If shit doesn't match, exceptions will get thrown
 			//Replace the contentsURI with your contents file
 			//If the file can be parsed for markdown style headers, set this to null
-			IEnumerable<String> contents = null;//System.IO.File.ReadLines(@"C:\Users\Brett\Source\Repos\notes\cline\rpo00Contents.md");
+			//IEnumerable<String> contents = null;//System.IO.File.ReadLines(@"C:\Users\Brett\Source\Repos\notes\cline\rpo00Contents.md");
 
 			//********* DO NOT EDIT ANYTHING BELOW THIS LINE ***********
-			foreach (var mdfile in source.ParseMarkdown(contents)) {
-				mdfile.PrintFile();
-			}
+			//foreach (var mdfile in source.ParseMarkdown(contents)) {
+			//	mdfile.PrintFile();
+			//}
 			////************************ A Storm of Swords : Specialized Parse *****************************
 			//String source = System.IO.File.ReadAllText(@"C:\Users\Brett\Source\Repos\notes\source\StormOfSwords.txt");
 			//List<String> toc = new List<string>(new String[]{ "Prologue", "Jaime", "Catelyn", "Arya", "Tyrion", "Davos", "Sansa", "Jon", "Daenerys", "Bran", "Davos", "Jaime", "Tyrion", "Arya", "Catelyn", "Jon", "Sansa", "Arya", "Samwell", "Tyrion", "Catelyn", "Jaime", "Arya", "Daenerys", "Bran", "Davos", "Jon", "Daenerys", "Sansa", "Arya", "Jon", "Jaime", "Tyrion", "Samwell", "Arya", "Catelyn", "Davos", "Jaime", "Tyrion", "Arya", "Bran", "Jon", "Daenerys", "Arya", "Jaime", "Catelyn", "Samwell", "Arya", "Jon", "Catelyn", "Arya", "Catelyn", "Arya", "Tyrion", "Davos", "Jon", "Bran", "Daenerys", "Tyrion", "Sansa", "Tyrion", "Sansa", "Jaime", "Davos", "Jon", "Arya", "Tyrion", "Jaime", "Sansa", "Jon", "Tyrion", "Daenerys", "Jaime", "Jon", "Arya", "Samwell", "Jon", "Tyrion", "Samwell", "Jon", "Sansa", "Epilogue", "Appendix" });

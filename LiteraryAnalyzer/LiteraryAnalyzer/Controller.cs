@@ -42,8 +42,11 @@ namespace LiteraryAnalyzer {
 		/// </summary>
 		/// <param name="markdownFile"></param>
 		public void ParseMarkdownToDatabase(MarkdownFile file) {
-			file.ParseMarkdownToDatabase(this.db, file.Prefix);
+			file.ParseMarkdownToDatabase(this.db);
 			this.db.SaveChanges();
+		}
+		public void ParseMarkdownToFileSystem(MarkdownFile file) {
+			file.ParseMarkdownToFileSystem();
 		}
 	}
 }

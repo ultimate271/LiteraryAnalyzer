@@ -10,11 +10,12 @@ namespace LiteraryAnalyzer {
 		public URIGeneratorDelegate URIGenerator = (m) => { return String.Format("{0}\\{1}{2:D2}{3}.md", m.BaseDir, m.Prefix, m.Count, m.Filename); };
 		public String GeneratedURI { get { return this.URIGenerator(this); } }
 		public String FullURI { get { return this.BaseDir + "\\" + this.Filename; } }
+
 		//Minimum Complete Constructor
-		public String Filename { get; set; }
-		public String Markdown { get; set; }
-		public String Prefix { get; set; }
-		public String BaseDir { get; set; }
+		public String BaseDir { get; set; } //This is the root of the directory, and should be the same directory the .git file is in
+		public String Filename { get; set; } //This should include a string to indicate which file this is
+		public String Prefix { get; set; } //This is the directory that the parsed markdown will go into
+		public String Markdown { get; set; } //This is the actual text of the file.
 		public int Count { get; set; } //Used for the generated URI, and nothing else
 
 		private void FetchMarkdown() {
@@ -47,7 +48,7 @@ namespace LiteraryAnalyzer {
 					int fromIndex = this.Markdown.IndexOf(prev);
 					int toIndex = this.Markdown.IndexOf(s);
 					var tmp = new MarkdownFile {
-						Filename = prev.Trim('#', ' '),
+						Filename = "", // prev.Trim('#', ' '),
 						Markdown = this.Markdown.Substring(fromIndex, toIndex - fromIndex),
 						BaseDir = this.BaseDir,
 						Prefix = this.Prefix,
@@ -59,11 +60,11 @@ namespace LiteraryAnalyzer {
 			}
 			return retVal;
 		}
-		public void ParseMarkdownToDatabase(LiteraryAnalyzerContext db, String Title) {
+		public void ParseMarkdownToDatabase(LiteraryAnalyzerContext db) {
 			Excerpt Root;
-			var query = db.Excerpts.Where(e => e.ExcerptText.Equals(Title));
+			var query = db.Excerpts.Where(e => e.ExcerptText.Equals(this.Prefix));
 			if (query.Count() == 0) {
-				Root = new Excerpt { ExcerptText = Title, Token = db.GetTokenWithWrite("Title") };
+				Root = new Excerpt { ExcerptText = this.Prefix, Token = db.GetTokenWithWrite("Title") };
 				db.Excerpts.Add(Root);
 			}
 			else {
@@ -95,12 +96,17 @@ namespace LiteraryAnalyzer {
 				currentHeaderLevel = hl;
 			}
 		}
+		public void ParseMarkdownToFileSystem() {
+			foreach (var mdFile in this.ParseMarkdown()) {
+				mdFile.PrintFile();
+			}
+		}
 	
-		public String ParseContent() {
+		private String ParseContent() {
 			var textLines = this.Markdown.Split(new String[] { "\r\n" }, 0).Where(s => !s.StartsWith("#"));
 			return String.Join("\r\n", textLines);
 		}
-		public Excerpt ParseExcerpt(LiteraryAnalyzerContext db) {
+		private Excerpt ParseExcerpt(LiteraryAnalyzerContext db) {
 			String headerLine = this.Markdown.Split(new String[] { "\r\n" }, 0).FirstOrDefault();
 			var matches = System.Text.RegularExpressions.Regex.Matches(headerLine, "^#*([^:]*):([^\n]*)");
 			bool hasColon = true;
@@ -128,9 +134,8 @@ namespace LiteraryAnalyzer {
 				Children = contentExcerpt == null ? new List<Excerpt>() : new List<Excerpt>(new Excerpt[] { contentExcerpt })
 			};
 		}
-		public int HeaderLevel {
+		private int HeaderLevel {
 			get {
-				//This voodoo magic line should return the number of hashes at the start of the markdown
 				var matches = System.Text.RegularExpressions.Regex.Matches(this.Markdown, "^(#*)", 0);
 				return matches[0].Groups[0].Length;
 			}
