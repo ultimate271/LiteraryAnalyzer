@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiteraryAnalyzer.LAShared;
 
 namespace LiteraryAnalyzer {
 	//struct LitFile {
@@ -21,9 +22,9 @@ namespace LiteraryAnalyzer {
 			//Replace Prefix with where you want the output to be saved
 			//BaseDir most likely stays intact as is
 			var option = new MarkdownOption {
-				ContentsOption = MarkdownFile.ContentsOptions.Novel,
-				ParserOption = MarkdownFile.ParserOptions.Novel,
-				URIOption = MarkdownFile.URIOptions.Novel,
+				ContentsOption = MarkdownOption.ContentsOptions.Novel,
+				ParserOption = MarkdownOption.ParserOptions.Novel,
+				URIOption = MarkdownOption.URIOptions.Novel,
 				Filename = "source\\Anna Karrenina - Leo Tolstoy - 1399-0.txt",
 				BaseDir = @"C:\Users\brett\Source\Repos\notes",
 				Prefix = "tolstoy\\anna",

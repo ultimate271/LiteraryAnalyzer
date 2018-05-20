@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiteraryAnalyzer.LAShared;
+using LiteraryAnalyzer;
 
-namespace LiteraryAnalyzer {
+namespace LiteraryAnalyzer.LAModel {
 	public class MarkdownFile {
 		public LiteraryAnalyzerContext db { get; set; } = null;
 		public MarkdownOption MarkdownOptions {
@@ -55,14 +57,14 @@ namespace LiteraryAnalyzer {
 
 #region "URI GENERATION"
 		public String GenerateURI { get { return this.URIGenerator(this); } }
-		public URIOptions URIOption { get { return this.MarkdownOptions.URIOption; } set { this.ReflectionMadness(value, "URI"); this.MarkdownOptions.URIOption = value; } }
+		public MarkdownOption.URIOptions URIOption { get { return this.MarkdownOptions.URIOption; } set { this.ReflectionMadness(value, "URI"); this.MarkdownOptions.URIOption = value; } }
 
-		public enum URIOptions {
-			Default,
-			Standard,
-			Novel,
-			Full
-		}
+		//public enum URIOptions {
+		//	Default,
+		//	Standard,
+		//	Novel,
+		//	Full
+		//}
 
 		private delegate String URIGeneratorDelegate(MarkdownFile file);
 		private URIGeneratorDelegate URIGenerator { get; set; } = DefaultURIGenerator;
@@ -93,15 +95,15 @@ namespace LiteraryAnalyzer {
 
 #region "CONTENTS GENERATION"
 		public IEnumerable<String> GenerateContents { get { return this.ContentsGenerator(this); } }
-		public ContentsOptions ContentsOption { set { this.ReflectionMadness(value, "Contents"); } }
+		public MarkdownOption.ContentsOptions ContentsOption { set { this.ReflectionMadness(value, "Contents"); } }
 
 		private delegate IEnumerable<String> ContentsGeneratorDelegate(MarkdownFile file);
 		private ContentsGeneratorDelegate ContentsGenerator { get; set; } = DefaultContentsGenerator;
 
-		public enum ContentsOptions {
-			Default,
-			Novel
-		}
+		//public enum ContentsOptions {
+		//	Default,
+		//	Novel
+		//}
 
 		private static ContentsGeneratorDelegate DefaultContentsGenerator = (m) => {
 			return m.Markdown
@@ -117,15 +119,15 @@ namespace LiteraryAnalyzer {
 
 #region "PARSER GENERATION"
 		public IEnumerable<MarkdownFile> GenerateParser { get { return this.ParserGenerator(this); } }
-		public ParserOptions ParserOption { set { this.ReflectionMadness(value, "Parser"); } }
+		public MarkdownOption.ParserOptions ParserOption { set { this.ReflectionMadness(value, "Parser"); } }
 
 		private delegate IEnumerable<MarkdownFile> ParserGeneratorDelegate(MarkdownFile file);
 		private ParserGeneratorDelegate ParserGenerator { get; set; } = DefaultParserGenerator;
 
-		public enum ParserOptions {
-			Default,
-			Novel
-		}
+		//public enum ParserOptions {
+		//	Default,
+		//	Novel
+		//}
 
 		private static ParserGeneratorDelegate DefaultParserGenerator = (m) => {
 			var retVal = new List<MarkdownFile>();
@@ -198,42 +200,42 @@ namespace LiteraryAnalyzer {
 				mdFile.PrintFile();
 			}
 		}
-		public void ParseMarkdownToDatabase() {
-			Excerpt Root;
-			var query = db.Excerpts.Where(e => e.ExcerptText.Equals(this.Prefix));
-			if (query.Count() == 0) {
-				Root = new Excerpt { ExcerptText = this.Prefix, Token = db.GetTokenWithWrite("Title") };
-				db.Excerpts.Add(Root);
-			}
-			else {
-				Root = query.First();
-			}
+		//public void ParseMarkdownToDatabase() {
+		//	Excerpt Root;
+		//	var query = db.Excerpts.Where(e => e.ExcerptText.Equals(this.Prefix));
+		//	if (query.Count() == 0) {
+		//		Root = new Excerpt { ExcerptText = this.Prefix, Token = db.GetTokenWithWrite("Title") };
+		//		db.Excerpts.Add(Root);
+		//	}
+		//	else {
+		//		Root = query.First();
+		//	}
 
-			var parents = new Stack<Excerpt>();
-			parents.Push(Root);
-			int currentHeaderLevel = 0;
-			Excerpt currentNode = null;
-			foreach (var subfile in this.GenerateParser) {
-				//If the ParseMarkdown command parsed correctly, every subfile should be a header with some number of # symbols, 
-				//followed by text, a colon (:), and more text to a new line.
-				//The rest should be content.
+		//	var parents = new Stack<Excerpt>();
+		//	parents.Push(Root);
+		//	int currentHeaderLevel = 0;
+		//	Excerpt currentNode = null;
+		//	foreach (var subfile in this.GenerateParser) {
+		//		//If the ParseMarkdown command parsed correctly, every subfile should be a header with some number of # symbols, 
+		//		//followed by text, a colon (:), and more text to a new line.
+		//		//The rest should be content.
 
-				//Create the excerpt with the new content, along with all of its subnodes
-				currentNode = subfile.ParseExcerpt(db);
-				//Figure out the header level of the current excerpt
-				int hl = subfile.dep_HeaderLevel;
-				//If the current node is shallower or sibling to the current parent, pop the current parent because it will no longer parent anything from here on out
-				if (hl <= currentHeaderLevel) {
-					parents.Pop();
-				}
-				//Add the current node as child to the top parent in the stack
-				//This is where the database object is very steathily written to
-				parents.Peek().Children.Add(currentNode);
-				//The current node is the new parent for the next iteration
-				parents.Push(currentNode);
-				currentHeaderLevel = hl;
-			}
-		}
+		//		//Create the excerpt with the new content, along with all of its subnodes
+		//		currentNode = subfile.ParseExcerpt(db);
+		//		//Figure out the header level of the current excerpt
+		//		int hl = subfile.dep_HeaderLevel;
+		//		//If the current node is shallower or sibling to the current parent, pop the current parent because it will no longer parent anything from here on out
+		//		if (hl <= currentHeaderLevel) {
+		//			parents.Pop();
+		//		}
+		//		//Add the current node as child to the top parent in the stack
+		//		//This is where the database object is very steathily written to
+		//		parents.Peek().Children.Add(currentNode);
+		//		//The current node is the new parent for the next iteration
+		//		parents.Push(currentNode);
+		//		currentHeaderLevel = hl;
+		//	}
+		//}
 #endregion
 
 #region "PRIVATE METHODS"
@@ -249,48 +251,48 @@ namespace LiteraryAnalyzer {
 				this.Markdown = "";
 			}
 		}
-		private String ParseContent() {
-			var textLines = this.Markdown.Split(new String[] { "\r\n" }, 0).Where(s => !s.StartsWith("#"));
-			return String.Join("\r\n", textLines);
-		}
-		private Excerpt ParseExcerpt(LiteraryAnalyzerContext db) {
-			String headerLine = this.Markdown.Split(new String[] { "\r\n" }, 0).FirstOrDefault();
-			var matches = System.Text.RegularExpressions.Regex.Matches(headerLine, "^#*([^:]*):([^\n]*)");
-			bool hasColon = true;
-			if (matches.Count == 0) {
-				hasColon = false;
-				matches = System.Text.RegularExpressions.Regex.Matches(headerLine, "^#*([^\n]*)");
-			}
-			//Get the token from the header
-			String TokenKey = hasColon ? matches[0].Groups[1].Value.Trim() : "Section";
-			//Get the Token object from the database
-			Token excerptToken = db.GetTokenWithWrite(TokenKey);
+		//private String ParseContent() {
+		//	var textLines = this.Markdown.Split(new String[] { "\r\n" }, 0).Where(s => !s.StartsWith("#"));
+		//	return String.Join("\r\n", textLines);
+		//}
+		//private Excerpt ParseExcerpt(LiteraryAnalyzerContext db) {
+		//	String headerLine = this.Markdown.Split(new String[] { "\r\n" }, 0).FirstOrDefault();
+		//	var matches = System.Text.RegularExpressions.Regex.Matches(headerLine, "^#*([^:]*):([^\n]*)");
+		//	bool hasColon = true;
+		//	if (matches.Count == 0) {
+		//		hasColon = false;
+		//		matches = System.Text.RegularExpressions.Regex.Matches(headerLine, "^#*([^\n]*)");
+		//	}
+		//	//Get the token from the header
+		//	String TokenKey = hasColon ? matches[0].Groups[1].Value.Trim() : "Section";
+		//	//Get the Token object from the database
+		//	Token excerptToken = db.GetTokenWithWrite(TokenKey);
 
-			String Text = hasColon ? matches[0].Groups[2].Value.Trim() : matches[0].Groups[1].Value.Trim();
-			String contentText = this.ParseContent().Trim();
-			Excerpt contentExcerpt =
-				contentText.Length > 0
-				? new Excerpt {
-					ExcerptText = this.ParseContent(),
-					Token = db.GetTokenWithWrite("Content")
-				}
-				: null;
-			return new Excerpt {
-				ExcerptText = Text,
-				Token = excerptToken,
-				Children = contentExcerpt == null ? new List<Excerpt>() : new List<Excerpt>(new Excerpt[] { contentExcerpt })
-			};
-		}
+		//	String Text = hasColon ? matches[0].Groups[2].Value.Trim() : matches[0].Groups[1].Value.Trim();
+		//	String contentText = this.ParseContent().Trim();
+		//	Excerpt contentExcerpt =
+		//		contentText.Length > 0
+		//		? new Excerpt {
+		//			ExcerptText = this.ParseContent(),
+		//			Token = db.GetTokenWithWrite("Content")
+		//		}
+		//		: null;
+		//	return new Excerpt {
+		//		ExcerptText = Text,
+		//		Token = excerptToken,
+		//		Children = contentExcerpt == null ? new List<Excerpt>() : new List<Excerpt>(new Excerpt[] { contentExcerpt })
+		//	};
+		//}
 		private static int HeaderLevel(String s) {
 			var matches = System.Text.RegularExpressions.Regex.Matches(s, "^#*", 0);
 			return matches[0].Length;
 		}
-		private int dep_HeaderLevel {
-			get {
-				var matches = System.Text.RegularExpressions.Regex.Matches(this.Markdown, "^(#*)", 0);
-				return matches[0].Groups[0].Length;
-			}
-		}
+		//private int dep_HeaderLevel {
+		//	get {
+		//		var matches = System.Text.RegularExpressions.Regex.Matches(this.Markdown, "^(#*)", 0);
+		//		return matches[0].Groups[0].Length;
+		//	}
+		//}
 
 		/// <summary>
 		/// As the name of the method may suggest, there is some reflection madness that happens here.
@@ -325,7 +327,8 @@ namespace LiteraryAnalyzer {
 			String lsOptionLambda = Tag + OptionName + "Generator";
 			String lsOptionProperty = OptionName + "Option";
 
-			var Default =  (this.GetType().GetMember(lsEnumType).First() as System.Reflection.TypeInfo).DeclaredMembers.Where(m => m.Name == "Default");
+			var Default = (typeof(MarkdownOption).Assembly.GetExportedTypes().Where(t => t.Name.Equals(lsEnumType)).First() as System.Reflection.TypeInfo).DeclaredMembers.Where(m => m.Name == "Default");
+			//var Default =  (this.GetType().GetMember(lsEnumType).First() as System.Reflection.TypeInfo).DeclaredMembers.Where(m => m.Name == "Default");
             var InstanceDelegate = this.GetType().GetProperty(lsInstanceDelegate,
 				System.Reflection.BindingFlags.Instance
 				| System.Reflection.BindingFlags.NonPublic

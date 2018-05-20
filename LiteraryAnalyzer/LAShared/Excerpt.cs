@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
 
-namespace LiteraryAnalyzer {
+namespace LiteraryAnalyzer.LAShared {
 	public class Excerpt {
 		public int ExcerptID { get; set; }
 		public string ExcerptText { get; set; }

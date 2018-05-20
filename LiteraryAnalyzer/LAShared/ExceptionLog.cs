@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiteraryAnalyzer {
+namespace LiteraryAnalyzer.LAShared {
 	public class ExceptionLog {
 		public ExceptionLog() { }
 		public ExceptionLog(Exception e) {

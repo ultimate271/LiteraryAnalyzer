@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiteraryAnalyzer.LAShared;
+using LiteraryAnalyzer.LAModel;
+
 
 namespace LiteraryAnalyzer {
 	public class Controller {
-		private LiteraryAnalyzerContext db;
-
-		//********************************************************************************//
-		//****** Control Panel: So to speak **********************************************//
-		//********************************************************************************//
-		public Controller() {
-			db = new LiteraryAnalyzerContext();
-		}
+		private LiteraryAnalyzerContext db { get; set; } = new LiteraryAnalyzerContext();
+		
+		public Controller() : this (new LiteraryAnalyzerContext()) { }
+		public Controller(LiteraryAnalyzerContext db) { this.db = db; }
 
 		public void DeveloperDebug (String markdown) {
 			String[] sentences = markdown.Split('.','?','!');
@@ -45,10 +44,6 @@ namespace LiteraryAnalyzer {
 		/// Takes a markdown file and inserts records into the db for 
 		/// </summary>
 		/// <param name="markdownFile"></param>
-		public void ParseMarkdownToDatabase(MarkdownFile file) {
-		//	file.ParseMarkdownToDatabase(this.db);
-		//	this.db.SaveChanges();
-		}
 		public void ParseMarkdownToFileSystem(MarkdownOption options) {
 			var file = new MarkdownFile(options, this.db);
 			file.ParseMarkdownToFileSystem();

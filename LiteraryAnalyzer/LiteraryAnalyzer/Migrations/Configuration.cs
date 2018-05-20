@@ -4,6 +4,7 @@ namespace LiteraryAnalyzer.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+	using LiteraryAnalyzer;
 
     internal sealed class Configuration : DbMigrationsConfiguration<LiteraryAnalyzer.LiteraryAnalyzerContext>
     {
