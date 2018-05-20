@@ -50,9 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
+    <Compile Include="ExceptionLog.cs" />
     <Compile Include="Excerpt.cs" />
     <Compile Include="LiteraryAnalyzerContext.cs" />
     <Compile Include="MarkdownFile.cs" />
+    <Compile Include="MarkdownOption.cs" />
     <Compile Include="Migrations\201804030236532_InitialCreate.cs" />
     <Compile Include="Migrations\201804030236532_InitialCreate.Designer.cs">
       <DependentUpon>201804030236532_InitialCreate.cs</DependentUpon>
@@ -60,6 +62,18 @@
     <Compile Include="Migrations\201805170615335_AddTokens.cs" />
     <Compile Include="Migrations\201805170615335_AddTokens.Designer.cs">
       <DependentUpon>201805170615335_AddTokens.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805191727338_ExceptionLogging.cs" />
+    <Compile Include="Migrations\201805191727338_ExceptionLogging.Designer.cs">
+      <DependentUpon>201805191727338_ExceptionLogging.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805191729446_ExceptionLoggingTime.cs" />
+    <Compile Include="Migrations\201805191729446_ExceptionLoggingTime.Designer.cs">
+      <DependentUpon>201805191729446_ExceptionLoggingTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805200349061_MarkdownOptions.cs" />
+    <Compile Include="Migrations\201805200349061_MarkdownOptions.Designer.cs">
+      <DependentUpon>201805200349061_MarkdownOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
@@ -76,6 +90,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805170615335_AddTokens.resx">
       <DependentUpon>201805170615335_AddTokens.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805191727338_ExceptionLogging.resx">
+      <DependentUpon>201805191727338_ExceptionLogging.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805191729446_ExceptionLoggingTime.resx">
+      <DependentUpon>201805191729446_ExceptionLoggingTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805200349061_MarkdownOptions.resx">
+      <DependentUpon>201805200349061_MarkdownOptions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

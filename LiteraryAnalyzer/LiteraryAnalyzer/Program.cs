@@ -20,13 +20,15 @@ namespace LiteraryAnalyzer {
 			//Replace Filename with the source txt, annotated with markdown
 			//Replace Prefix with where you want the output to be saved
 			//BaseDir most likely stays intact as is
-			var source = new MarkdownFile {
-				Filename = "source\\Neuromancer - William Gibson.txt",
-				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
-				Prefix = "gibson\\neuromancer",
-				Count = 0
+			var option = new MarkdownOption {
+				ContentsOption = MarkdownFile.ContentsOptions.Novel,
+				ParserOption = MarkdownFile.ParserOptions.Novel,
+				URIOption = MarkdownFile.URIOptions.Novel,
+				Filename = "source\\Anna Karrenina - Leo Tolstoy - 1399-0.txt",
+				BaseDir = @"C:\Users\brett\Source\Repos\notes",
+				Prefix = "tolstoy\\anna",
 			};
-			c.ParseMarkdownToFileSystem(source);
+			c.ParseMarkdownToFileSystem(option);
 			return;
 			//Handcraft a contents file, with one line for each markdown header
 			//In the source itself, each header should have a newline follow by some number of # symbols, then a filename identifier

@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 namespace LiteraryAnalyzer {
 	public class Controller {
 		private LiteraryAnalyzerContext db;
+
+		//********************************************************************************//
+		//****** Control Panel: So to speak **********************************************//
+		//********************************************************************************//
 		public Controller() {
 			db = new LiteraryAnalyzerContext();
 		}
@@ -42,10 +46,11 @@ namespace LiteraryAnalyzer {
 		/// </summary>
 		/// <param name="markdownFile"></param>
 		public void ParseMarkdownToDatabase(MarkdownFile file) {
-			file.ParseMarkdownToDatabase(this.db);
-			this.db.SaveChanges();
+		//	file.ParseMarkdownToDatabase(this.db);
+		//	this.db.SaveChanges();
 		}
-		public void ParseMarkdownToFileSystem(MarkdownFile file) {
+		public void ParseMarkdownToFileSystem(MarkdownOption options) {
+			var file = new MarkdownFile(options, this.db);
 			file.ParseMarkdownToFileSystem();
 		}
 	}

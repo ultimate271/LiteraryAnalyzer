@@ -9,6 +9,8 @@ namespace LiteraryAnalyzer {
 	public class LiteraryAnalyzerContext : DbContext {
 		public DbSet<Excerpt> Excerpts { get; set; }
 		public DbSet<Token> Tokens { get; set; }
+		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
+		public DbSet<MarkdownOption> MarkdownOptions { get; set; }
 
 		/// <summary>
 		/// A way to garuntee retrieval of a token with t.TokenID == TokenID
