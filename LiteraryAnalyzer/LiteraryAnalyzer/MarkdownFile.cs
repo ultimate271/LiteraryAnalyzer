@@ -198,7 +198,7 @@ namespace LiteraryAnalyzer {
 				mdFile.PrintFile();
 			}
 		}
-		public void ParseMarkdownToDatabase(LiteraryAnalyzerContext db) {
+		public void ParseMarkdownToDatabase() {
 			Excerpt Root;
 			var query = db.Excerpts.Where(e => e.ExcerptText.Equals(this.Prefix));
 			if (query.Count() == 0) {
