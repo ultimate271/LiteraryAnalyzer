@@ -251,6 +251,16 @@ namespace LiteraryAnalyzer.LAModel {
 				this.Markdown = "";
 			}
 		}
+		private void FetchPrefix() {
+			var arr = this.Filename.Split(' ', '.');
+			try {
+				this.Prefix = arr[0] + "\\" + arr[1];
+			}
+			catch (Exception e) {
+				this.db?.ExceptionLogs.Add(new ExceptionLog(e));
+				this.Prefix = "";
+			}
+		}
 		//private String ParseContent() {
 		//	var textLines = this.Markdown.Split(new String[] { "\r\n" }, 0).Where(s => !s.StartsWith("#"));
 		//	return String.Join("\r\n", textLines);
