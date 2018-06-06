@@ -17,6 +17,7 @@ namespace LiteraryAnalyzer.LAModel {
 			}
 		}
 		private MarkdownOption _MarkdownOptions = new MarkdownOption();
+		public Excerpt Parent { get; set; } = null;
 
 		/// <summary>
 		/// This is not a copy constructor, it only copies the settings and such
@@ -25,9 +26,12 @@ namespace LiteraryAnalyzer.LAModel {
 		public MarkdownFile(MarkdownFile other) : this(other.MarkdownOptions, other.db) { }
 		public MarkdownFile() : this(null, null) { }
 		public MarkdownFile(MarkdownOption options) : this(options, null) { }
-		public MarkdownFile(MarkdownOption options, LiteraryAnalyzerContext db) {
+		public MarkdownFile(MarkdownOption options, LiteraryAnalyzerContext db) : this(options, db, null){
+		}
+		public MarkdownFile(MarkdownOption options, LiteraryAnalyzerContext db, Excerpt parent) {
 			this.db = db ?? new LiteraryAnalyzerContext();
 			this.MarkdownOptions = options ?? new MarkdownOption();
+			this.Parent = parent;
 		}
 		//Guide to use
 		//This function uses reflection to make the process of adding a new Write Option
@@ -115,6 +119,27 @@ namespace LiteraryAnalyzer.LAModel {
 				.Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
 				.Where(line => line.StartsWith("#"));
 		};
+		private static ContentsGeneratorDelegate MarkdownContentsGenerator = (m) => {
+			string HeaderMatch = @"^#([^\n]*)\n";
+			string CommentaryMatch = @"^_([^_:]*):([^_]*)_  ";
+			String a = m.Markdown;
+			var b = System.Text.RegularExpressions.Regex.Matches(a, HeaderMatch + "|" + CommentaryMatch, System.Text.RegularExpressions.RegexOptions.Multiline);
+			var retVal = new List<String>();
+			foreach (System.Text.RegularExpressions.Match match in b) {
+				retVal.Add(match.Groups[0].ToString());
+			}
+			return retVal;
+
+			//return b;
+			//var b = a.Split(new String[] { "\r\n" }, StringSplitOptions.None);
+			//var c = b.Where(line => line.StartsWith("#") || line.StartsWith("_"));
+			//var d = c.Select(s => s.TrimStart());
+			//return d;
+			//return m.Markdown
+			//	.Split(new String[] { "\r\n" }, StringSplitOptions.None)
+			//	.Where(line => line.StartsWith("#") || line.StartsWith("_"))
+			//	.Select(s => s.TrimStart());
+		};
 #endregion
 
 #region "PARSER GENERATION"
@@ -191,7 +216,34 @@ namespace LiteraryAnalyzer.LAModel {
 			}
 			return retVal;
 		};
+		private static ParserGeneratorDelegate MarkdownParserGenerator = (m) => {
+			var retVal = new List<MarkdownFile>();
+			
+			return retVal;
+		};
 
+#endregion
+
+#region "CONTENTS GENERATION"
+		public Excerpt GenerateExcerpt { get { return this.ExcerptGenerator(this); } }
+		public MarkdownOption.ExcerptOptions ExcerptOption { set { this.ReflectionMadness(value, "Excerpt"); } }
+
+		private delegate Excerpt ExcerptGeneratorDelegate(MarkdownFile file);
+		private ExcerptGeneratorDelegate ExcerptGenerator { get; set; } = DefaultExcerptGenerator;
+
+		//public enum ExcerptOptions {
+		//	Default,
+		//	Markdown
+		//}
+
+		private static ExcerptGeneratorDelegate DefaultExcerptGenerator = (m) => {
+			Excerpt retVal = new Excerpt { ExcerptText = m.Markdown };
+			if (!(m.Parent is null)) { m.Parent.Children.Add(retVal); }
+			return retVal;
+		};
+		private static ExcerptGeneratorDelegate MarkdownExcerptGenerator = (m) => {
+			return new Excerpt();
+		};
 #endregion
 
 #region "PUBLIC METHODS"
@@ -199,6 +251,16 @@ namespace LiteraryAnalyzer.LAModel {
 			foreach (var mdFile in this.GenerateParser) {
 				mdFile.PrintFile();
 			}
+		}
+		public void ParseMarkdownToDatabase() {
+			var ex = this.GenerateExcerpt;
+			if (this.Parent is null) {
+				this.db?.Excerpts.Add(ex);
+			}
+			else {
+				this.Parent.Children.Add(ex);
+			}
+
 		}
 		//public void ParseMarkdownToDatabase() {
 		//	Excerpt Root;
@@ -241,6 +303,12 @@ namespace LiteraryAnalyzer.LAModel {
 #region "PRIVATE METHODS"
 		private void PrintFile() {
 			System.IO.File.WriteAllText(this.GenerateURI, this.Markdown);
+		}
+		private void WriteDatabaseRecord() {
+			this.db.Excerpts.Add(this.ToExcerpt());
+		}
+		private Excerpt ToExcerpt() {
+			return new Excerpt { ExcerptText = this.Markdown };
 		}
 		private void FetchMarkdown() {
 			try {

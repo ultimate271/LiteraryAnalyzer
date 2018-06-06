@@ -48,5 +48,9 @@ namespace LiteraryAnalyzer {
 			var file = new MarkdownFile(options, this.db);
 			file.ParseMarkdownToFileSystem();
 		}
+		public void ParseMarkdownToModel(MarkdownOption otions) {
+			var file = new MarkdownFile(options, this.db);
+			var myList = file.GenerateContents.ToList();
+		}
 	}
 }

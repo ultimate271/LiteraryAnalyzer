@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public class Token {
-		public String TokenID { get; set; }
+		private String _TokenID;
+		public String TokenID { get { return _TokenID.Trim(); } set { _TokenID = value.Trim(); } }
 		public String Description { get; set; }
 	}
 }

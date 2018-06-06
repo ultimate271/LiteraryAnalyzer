@@ -22,14 +22,16 @@ namespace LiteraryAnalyzer {
 			//Replace Prefix with where you want the output to be saved
 			//BaseDir most likely stays intact as is
 			var option = new MarkdownOption {
-				ContentsOption = MarkdownOption.ContentsOptions.Novel,
-				ParserOption = MarkdownOption.ParserOptions.Novel,
-				URIOption = MarkdownOption.URIOptions.Novel,
-				Filename = "source\\Anna Karrenina - Leo Tolstoy - 1399-0.txt",
+				ContentsOption = MarkdownOption.ContentsOptions.Markdown,
+				ParserOption = MarkdownOption.ParserOptions.Default,
+				URIOption = MarkdownOption.URIOptions.Standard,
+				ExcerptOption = MarkdownOption.ExcerptOptions.Markdown,
+				Filename = "dastoyevsky\\brothers02.01.md",
 				BaseDir = @"C:\Users\brett\Source\Repos\notes",
-				Prefix = "tolstoy\\anna",
+				Prefix = "clancy\\remorse",
 			};
-			c.ParseMarkdownToFileSystem(option);
+			c.ParseMarkdownToModel(option);
+			//c.ParseMarkdownToFileSystem(option);
 			return;
 			//Handcraft a contents file, with one line for each markdown header
 			//In the source itself, each header should have a newline follow by some number of # symbols, then a filename identifier

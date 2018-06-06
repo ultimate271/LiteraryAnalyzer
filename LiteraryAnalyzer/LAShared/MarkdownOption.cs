@@ -10,6 +10,7 @@ namespace LiteraryAnalyzer.LAShared {
 		public MarkdownOption.URIOptions URIOption { get; set; } = MarkdownOption.URIOptions.Default;
 		public MarkdownOption.ContentsOptions ContentsOption { get; set; } = MarkdownOption.ContentsOptions.Default;
 		public MarkdownOption.ParserOptions ParserOption { get; set; } = MarkdownOption.ParserOptions.Default;
+		public MarkdownOption.ExcerptOptions ExcerptOption { get; set; } = MarkdownOption.ExcerptOptions.Default;
 		public String BaseDir { get; set; } = ""; //This is the root of the directory, and should be the same directory the .git file is in
 		public String Filename { get; set; } = ""; //This should include a string to indicate which file this is
 		public String Prefix { get; set; } = "";//This is the directory that the parsed markdown will go into
@@ -21,11 +22,16 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 		public enum ContentsOptions {
 			Default,
-			Novel
+			Novel,
+			Markdown
 		}
 		public enum ParserOptions {
 			Default,
 			Novel
+		}
+		public enum ExcerptOptions {
+			Default,
+			Markdown
 		}
 	}
 }

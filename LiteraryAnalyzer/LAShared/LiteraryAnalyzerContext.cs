@@ -10,6 +10,7 @@ namespace LiteraryAnalyzer {
 	public class LiteraryAnalyzerContext : DbContext {
 		public DbSet<Excerpt> Excerpts { get; set; }
 		public DbSet<Token> Tokens { get; set; }
+		public DbSet<Descriptor> Descriptors { get; set; }
 		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
 		public DbSet<MarkdownOption> MarkdownOptions { get; set; }
 
@@ -25,6 +26,23 @@ namespace LiteraryAnalyzer {
 				this.Tokens.Add(contentToken);
 				this.SaveChanges();
 				return contentToken;
+			}
+			else {
+				return query.First();
+			}
+		}
+		/// <summary>
+		/// A way to garuntee retrieval of a token with t.DescriptorID == DescriptorID
+		/// </summary>
+		/// <param name="DescriptorID">The DescriptorID to find</param>
+		/// <returns>A Descriptor t where t.DescriptorID == DescriptorID</returns>
+		public Descriptor GetDescriptorWithWrite(String DescriptorID) {
+			var query = this.Descriptors.Where(t => t.DescriptorID.Equals(DescriptorID));
+			if (query.Count() == 0) {
+				var contentDescriptor = new Descriptor { DescriptorID = DescriptorID };
+				this.Descriptors.Add(contentDescriptor);
+				this.SaveChanges();
+				return contentDescriptor;
 			}
 			else {
 				return query.First();
