@@ -25,9 +25,9 @@ namespace LiteraryAnalyzer {
 				ContentsOption = MarkdownOption.ContentsOptions.Novel,
 				ParserOption = MarkdownOption.ParserOptions.Novel,
 				URIOption = MarkdownOption.URIOptions.Novel,
-				Filename = "source\\Anna Karrenina - Leo Tolstoy - 1399-0.txt",
-				BaseDir = @"C:\Users\brett\Source\Repos\notes",
-				Prefix = "tolstoy\\anna",
+				Filename = "source\\dastoyevsky brothers.txt",
+				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
+				Prefix = "dastoyevsky\\brothers",
 			};
 			c.ParseMarkdownToFileSystem(option);
 			return;
