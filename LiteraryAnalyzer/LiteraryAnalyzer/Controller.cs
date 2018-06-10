@@ -48,9 +48,41 @@ namespace LiteraryAnalyzer {
 			var file = new MarkdownFile(options, this.db);
 			file.ParseMarkdownToFileSystem();
 		}
-		public void ParseMarkdownToModel(MarkdownOption otions) {
-			var file = new MarkdownFile(options, this.db);
-			var myList = file.GenerateContents.ToList();
+
+		public String ConvertRussianToEnglishPhonetic(String inRussian) {
+			var dict = Helper.BuildDictionaryFromFile(@"C:\Users\bwebster\Source\Repos\notes\russian\characterPronounciationDict");
+			StringBuilder s = new StringBuilder(inRussian);
+			foreach (string c in dict.Keys) {
+				s.Replace(c, dict[c] + "_");
+			}
+			return s.ToString();
+		}
+
+		public IEnumerable<String> ConvertRussianToEnglishVerbosePhonetics(String inRussian, Dictionary<String, String> dict) {
+			List<String> retVal = new List<String>();
+			String outword = "";
+			StringBuilder paddedRusWord = new StringBuilder();
+			StringBuilder phoneticWord = new StringBuilder();
+			int padding = 1;
+			String chunk = "";
+			foreach (string rusWord in inRussian.Split()) {
+				paddedRusWord = new StringBuilder();
+				phoneticWord = new StringBuilder();
+				foreach (string russianChar in rusWord.ToCharArray().Select(c => c.ToString())) {
+					try {
+						chunk = dict[russianChar] + " ";
+					}
+					catch (KeyNotFoundException) {
+						chunk = russianChar + " ";
+					}
+					padding = Math.Max(russianChar.Length, chunk.Length);
+					paddedRusWord.Append(russianChar.PadRight(padding));
+					phoneticWord.Append(chunk.PadRight(padding));
+				}
+				outword = String.Format("{2}\n{0}\n{1}\n", paddedRusWord.ToString(), phoneticWord.ToString(), rusWord);
+				retVal.Add(outword);
+			}
+			return retVal;
 		}
 	}
 }

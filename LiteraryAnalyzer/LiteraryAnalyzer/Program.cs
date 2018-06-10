@@ -22,17 +22,32 @@ namespace LiteraryAnalyzer {
 			//Replace Prefix with where you want the output to be saved
 			//BaseDir most likely stays intact as is
 			var option = new MarkdownOption {
-				ContentsOption = MarkdownOption.ContentsOptions.Markdown,
-				ParserOption = MarkdownOption.ParserOptions.Default,
-				URIOption = MarkdownOption.URIOptions.Standard,
-				ExcerptOption = MarkdownOption.ExcerptOptions.Markdown,
-				Filename = "dastoyevsky\\brothers02.01.md",
-				BaseDir = @"C:\Users\brett\Source\Repos\notes",
-				Prefix = "clancy\\remorse",
+				ContentsOption = MarkdownOption.ContentsOptions.Novel,
+				ParserOption = MarkdownOption.ParserOptions.Novel,
+				URIOption = MarkdownOption.URIOptions.Novel,
+				Filename = "source\\dastoyevsky brothers.txt",
+				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
+				Prefix = "dastoyevsky\\brothers",
 			};
-			c.ParseMarkdownToModel(option);
 			//c.ParseMarkdownToFileSystem(option);
-			return;
+			var myDict = Helper.BuildDictionaryFromFile(@"C:\Users\bwebster\Source\Repos\notes\russian\characterPronounciationDict");
+			foreach (string ch in myDict.Keys) {
+				System.Console.WriteLine("{0},{1}", ch, myDict[ch]);
+			}
+			string infile = @"C:\Users\bwebster\Source\Repos\notes\toy\in";
+			string outfile = @"C:\Users\bwebster\Source\Repos\notes\toy\out";
+			string inRussian = System.IO.File.ReadAllText(infile);
+			var outList = c.ConvertRussianToEnglishVerbosePhonetics(inRussian, myDict);
+			System.IO.File.WriteAllText(outfile, String.Join("\n", outList));
+
+			//string phonetic = c.ConvertRussianToEnglishPhonetic(inRussian);
+			//StringBuilder sb = new StringBuilder();
+			//var query = inRussian.Split().Zip(phonetic.Split(), (a, b) => String.Format("{0,20} | {1}", a, b));
+			//foreach (String s in query) {
+			//	sb.AppendLine(s.Replace('_', ' '));
+			//}
+			//System.IO.File.WriteAllText(outfile, sb.ToString());
+			//return;
 			//Handcraft a contents file, with one line for each markdown header
 			//In the source itself, each header should have a newline follow by some number of # symbols, then a filename identifier
 			//The contents file should be a list of these identifiers, exactly as they appear on the line in source

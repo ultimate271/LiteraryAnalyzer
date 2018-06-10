@@ -187,6 +187,7 @@ namespace LiteraryAnalyzer.LAModel {
 				throw new Exception("Invalid Novel Markdown, contains invalid headers");
 			}
 			String prev = null;
+			int FatherIndex = 0;
 			int Section = 0;
 			int Chapter = 0;
 			int fromIndex = 0;
@@ -195,6 +196,9 @@ namespace LiteraryAnalyzer.LAModel {
 				if (!String.IsNullOrEmpty(prev) && MarkdownFile.HeaderLevel(prev) == 2) {
 					fromIndex = m.Markdown.IndexOf(prev, toIndex);
 					toIndex = m.Markdown.IndexOf(s, fromIndex);
+					if (Chapter == 1) { //Do this to capture the section header as well as the chapter header
+						fromIndex = FatherIndex;
+					}
 					var tmp = new MarkdownFile(m) {
 						Filename = "",
 						Markdown = m.Markdown.Substring(fromIndex, toIndex - fromIndex),
@@ -207,6 +211,7 @@ namespace LiteraryAnalyzer.LAModel {
 				}
 				prev = s;
 				if (MarkdownFile.HeaderLevel(s) == 1) {
+					FatherIndex = m.Markdown.IndexOf(s, FatherIndex);
 					Section++;
 					Chapter = 0;
 				}

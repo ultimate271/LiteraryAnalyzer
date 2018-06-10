@@ -50,7 +50,7 @@
     <Compile Include="Descriptor.cs" />
     <Compile Include="ExceptionLog.cs" />
     <Compile Include="Excerpt.cs" />
-    <Compile Include="ExcerptHeader.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="LiteraryAnalyzerContext.cs" />
     <Compile Include="MarkdownOption.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
