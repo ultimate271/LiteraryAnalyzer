@@ -25,12 +25,29 @@ namespace LiteraryAnalyzer {
 				ContentsOption = MarkdownOption.ContentsOptions.Novel,
 				ParserOption = MarkdownOption.ParserOptions.Novel,
 				URIOption = MarkdownOption.URIOptions.Novel,
-				Filename = "source\\Sanderson Mistborn1.txt",
-				BaseDir = @"C:\Users\brett\Source\Repos\notes",
-				Prefix = "sanderson\\mistbornTFE",
+				Filename = "source\\dastoyevsky brothers.txt",
+				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
+				Prefix = "dastoyevsky\\brothers",
 			};
-			c.ParseMarkdownToFileSystem(option);
-			return;
+			//c.ParseMarkdownToFileSystem(option);
+			var myDict = Helper.BuildDictionaryFromFile(@"C:\Users\bwebster\Source\Repos\notes\russian\characterPronounciationDict");
+			foreach (string ch in myDict.Keys) {
+				System.Console.WriteLine("{0},{1}", ch, myDict[ch]);
+			}
+			string infile = @"C:\Users\bwebster\Source\Repos\notes\toy\in";
+			string outfile = @"C:\Users\bwebster\Source\Repos\notes\toy\out";
+			string inRussian = System.IO.File.ReadAllText(infile);
+			var outList = c.ConvertRussianToEnglishVerbosePhonetics(inRussian, myDict);
+			System.IO.File.WriteAllText(outfile, String.Join("\n", outList));
+
+			//string phonetic = c.ConvertRussianToEnglishPhonetic(inRussian);
+			//StringBuilder sb = new StringBuilder();
+			//var query = inRussian.Split().Zip(phonetic.Split(), (a, b) => String.Format("{0,20} | {1}", a, b));
+			//foreach (String s in query) {
+			//	sb.AppendLine(s.Replace('_', ' '));
+			//}
+			//System.IO.File.WriteAllText(outfile, sb.ToString());
+			//return;
 			//Handcraft a contents file, with one line for each markdown header
 			//In the source itself, each header should have a newline follow by some number of # symbols, then a filename identifier
 			//The contents file should be a list of these identifiers, exactly as they appear on the line in source
