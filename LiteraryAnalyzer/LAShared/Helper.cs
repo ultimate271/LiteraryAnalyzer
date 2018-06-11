@@ -25,5 +25,10 @@ namespace LiteraryAnalyzer.LAShared{
 			return retVal;
 		}
 
+		public static int HeaderLevel(String s) {
+			var matches = System.Text.RegularExpressions.Regex.Matches(s, "^#*", 0);
+			return matches[0].Length;
+		}
+
 	}
 }

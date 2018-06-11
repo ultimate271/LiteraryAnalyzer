@@ -8,7 +8,7 @@ using LiteraryAnalyzer;
 
 namespace LiteraryAnalyzer.LAModel {
 	public class MarkdownFile {
-		public LiteraryAnalyzerContext db { get; set; } = null;
+		//public LiteraryAnalyzerContext db { get; set; } = null;
 		public MarkdownOption MarkdownOptions {
 			get { return _MarkdownOptions; }
 			set {
@@ -23,13 +23,13 @@ namespace LiteraryAnalyzer.LAModel {
 		/// This is not a copy constructor, it only copies the settings and such
 		/// </summary>
 		/// <param name="other"></param>
-		public MarkdownFile(MarkdownFile other) : this(other.MarkdownOptions, other.db) { }
+		public MarkdownFile(MarkdownFile other) : this(other.MarkdownOptions, null) { }
 		public MarkdownFile() : this(null, null) { }
 		public MarkdownFile(MarkdownOption options) : this(options, null) { }
 		public MarkdownFile(MarkdownOption options, LiteraryAnalyzerContext db) : this(options, db, null){
 		}
 		public MarkdownFile(MarkdownOption options, LiteraryAnalyzerContext db, Excerpt parent) {
-			this.db = db ?? new LiteraryAnalyzerContext();
+		//	this.db = db ?? new LiteraryAnalyzerContext();
 			this.MarkdownOptions = options ?? new MarkdownOption();
 			this.Parent = parent;
 		}
@@ -183,7 +183,7 @@ namespace LiteraryAnalyzer.LAModel {
 			var retVal = new List<MarkdownFile>();
 			m.FetchMarkdown();
 			var contents = m.GenerateContents;
-			if (contents.Select(s => MarkdownFile.HeaderLevel(s)).Where(i => i < 1 || i > 2).Count() > 0) {
+			if (contents.Select(s => Helper.HeaderLevel(s)).Where(i => i < 1 || i > 2).Count() > 0) {
 				throw new Exception("Invalid Novel Markdown, contains invalid headers");
 			}
 			String prev = null;
@@ -193,7 +193,7 @@ namespace LiteraryAnalyzer.LAModel {
 			int fromIndex = 0;
 			int toIndex = 0;
 			foreach (String s in contents) {
-				if (!String.IsNullOrEmpty(prev) && MarkdownFile.HeaderLevel(prev) == 2) {
+				if (!String.IsNullOrEmpty(prev) && Helper.HeaderLevel(prev) == 2) {
 					fromIndex = m.Markdown.IndexOf(prev, toIndex);
 					toIndex = m.Markdown.IndexOf(s, fromIndex);
 					if (Chapter == 1) { //Do this to capture the section header as well as the chapter header
@@ -210,12 +210,12 @@ namespace LiteraryAnalyzer.LAModel {
 					retVal.Add(tmp);
 				}
 				prev = s;
-				if (MarkdownFile.HeaderLevel(s) == 1) {
+				if (Helper.HeaderLevel(s) == 1) {
 					FatherIndex = m.Markdown.IndexOf(s, FatherIndex);
 					Section++;
 					Chapter = 0;
 				}
-				else if (MarkdownFile.HeaderLevel(s) == 2) {
+				else if (Helper.HeaderLevel(s) == 2) {
 					Chapter++;
 				}
 			}
@@ -229,44 +229,22 @@ namespace LiteraryAnalyzer.LAModel {
 
 #endregion
 
-#region "CONTENTS GENERATION"
-		public Excerpt GenerateExcerpt { get { return this.ExcerptGenerator(this); } }
-		public MarkdownOption.ExcerptOptions ExcerptOption { set { this.ReflectionMadness(value, "Excerpt"); } }
-
-		private delegate Excerpt ExcerptGeneratorDelegate(MarkdownFile file);
-		private ExcerptGeneratorDelegate ExcerptGenerator { get; set; } = DefaultExcerptGenerator;
-
-		//public enum ExcerptOptions {
-		//	Default,
-		//	Markdown
-		//}
-
-		private static ExcerptGeneratorDelegate DefaultExcerptGenerator = (m) => {
-			Excerpt retVal = new Excerpt { ExcerptText = m.Markdown };
-			if (!(m.Parent is null)) { m.Parent.Children.Add(retVal); }
-			return retVal;
-		};
-		private static ExcerptGeneratorDelegate MarkdownExcerptGenerator = (m) => {
-			return new Excerpt();
-		};
-#endregion
-
 #region "PUBLIC METHODS"
 		public void ParseMarkdownToFileSystem() {
 			foreach (var mdFile in this.GenerateParser) {
 				mdFile.PrintFile();
 			}
 		}
-		public void ParseMarkdownToDatabase() {
-			var ex = this.GenerateExcerpt;
-			if (this.Parent is null) {
-				this.db?.Excerpts.Add(ex);
-			}
-			else {
-				this.Parent.Children.Add(ex);
-			}
+		//public void ParseMarkdownToDatabase() {
+		//	var ex = this.GenerateExcerpt;
+		//	if (this.Parent is null) {
+		//		this.db?.Excerpts.Add(ex);
+		//	}
+		//	else {
+		//		this.Parent.Children.Add(ex);
+		//	}
 
-		}
+		//}
 		//public void ParseMarkdownToDatabase() {
 		//	Excerpt Root;
 		//	var query = db.Excerpts.Where(e => e.ExcerptText.Equals(this.Prefix));
@@ -309,9 +287,9 @@ namespace LiteraryAnalyzer.LAModel {
 		private void PrintFile() {
 			System.IO.File.WriteAllText(this.GenerateURI, this.Markdown);
 		}
-		private void WriteDatabaseRecord() {
-			this.db.Excerpts.Add(this.ToExcerpt());
-		}
+		//private void WriteDatabaseRecord() {
+		//	this.db.Excerpts.Add(this.ToExcerpt());
+		//}
 		private Excerpt ToExcerpt() {
 			return new Excerpt { ExcerptText = this.Markdown };
 		}
@@ -320,7 +298,7 @@ namespace LiteraryAnalyzer.LAModel {
 				this.Markdown = System.IO.File.ReadAllText(MarkdownFile.FullURIGenerator(this));
 			}
 			catch (Exception e) {
-				this.db?.ExceptionLogs.Add(new ExceptionLog(e));
+				//this.db?.ExceptionLogs.Add(new ExceptionLog(e));
 				this.Markdown = "";
 			}
 		}
@@ -330,7 +308,7 @@ namespace LiteraryAnalyzer.LAModel {
 				this.Prefix = arr[0] + "\\" + arr[1];
 			}
 			catch (Exception e) {
-				this.db?.ExceptionLogs.Add(new ExceptionLog(e));
+				//this.db?.ExceptionLogs.Add(new ExceptionLog(e));
 				this.Prefix = "";
 			}
 		}
@@ -366,10 +344,6 @@ namespace LiteraryAnalyzer.LAModel {
 		//		Children = contentExcerpt == null ? new List<Excerpt>() : new List<Excerpt>(new Excerpt[] { contentExcerpt })
 		//	};
 		//}
-		private static int HeaderLevel(String s) {
-			var matches = System.Text.RegularExpressions.Regex.Matches(s, "^#*", 0);
-			return matches[0].Length;
-		}
 		//private int dep_HeaderLevel {
 		//	get {
 		//		var matches = System.Text.RegularExpressions.Regex.Matches(this.Markdown, "^(#*)", 0);
@@ -430,7 +404,7 @@ namespace LiteraryAnalyzer.LAModel {
 						ReflectionMadness(Default, OptionName);
 					}
 					catch (Exception e) {
-						this.db?.ExceptionLogs.Add(new ExceptionLog(e, "No Default"));
+						//this.db?.ExceptionLogs.Add(new ExceptionLog(e, "No Default"));
 					}
 				}
 			}
@@ -439,7 +413,7 @@ namespace LiteraryAnalyzer.LAModel {
 					throw new Exception(String.Format("No Instance Delegate for {0}", OptionName));
 				}
 				catch (Exception e) {
-					this.db?.ExceptionLogs.Add(new ExceptionLog(e, "Instance Delegate not Found"));
+					//this.db?.ExceptionLogs.Add(new ExceptionLog(e, "Instance Delegate not Found"));
 				}
 			}
 		}
@@ -450,7 +424,7 @@ namespace LiteraryAnalyzer.LAModel {
 					this.GetType().GetProperty(m.Name).SetMethod.Invoke(this, new Object[] { m.GetValue(_MarkdownOptions, null) });
 				}
 				catch (Exception e){
-					this.db?.ExceptionLogs.Add(new ExceptionLog(e, "Option not stored in MarkdownOptions"));
+					//this.db?.ExceptionLogs.Add(new ExceptionLog(e, "Option not stored in MarkdownOptions"));
 				}
 			}
 		}
@@ -458,3 +432,24 @@ namespace LiteraryAnalyzer.LAModel {
 	}
 }
 		
+//#region "CONTENTS GENERATION"
+//		public Excerpt GenerateExcerpt { get { return this.ExcerptGenerator(this); } }
+//		public MarkdownOption.ExcerptOptions ExcerptOption { set { this.ReflectionMadness(value, "Excerpt"); } }
+
+//		private delegate Excerpt ExcerptGeneratorDelegate(MarkdownFile file);
+//		private ExcerptGeneratorDelegate ExcerptGenerator { get; set; } = DefaultExcerptGenerator;
+
+//		//public enum ExcerptOptions {
+//		//	Default,
+//		//	Markdown
+//		//}
+
+//		private static ExcerptGeneratorDelegate DefaultExcerptGenerator = (m) => {
+//			Excerpt retVal = new Excerpt { ExcerptText = m.Markdown };
+//			if (!(m.Parent is null)) { m.Parent.Children.Add(retVal); }
+//			return retVal;
+//		};
+//		private static ExcerptGeneratorDelegate MarkdownExcerptGenerator = (m) => {
+//			return new Excerpt();
+//		};
+//#endregion

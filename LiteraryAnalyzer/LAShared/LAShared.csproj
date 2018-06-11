@@ -51,7 +51,11 @@
     <Compile Include="ExceptionLog.cs" />
     <Compile Include="Excerpt.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="Litelm.cs" />
     <Compile Include="LiteraryAnalyzerContext.cs" />
+    <Compile Include="LitFootnote.cs" />
+    <Compile Include="LitHeader.cs" />
+    <Compile Include="LitSource.cs" />
     <Compile Include="MarkdownOption.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
