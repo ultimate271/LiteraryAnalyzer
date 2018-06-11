@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using System.Text.RegularExpressions;
 
 namespace LiteraryAnalyzer.LAShared {
 	/// <summary>
@@ -16,64 +17,118 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<Litelm> Children { get; set; } = new List<Litelm>();
 	}
 	public static partial class LitExtensions {
-		public static void ParseHeader(this LitHeader parent, String s) {
+		public class ParseHeaderRetVal {
+			public LitHeader Parent { get; set; } = null;
+			public List<LitFootnote> Footnotes { get; set; } = new List<LitFootnote>();
+		}
+		public static ParseHeaderRetVal ParseHeaderToModel(this LitHeader parent, String s) {
 			if (String.IsNullOrEmpty(s)) {
-				return;
+				return null;
 			}
 			if (parent == null) {
-				return;
+				return null;
+			}
+			Dictionary<string, string> footers = new Dictionary<string, string>();
+			string pattern = @"\[([^\[\]:]*):([^\[\]]*)\]";
+			var matches = Regex.Matches(s, pattern);
+			foreach (Match m in matches) {
+				try {
+					footers.Add(m.Groups[1].Value.Trim(), m.Groups[2].Value.Trim());
+				}
+				catch (ArgumentException) {
+				}
+			}
+			s = Regex.Replace(s, pattern, "");
+
+			return parent.ParseHeaderToModel(s, footers);
+		}
+		/// <summary>
+		/// Parses the markdown in s and places the results as children of parent
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="s"></param>
+		public static ParseHeaderRetVal ParseHeaderToModel(this LitHeader parent, String s, Dictionary<string, string> footers) {
+			if (String.IsNullOrEmpty(s)) {
+				return null;
+			}
+			if (parent == null) {
+				return null;
 			}
 
+			var retVal = new ParseHeaderRetVal();
+			var temp = new List<string>();
+			var subStrings = new List<string>();
+			int currentLevel = 0;
+			bool subHeader = false;
+
+			//Split the string into lines
 			var lines = s
 				.Split(new String[] { "\r\n" }, StringSplitOptions.None)
 				.Select(line => new {
 					Line = line,
-					HeaderLevel = Helper.HeaderLevel(line)
+					HeaderLevel = Helper.HeaderLevel(line),
+					IsLitThread = line.StartsWith("_")
 				});
 
-			var Source = new List<string>();
-			int currentLevel = 0;
-			LitHeader subHeader = null;
-
+			//Determine the partitions (substrings) of the current string
 			foreach (var line in lines) {
-				if (line.HeaderLevel > 0 && line.HeaderLevel <= currentLevel && subHeader != null) {
-					subHeader.ParseHeader(String.Join("\r\n", Source));
-					parent.Children.Add(subHeader);
-					subHeader = new LitHeader { Text = line.Line.Trim('#', ' ') };
-					Source = new List<string>();
+				if (line.HeaderLevel > 0 && line.HeaderLevel <= currentLevel && subHeader) {
+					subStrings.Add(String.Join("\r\n", temp));
+					temp = new List<string>();
+					temp.Add(line.Line);
 					currentLevel = line.HeaderLevel;
 				}
-				else if (line.HeaderLevel == 0 || line.HeaderLevel > currentLevel) {
-					Source.Add(line.Line);
+				else if (line.HeaderLevel > 0 && line.HeaderLevel > currentLevel && !subHeader) {
+					subStrings.Add(String.Join("\r\n", temp));
+					temp = new List<string>();
+					temp.Add(line.Line);
+					currentLevel = line.HeaderLevel;
+					subHeader = true;
 				}
-				else if (line.HeaderLevel > 0 && line.HeaderLevel > currentLevel) {
-					if (subHeader == null) { 
-						var sourceObj = String.Join("\r\n", Source).ParseSource();
-						if (sourceObj != null) {
-							parent.Children.Add(sourceObj);
-						}
-						subHeader = new LitHeader { Text = line.Line.Trim('#', ' ') };
-						Source = new List<string>();
-						currentLevel = line.HeaderLevel;
+				else if (line.HeaderLevel == 0 || line.HeaderLevel > currentLevel) {
+					if (!line.IsLitThread) {
+						temp.Add(line.Line);
 					}
 				}
 			}
-			if (subHeader != null) {
-				subHeader.ParseHeader(String.Join("\r\n", Source));
-				parent.Children.Add(subHeader);
-			}
-			else {
-				var source = String.Join("\r\n", Source).ParseSource();
-				if (source != null) {
-					parent.Children.Add(source);
+			subStrings.Add(String.Join("\r\n", temp));
+
+			//Create new objects for each substring and add them to the children of the parent node
+			subHeader = false;
+			Litelm child;
+			List<LitFootnote> footnotes = new List<LitFootnote>();
+			foreach (String subString in subStrings) {
+				child = null;
+				if (!subHeader) {
+					child = subString.ParseSource();
+					subHeader = true;
+
+					//Footnote stuff
+					if (child != null) {
+						var footerRefs = (child as LitSource).ExtractFootnotes();
+						foreach (LitFootnote footnote in footerRefs) {
+							try {
+								footnote.Text = footers[footnote.Text];
+								footnotes.Add(footnote);
+							}
+							catch (KeyNotFoundException) {
+							}
+						}
+					}
+				}
+				else {
+					var query = subString.Split(new String[] { "\r\n" }, 0);
+					if (query.Length > 0) {
+						child = new LitHeader { Text = query.First().Trim('#', ' ') };
+						var ret = (child as LitHeader).ParseHeaderToModel(String.Join("\r\n", query.Skip(1)), footers);
+						footnotes.AddRange(ret.Footnotes);
+					}
+				}
+				if (child != null) {
+					parent.Children.Add(child);
 				}
 			}
-		}
-		public static LitSource ParseSource(this String s) {
-			if (String.IsNullOrWhiteSpace(s)) {
-				return null;
-			}
-			return new LitSource { Text = s };
+			return new ParseHeaderRetVal() { Parent = parent, Footnotes = footnotes };
 		}
 	}
 }

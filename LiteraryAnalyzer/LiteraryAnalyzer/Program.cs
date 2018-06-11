@@ -29,16 +29,23 @@ namespace LiteraryAnalyzer {
 				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
 				Prefix = "dastoyevsky\\brothers",
 			};
+			LitHeader myHeader = new LitHeader { Text = "Brothers" };
+			var ret = myHeader.ParseHeaderToModel(System.IO.File.ReadAllText(@"C:\Users\bwebster\Source\Repos\notes\dastoyevsky\brothers02.08.md"));
+			var db = new LiteraryAnalyzerContext();
+			db.Litelms.Add(myHeader);
+			db.Litelms.AddRange(ret.Footnotes);
+			db.SaveChanges();
+			
 			//c.ParseMarkdownToFileSystem(option);
-			var myDict = Helper.BuildDictionaryFromFile(@"C:\Users\bwebster\Source\Repos\notes\russian\characterPronounciationDict");
-			foreach (string ch in myDict.Keys) {
-				System.Console.WriteLine("{0},{1}", ch, myDict[ch]);
-			}
-			string infile = @"C:\Users\bwebster\Source\Repos\notes\toy\in";
-			string outfile = @"C:\Users\bwebster\Source\Repos\notes\toy\out";
-			string inRussian = System.IO.File.ReadAllText(infile);
-			var outList = c.ConvertRussianToEnglishVerbosePhonetics(inRussian, myDict);
-			System.IO.File.WriteAllText(outfile, String.Join("\n", outList));
+			//var myDict = Helper.BuildDictionaryFromFile(@"C:\Users\bwebster\Source\Repos\notes\russian\characterPronounciationDict");
+			//foreach (string ch in myDict.Keys) {
+			//	System.Console.WriteLine("{0},{1}", ch, myDict[ch]);
+			//}
+			//string infile = @"C:\Users\bwebster\Source\Repos\notes\toy\in";
+			//string outfile = @"C:\Users\bwebster\Source\Repos\notes\toy\out";
+			//string inRussian = System.IO.File.ReadAllText(infile);
+			//var outList = c.ConvertRussianToEnglishVerbosePhonetics(inRussian, myDict);
+			//System.IO.File.WriteAllText(outfile, String.Join("\n", outList));
 
 			//string phonetic = c.ConvertRussianToEnglishPhonetic(inRussian);
 			//StringBuilder sb = new StringBuilder();
