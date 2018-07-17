@@ -85,6 +85,9 @@ namespace LiteraryAnalyzer.LAModel {
 		private static URIGeneratorDelegate FullURIGenerator = (m) => {
 			return String.Format("{0}\\{1}", m.BaseDir, m.Filename);
 		};
+		private static URIGeneratorDelegate ShortStoryURIGenerator = (m) => {
+			return String.Format("{0}\\{1}{2}.md", m.BaseDir, m.Prefix, m.Filename);
+		};
 
 
 		//Fields used in URI Generation
@@ -165,8 +168,9 @@ namespace LiteraryAnalyzer.LAModel {
 				if (!String.IsNullOrEmpty(prev)) {
 					fromIndex = m.Markdown.IndexOf(prev, toIndex);
 					toIndex = m.Markdown.IndexOf(s, fromIndex);
+					string Filename = System.Text.RegularExpressions.Regex.Match(prev, @"^#+ (.*)").Groups[1].Value;
 					var tmp = new MarkdownFile(m) {
-						Filename = "",
+						Filename = Filename,
 						Markdown = m.Markdown.Substring(fromIndex, toIndex - fromIndex),
 						BaseDir = m.BaseDir,
 						Prefix = m.Prefix,
