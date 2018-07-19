@@ -49,7 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller.cs" />
     <Compile Include="Migrations\201804030236532_InitialCreate.cs" />
     <Compile Include="Migrations\201804030236532_InitialCreate.Designer.cs">
       <DependentUpon>201804030236532_InitialCreate.cs</DependentUpon>
@@ -103,6 +102,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LAController\LAController.csproj">
+      <Project>{4db6ebea-af7e-4467-8d7b-09c9d0683b19}</Project>
+      <Name>LAController</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LAModel\LAModel.csproj">
       <Project>{fb8fe14a-096f-482a-a22f-9051d61dd37e}</Project>
       <Name>LAModel</Name>

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAModel", "LAModel\LAModel.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAShared", "LAShared\LAShared.csproj", "{2104AA48-CA79-4DFF-9781-86F52D332369}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAFrontend", "LAFrontend\LAFrontend.csproj", "{51486B3B-805C-48C4-986E-71A3B7179BC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAController", "LAController\LAController.csproj", "{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,14 @@ Global
 		{2104AA48-CA79-4DFF-9781-86F52D332369}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2104AA48-CA79-4DFF-9781-86F52D332369}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2104AA48-CA79-4DFF-9781-86F52D332369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51486B3B-805C-48C4-986E-71A3B7179BC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51486B3B-805C-48C4-986E-71A3B7179BC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51486B3B-805C-48C4-986E-71A3B7179BC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51486B3B-805C-48C4-986E-71A3B7179BC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

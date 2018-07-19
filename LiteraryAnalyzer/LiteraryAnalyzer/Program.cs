@@ -35,8 +35,9 @@ namespace LiteraryAnalyzer {
 			//db.Litelms.Add(myHeader);
 			//db.Litelms.AddRange(ret.Footnotes);
 			//db.SaveChanges();
-			
-			c.ParseMarkdownToFileSystem(option);
+
+			c.MarkdownOption = option;
+			c.ParseMarkdownToFileSystem();
 			//var myDict = Helper.BuildDictionaryFromFile(@"C:\Users\bwebster\Source\Repos\notes\russian\characterPronounciationDict");
 			//foreach (string ch in myDict.Keys) {
 			//	System.Console.WriteLine("{0},{1}", ch, myDict[ch]);
