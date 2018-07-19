@@ -18,7 +18,8 @@ namespace LiteraryAnalyzer.LAShared {
 			Default,
 			Standard,
 			Novel,
-			Full
+			Full,
+			ShortStory
 		}
 		public enum ContentsOptions {
 			Default,
@@ -27,7 +28,7 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 		public enum ParserOptions {
 			Default,
-			Novel
+			Novel,
 		}
 		public enum ExcerptOptions {
 			Default,

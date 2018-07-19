@@ -70,6 +70,10 @@
     <Compile Include="Migrations\201805200349061_MarkdownOptions.Designer.cs">
       <DependentUpon>201805200349061_MarkdownOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806111415125_LitelmRefactor.cs" />
+    <Compile Include="Migrations\201806111415125_LitelmRefactor.Designer.cs">
+      <DependentUpon>201806111415125_LitelmRefactor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -93,6 +97,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805200349061_MarkdownOptions.resx">
       <DependentUpon>201805200349061_MarkdownOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806111415125_LitelmRefactor.resx">
+      <DependentUpon>201806111415125_LitelmRefactor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

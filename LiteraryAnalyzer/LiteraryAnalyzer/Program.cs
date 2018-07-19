@@ -22,13 +22,20 @@ namespace LiteraryAnalyzer {
 			//Replace Prefix with where you want the output to be saved
 			//BaseDir most likely stays intact as is
 			var option = new MarkdownOption {
-				ContentsOption = MarkdownOption.ContentsOptions.Novel,
-				ParserOption = MarkdownOption.ParserOptions.Novel,
-				URIOption = MarkdownOption.URIOptions.Novel,
-				Filename = "source\\sanderson hero.txt",
-				BaseDir = @"C:\Users\brett\Source\Repos\notes",
-				Prefix = "sanderson\\hero",
+				ContentsOption = MarkdownOption.ContentsOptions.Default,
+				ParserOption = MarkdownOption.ParserOptions.Default,
+				URIOption = MarkdownOption.URIOptions.ShortStory,
+				Filename = "source\\shakespeare complete.txt",
+				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
+				Prefix = "shakespeare\\",
 			};
+			//LitHeader myHeader = new LitHeader { Text = "Brothers" };
+			//var ret = myHeader.ParseHeaderToModel(System.IO.File.ReadAllText(@"C:\Users\bwebster\Source\Repos\notes\dastoyevsky\brothers02.08.md"));
+			//var db = new LiteraryAnalyzerContext();
+			//db.Litelms.Add(myHeader);
+			//db.Litelms.AddRange(ret.Footnotes);
+			//db.SaveChanges();
+			
 			c.ParseMarkdownToFileSystem(option);
 			//var myDict = Helper.BuildDictionaryFromFile(@"C:\Users\bwebster\Source\Repos\notes\russian\characterPronounciationDict");
 			//foreach (string ch in myDict.Keys) {
