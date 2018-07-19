@@ -19,7 +19,8 @@ namespace LiteraryAnalyzer.LAShared {
 			Standard,
 			Novel,
 			Full,
-			ShortStory
+			ShortStory,
+			Chapter
 		}
 		public enum ContentsOptions {
 			Default,

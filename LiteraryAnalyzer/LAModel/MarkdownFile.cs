@@ -76,6 +76,9 @@ namespace LiteraryAnalyzer.LAModel {
 		private static URIGeneratorDelegate DefaultURIGenerator = (m) => {
 			return String.Format("{0}\\{1}", m.BaseDir, m.Filename);
 		};
+		private static URIGeneratorDelegate ChapterURIGenerator = (m) => {
+			return String.Format("{0}\\{1}{2:D2}.md", m.BaseDir, m.Prefix, m.Count);
+		};
 		private static URIGeneratorDelegate StandardURIGenerator = (m) => { 
 			return String.Format("{0}\\{1}{2:D2}{3}.md", m.BaseDir, m.Prefix, m.Count, m.Filename);
 		};
