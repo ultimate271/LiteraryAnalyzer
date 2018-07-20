@@ -7,7 +7,7 @@
     <ProjectGuid>{FB8FE14A-096F-482A-A22F-9051D61DD37E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LAModel</RootNamespace>
+    <RootNamespace>LiteraryAnalyzer.LAModel</RootNamespace>
     <AssemblyName>LAModel</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

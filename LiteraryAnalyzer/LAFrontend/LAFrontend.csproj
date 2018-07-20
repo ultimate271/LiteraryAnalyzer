@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{51486B3B-805C-48C4-986E-71A3B7179BC1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>LAFrontend</RootNamespace>
+    <RootNamespace>LiteraryAnalyzer.LAFrontend</RootNamespace>
     <AssemblyName>LAFrontend</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BasePanel.Designer.cs">
+      <DependentUpon>BasePanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -53,6 +59,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SourceWriterPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SourceWriterPanel.Designer.cs">
+      <DependentUpon>SourceWriterPanel.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="BasePanel.resx">
+      <DependentUpon>BasePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -64,7 +79,11 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SourceWriterPanel.resx">
+      <DependentUpon>SourceWriterPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

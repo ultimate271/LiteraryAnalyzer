@@ -7,7 +7,7 @@
     <ProjectGuid>{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LAController</RootNamespace>
+    <RootNamespace>LiteraryAnalyzer.LAController</RootNamespace>
     <AssemblyName>LAController</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

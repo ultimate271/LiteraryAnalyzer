@@ -7,7 +7,7 @@
     <ProjectGuid>{2104AA48-CA79-4DFF-9781-86F52D332369}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LAShared</RootNamespace>
+    <RootNamespace>LiteraryAnalyzer.LAShared</RootNamespace>
     <AssemblyName>LAShared</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
