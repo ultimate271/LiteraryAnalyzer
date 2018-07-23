@@ -21,14 +21,16 @@ namespace LiteraryAnalyzer {
 			//Replace Filename with the source txt, annotated with markdown
 			//Replace Prefix with where you want the output to be saved
 			//BaseDir most likely stays intact as is
-			var option = new MarkdownOption {
-				ContentsOption = MarkdownOption.ContentsOptions.Default,
-				ParserOption = MarkdownOption.ParserOptions.Default,
-				URIOption = MarkdownOption.URIOptions.ShortStory,
-				Filename = "source\\shakespeare complete.txt",
-				BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
-				Prefix = "shakespeare\\",
-			};
+
+			//var option = new MarkdownOption {
+			//	ContentsOption = MarkdownOption.ContentsOptions.Default,
+			//	ParserOption = MarkdownOption.ParserOptions.Default,
+			//	URIOption = MarkdownOption.URIOptions.ShortStory,
+			//	Filename = "source\\shakespeare complete.txt",
+			//	BaseDir = @"C:\Users\bwebster\Source\Repos\notes",
+			//	Prefix = "shakespeare\\",
+			//};
+
 			//LitHeader myHeader = new LitHeader { Text = "Brothers" };
 			//var ret = myHeader.ParseHeaderToModel(System.IO.File.ReadAllText(@"C:\Users\bwebster\Source\Repos\notes\dastoyevsky\brothers02.08.md"));
 			//var db = new LiteraryAnalyzerContext();
@@ -36,8 +38,8 @@ namespace LiteraryAnalyzer {
 			//db.Litelms.AddRange(ret.Footnotes);
 			//db.SaveChanges();
 
-			c.MarkdownOption = option;
-			c.ParseMarkdownToFileSystem();
+			//c.MarkdownOption = option;
+			//c.ParseMarkdownToFileSystem();
 			//var myDict = Helper.BuildDictionaryFromFile(@"C:\Users\bwebster\Source\Repos\notes\russian\characterPronounciationDict");
 			//foreach (string ch in myDict.Keys) {
 			//	System.Console.WriteLine("{0},{1}", ch, myDict[ch]);

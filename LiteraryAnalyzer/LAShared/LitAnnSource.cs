@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity;
 
 namespace LiteraryAnalyzer.LAShared {
-	public abstract class Litelm {
-		public int LitelmID { get; set; }
-		public string Header { get; set; }
+	/// <summary>
+	/// Represents the set of source files that I have annotated
+	/// </summary>
+	public class LitAnnSource {
+		public string BaseDir { get; set; }
 	}
 }
