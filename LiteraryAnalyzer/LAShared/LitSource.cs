@@ -10,7 +10,7 @@ namespace LiteraryAnalyzer.LAShared {
 	/// <summary>
 	/// Represents what the author actually wrote
 	/// </summary>
-	public class LitSource : Litelm{
+	public class LitSource {
 		/// <summary>
 		/// This is a dictionary to allow for concurrent source
 		/// </summary>

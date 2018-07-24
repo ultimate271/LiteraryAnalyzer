@@ -5,9 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
-	public class LitNovel : Litelm {
-		public LitAnnSource LitAnnSource { get; set; }
+	public class LitNovel {
 		public List<LitScene> Scenes { get; set; }
 		public String Title { get; set; }
+	}
+	public static partial class LitExtensions {
+		public static LitAnnSource GenerateMarkdown(this LitNovel novel) {
+			throw new NotImplementedException();
+		}
 	}
 }

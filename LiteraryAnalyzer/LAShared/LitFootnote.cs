@@ -19,7 +19,7 @@ namespace LiteraryAnalyzer.LAShared {
 	/// footnotes, even if not provided in the text this way. It would be quite an eccentric work indeed that used exact markings to indicate
 	/// something about the nature of their footnotes, and if that ever comes up I will have to restructure this.
 	/// </summary>
-	public class LitFootnote : Litelm {
+	public class LitFootnote : LitElm {
 		public virtual LitSource Source { get; set; }
 		public int Index { get; set; }
 	}

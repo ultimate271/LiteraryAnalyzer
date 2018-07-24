@@ -17,6 +17,7 @@ namespace LiteraryAnalyzer {
 	class Program {
 		static void Main(string[] args) {
 			Controller c = new Controller();
+			c.DeveloperDebug();
 			//Instructions for use.
 			//Replace Filename with the source txt, annotated with markdown
 			//Replace Prefix with where you want the output to be saved

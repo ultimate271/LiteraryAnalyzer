@@ -8,7 +8,7 @@ namespace LiteraryAnalyzer.LAShared {
 	/// <summary>
 	/// Represents the highest level of a section of a novel. A novel will be composed of a list of these.
 	/// </summary>
-	public class LitScene : Litelm {
+	public class LitScene : LitElm {
 		/// <summary>
 		/// Represents the location or locations that the scene is taking place.
 		/// Empty list indicates that this is simple exposition
@@ -17,10 +17,6 @@ namespace LiteraryAnalyzer.LAShared {
 		/// In this example, the scene is the discussion of politics.
 		/// </summary>
 		public List<LitPlace> Location { get; set; }
-		/// <summary>
-		/// This contains the list of events that happen in this scene
-		/// </summary>
-		public List<LitEvent> Events { get; set; }
 		/// <summary>
 		/// This list will contain all of the characters that are involved in the scene.
 		/// This will also include all of the speakers from the events, if they are not included in the annotated markdown.

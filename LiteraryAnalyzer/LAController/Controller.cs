@@ -15,7 +15,9 @@ namespace LiteraryAnalyzer {
 		public Controller() : this (new LiteraryAnalyzerContext()) { }
 		public Controller(LiteraryAnalyzerContext db) { this.db = db; }
 
-		public void DeveloperDebug (String markdown) {
+		public void DeveloperDebug () {
+			var source = new LitAnnSource() { BaseDir = @"C:\Users\Brett\Source\Repos\notes\test", Prefix = "Sil" };
+			var x = source.ParseAnnSource();
 
 		}
 		/// <summary>
