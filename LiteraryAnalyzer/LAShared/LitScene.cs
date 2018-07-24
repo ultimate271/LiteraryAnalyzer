@@ -29,4 +29,9 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitRef> References { get; set; }
 
 	}
+	public static partial class ParsingTools {
+		public static LitScene ParseScene(IEnumerable<String> lines) {
+			throw new NotImplementedException();
+		}
+	}
 }

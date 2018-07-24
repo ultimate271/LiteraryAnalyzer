@@ -69,6 +69,7 @@
     <Compile Include="LitSourceInfo.cs" />
     <Compile Include="LitTag.cs" />
     <Compile Include="MarkdownOption.cs" />
+    <Compile Include="ParsingTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
   </ItemGroup>

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared{
 	public static class Helper {
+		public static String ExtractFilename(String fullpath) {
+			return fullpath.Split('\\').Last().Split('.').First();
+		}
 		public static Dictionary<String, String> BuildDictionaryFromFile(String URI) {
 			//This function does no verification
 			var retVal = new Dictionary<String, String>();
