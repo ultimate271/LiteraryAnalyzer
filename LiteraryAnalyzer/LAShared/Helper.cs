@@ -9,6 +9,19 @@ namespace LiteraryAnalyzer.LAShared{
 		public static String ExtractFilename(String fullpath) {
 			return fullpath.Split('\\').Last().Split('.').First();
 		}
+		/// <summary>
+		/// CAUTION, this function uses reflection to do some magic.
+		/// Be warned
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="s"></param>
+		/// <param name="value"></param>
+		public static void SetProperty(this Object obj, String s, Object value) {
+			try {
+				var prop = obj.GetType().GetProperty(s);
+			}
+			catch { }
+		}
 		public static Dictionary<String, String> BuildDictionaryFromFile(String URI) {
 			//This function does no verification
 			var retVal = new Dictionary<String, String>();

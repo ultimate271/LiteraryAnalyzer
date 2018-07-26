@@ -12,12 +12,12 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="lines"></param>
 		/// <returns></returns>
-		public static List<List<String>> PartitionLines(IEnumerable<String> lines) {
+		public static List<List<String>> PartitionLines(IEnumerable<String> lines, Func<String, bool> Breaker) {
 			var PartitionedScenes = new List<List<String>>();
 			var currentSceneLines = new List<String>();
 			foreach (var line in lines) {
 				currentSceneLines.Add(line);
-				if (System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]")) {
+				if (Breaker(line)) {
 					PartitionedScenes.Add(currentSceneLines);
 					currentSceneLines = new List<String>();
 				}
