@@ -25,7 +25,8 @@ namespace LiteraryAnalyzer.LAShared {
 				allLines.AddRange(taggedLines);
 			}
 
-			var PartitionedScenes = ParsingTools.PartitionScenes(allLines);
+			var PartitionedScenes = ParsingTools.PartitionLines(allLines, line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]"));
+
 			foreach (var Scenelines in PartitionedScenes) {
 				var Scene = ParsingTools.ParseScene(Scenelines);
 				retVal.Scenes.Add(Scene);

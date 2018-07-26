@@ -30,8 +30,32 @@ namespace LiteraryAnalyzer.LAShared {
 
 	}
 	public static partial class ParsingTools {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="lines"></param>
+		/// <returns></returns>
 		public static LitScene ParseScene(IEnumerable<String> lines) {
-			throw new NotImplementedException();
+			var retVal = new LitScene();
+			var headerInfo = ParsingTools.ParseHeader(lines.First());
+			if (headerInfo.HeaderLevel != 1) {
+				throw new Exception("The first line of a scene must have header level 1, " + lines.First());
+			}
+			retVal.Header = headerInfo.Text;
+			var pattern = @"^##[^#]";
+			var PartitionedLines = ParsingTools.PartitionLines(lines, line => System.Text.RegularExpressions.Regex.IsMatch(line, pattern));
+			if (PartitionedLines.Count <= 1) {
+				throw new Exception("A scene must have at least one event in it");
+			}
+			var query = PartitionedLines.First()
+				.Select(l => ParsingTools.ParseLink(l))
+				.Where(l => l != null);
+
+			foreach (var link in query) {
+
+			}
+
+			return retVal;
 		}
 	}
 }

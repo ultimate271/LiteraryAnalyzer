@@ -12,7 +12,7 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="lines"></param>
 		/// <returns></returns>
-		public static List<List<String>> PartitionScenes(IEnumerable<String> lines) {
+		public static List<List<String>> PartitionLines(IEnumerable<String> lines) {
 			var PartitionedScenes = new List<List<String>>();
 			var currentSceneLines = new List<String>();
 			foreach (var line in lines) {
