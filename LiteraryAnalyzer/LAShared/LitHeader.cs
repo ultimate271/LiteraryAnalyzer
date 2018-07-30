@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace LiteraryAnalyzer.LAShared {
 	/// <summary>
+	/// THIS IS A DEPRECATED CLASS
 	/// The ID of this class is irrelevent, but the text will represent the text given after the space after the last hash sign at the beginning of the line
 	/// Children will of course be parsed recursively
 	/// A note about header levels, there is no such thing. The only thing header level is used for is to determine if a header is above or below the current header in the hiarchy, nothing more

@@ -8,7 +8,10 @@ using LiteraryAnalyzer.LAShared;
 
 namespace LiteraryAnalyzer {
 	public class LiteraryAnalyzerContext : DbContext {
-		public DbSet<LitElm> Litelms { get; set; }
+		public DbSet<LitNovel> LitNovel { get; set; }
+		public DbSet<LitChar> LitChars { get; set; }
+	}
+
 		//public DbSet<Excerpt> Excerpts { get; set; }
 		//public DbSet<Token> Tokens { get; set; }
 		//public DbSet<Descriptor> Descriptors { get; set; }
@@ -49,5 +52,4 @@ namespace LiteraryAnalyzer {
 		//		return query.First();
 		//	}
 		//}
-	}
 }

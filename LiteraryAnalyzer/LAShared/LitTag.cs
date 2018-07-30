@@ -5,7 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
-	public class LitTag {
+	public class LitTag : IEqualityComparer<LitTag>{
 		public String Tag { get; set; }
+		public LitTag() { }
+		public LitTag(String Tag) {
+			this.Tag = Tag;
+		}
+
+		public bool Equals(LitTag x, LitTag y) {
+			return x.Tag.Equals(y.Tag);
+		}
+
+		public int GetHashCode(LitTag obj) {
+			return obj.Tag.GetHashCode();
+		}
 	}
 }

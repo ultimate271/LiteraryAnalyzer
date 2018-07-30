@@ -16,17 +16,17 @@ namespace LiteraryAnalyzer.LAShared {
 		/// # Julie and Susan discuss politics as they walk from Point A to Point B
 		/// In this example, the scene is the discussion of politics.
 		/// </summary>
-		public List<LitPlace> Location { get; set; }
+		public List<LitPlace> Location { get; set; } = new List<LitPlace>();
 		/// <summary>
 		/// This list will contain all of the characters that are involved in the scene.
 		/// This will also include all of the speakers from the events, if they are not included in the annotated markdown.
 		/// </summary>
-		public List<LitChar> Actors { get; set; }
+		public List<LitChar> Actors { get; set; } = new List<LitChar>();
 		/// <summary>
 		/// Will include any other references to anything that the reader might want to know while reading this scene.
 		/// This should be distinct from all of the other lit tools here.
 		/// </summary>
-		public List<LitRef> References { get; set; }
+		public List<LitRef> References { get; set; } = new List<LitRef>();
 
 	}
 	public static partial class ParsingTools {
@@ -35,7 +35,7 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="lines"></param>
 		/// <returns></returns>
-		public static LitScene ParseScene(IEnumerable<String> lines) {
+		public static LitScene ParseScene(this LitNovel novel, IEnumerable<String> lines, LitSourceInfo sourceInfo) {
 			var retVal = new LitScene();
 
 			//Parse the header
@@ -48,16 +48,49 @@ namespace LiteraryAnalyzer.LAShared {
 			//Partition the events
 			var pattern = @"^##[^#]";
 			var PartitionedLines = ParsingTools.PartitionLines(lines, line => System.Text.RegularExpressions.Regex.IsMatch(line, pattern));
-			if (PartitionedLines.Count <= 1) {
-				throw new Exception("A scene must have at least one event in it");
-			}
+			//if (PartitionedLines.Count <= 1) {
+			//	throw new Exception("A scene must have at least one event in it");
+			//}
 
 			//Parse the links
 			var query = PartitionedLines.First()
 				.Select(l => ParsingTools.ParseLink(l))
 				.Where(l => l != null);
 			foreach (var link in query) {
-				
+				//I feel as though there is a way to use reflection to be super clever here,
+				//But upon thinking about it, I think it would only create more confusion than it
+				//would help, since the actual properties of the scene are not that numerous,
+				//and to be honest there would probably me more exceptional cases than I am willing
+				//To admit, so at this juncture, I will use a elseif chain to do what I want.
+				//I don't like it, but at the same time I sort of do because it is more explicit and easier
+				//To work with, and an if else chain makes sense.
+				//I want to use reflection so bad, but it's probably for the best that I do this in
+				//The concrete way for now, and if at some point down the road, I want to change this to use reflection,
+				//It will be not terribly difficult to do (at least, only as difficult as reflection is)
+				LitRef novelRef;
+				if (link.Link.Equals("TreeTag")) {
+					retVal.TreeTag = new LitTag(link.Tag);
+				}
+				else if (link.Link.Equals("UserTag")) {
+					//TODO UserTags must be unique, not only and that should be checked somewhere here
+					retVal.UserTags.Add(new LitTag(link.Tag));
+				}
+				else if (link.Link.Equals("Actor")) {
+					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
+					retVal.Actors.Add(novelRef as LitChar);
+				}
+				else if (link.Link.Equals("Location")) {
+					novelRef = novel.AddReferenceDistinct(new LitPlace(link.Tag));
+					retVal.Location.Add(novelRef as LitPlace);
+				}
+				else if (link.Link.Equals("Reference")) {
+					novelRef = novel.AddReferenceDistinct(new LitRef(link.Tag));
+					retVal.References.Add(novelRef);
+				}
+			}
+			foreach (var eventLines in PartitionedLines.Skip(1)) {
+				var litEvent = novel.ParseEvent(eventLines, sourceInfo);
+				retVal.Children.Add(litEvent);
 			}
 
 			return retVal;

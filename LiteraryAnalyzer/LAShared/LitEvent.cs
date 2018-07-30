@@ -16,9 +16,14 @@ namespace LiteraryAnalyzer.LAShared {
 		/// That is, if a LitEvent has children, it should not have source, 
 		/// and if it has source, it should not have children
 		/// </summary>
-		public LitSource Source { get; set; }
+		public LitSource Source { get; set; } = new LitSource();
+		public List<LitChar> Speakers { get; set; } = new List<LitChar>();
 	}
 	public static partial class LitExtensions {
+		/// <summary>
+		/// I HAVE DECIDED THAT THIS IS PROBABLY NOT THE BEST WAY TO DO THINGS
+		/// </summary>
+		/// <param name="elm"></param>
 		public static void TagChildren(this LitElm elm) {
 			if (elm.Children != null) {
 				int i = 1;
@@ -28,6 +33,68 @@ namespace LiteraryAnalyzer.LAShared {
 					i++;
 				}
 			}
+		}
+	}
+	public static partial class ParsingTools {
+		public static LitEvent ParseEvent(this LitNovel novel, IEnumerable<string> lines, LitSourceInfo sourceInfo) {
+			var retVal = new LitEvent();
+
+			//Check for lines
+			if (lines.Count() == 0) {
+				throw new Exception("Event must have lines");
+			}
+
+			//Parse the header
+			var header = ParseHeader(lines.First());
+			try {
+				retVal.Header = header.Text;
+			} catch (NullReferenceException e) {
+				throw new Exception("The first line of an event must me a header", e);
+			}
+
+			//Partition the subevents
+			var PartitionedLines = PartitionLines(lines, line => {
+				var subheader = ParseHeader(line);
+				if (subheader != null) {
+					return subheader.HeaderLevel == header.HeaderLevel + 1;
+				}
+				return false;
+			});
+
+			//Extract the links from the first partition
+			var links = PartitionedLines.First().Select(line => ParseLink(line)).Where(link => link != null);
+			LitRef novelRef;
+			foreach (var link in links) {
+				if (link.Link.Equals("TreeTag")) {
+					retVal.TreeTag = new LitTag(link.Tag);
+				}
+				else if (link.Link.Equals("Speaker")) {
+					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
+					retVal.Speakers.Add(novelRef as LitChar);
+				}	
+			}
+
+			//Extract the source lines
+			var sourceLines = PartitionedLines.First().Where(line => IsSourceLine(line));
+			var paragraphs = ParsingTools.PartitionLines(sourceLines, line => String.IsNullOrWhiteSpace(line));
+			//TODO this should be it's own function
+			StringBuilder sb = new StringBuilder();
+			foreach (var paralist in paragraphs) {
+				foreach (var paraline in paralist.Where(l => !String.IsNullOrEmpty(l))) {
+					sb.Append(paraline.TrimEnd('\r', '\n'));
+					sb.Append(" ");
+				}
+				sb.Append("\r\n");
+			}
+			retVal.Source.Text[sourceInfo] = sb.ToString();
+
+			//Parse the subevents
+			foreach (var subEventLines in PartitionedLines.Skip(1)) {
+				var litEvent = novel.ParseEvent(subEventLines, sourceInfo);
+				retVal.Children.Add(litEvent);
+			}
+
+			return retVal;
 		}
 	}
 }

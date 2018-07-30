@@ -13,6 +13,21 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		/// <summary>
+		/// Will look through all of the generic list types of the element,
+		/// and based upon the name of the link, return a new LitRef with
+		/// the appropiate type, with the correct tag, so that it can be added
+		/// to the element.
+		/// It does not add the reference to the element, it merely creates the correct
+		/// kind of reference
+		/// </summary>
+		/// <param name="link"></param>
+		/// <param name="elm"></param>
+		/// <returns></returns>
+		public static LitRef LinkToRef(this MDLinkLine link, LitNovel novel, LitElm elm) {
+			throw new NotImplementedException();
+
+		}
 		public static MDLinkLine ParseLink(String s) {
 			var retVal = new MDLinkLine();
 			var match = System.Text.RegularExpressions.Regex.Match(s, @"^\[([^\]]*)\]: # {([^}]*)}$");
