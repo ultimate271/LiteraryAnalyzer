@@ -51,10 +51,12 @@
     <Compile Include="ExceptionLog.cs" />
     <Compile Include="Excerpt.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="LitAnnSource.cs" />
+    <Compile Include="MDFile.cs" />
     <Compile Include="MDHeader.cs" />
     <Compile Include="MDLinkLine.cs" />
-    <Compile Include="LitAnnOptions.cs" />
-    <Compile Include="LitAnnSource.cs" />
+    <Compile Include="LitOptions.cs" />
+    <Compile Include="LitAnnSourceInfo.cs" />
     <Compile Include="LitChar.cs" />
     <Compile Include="Litelm.cs" />
     <Compile Include="LiteraryAnalyzerContext.cs" />
@@ -71,6 +73,9 @@
     <Compile Include="LitSourceInfo.cs" />
     <Compile Include="LitTag.cs" />
     <Compile Include="MarkdownOption.cs" />
+    <Compile Include="MDNotesFile.cs" />
+    <Compile Include="MDSourceFile.cs" />
+    <Compile Include="MDTagFile.cs" />
     <Compile Include="ParsingTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />

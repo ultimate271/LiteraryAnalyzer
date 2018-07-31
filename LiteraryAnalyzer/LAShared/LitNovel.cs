@@ -77,8 +77,7 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
-
-		public static LitNovel ParseAnnSource(this LitAnnSource source) {
+		public static LitNovel ParseAnnSource(this LitAnnSourceInfo source) {
 			var retVal = new LitNovel();
 
 			//Aggregate the source
@@ -106,7 +105,7 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return retVal;
 		}
-		public static LitAnnSource GenerateMarkdown(this LitNovel novel) {
+		public static LitAnnSourceInfo GenerateMarkdown(this LitNovel novel) {
 			throw new NotImplementedException();
 		}
 	}

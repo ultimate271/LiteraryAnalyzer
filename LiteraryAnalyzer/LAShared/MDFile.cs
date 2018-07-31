@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
-	public class LitAnnOptions {
-		public bool CrushNewline { get; set; } = true;
+	public class MDFile {
+		public List<String> Lines { get; set; }
 	}
 }
