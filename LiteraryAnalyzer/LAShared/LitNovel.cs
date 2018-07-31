@@ -82,8 +82,7 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
-
-		public static LitNovel ParseAnnSource(this LitAnnSource source) {
+		public static LitNovel ParseAnnSource(this LitAnnSourceInfo source) {
 			var retVal = new LitNovel();
 
 			//Aggregate the source
