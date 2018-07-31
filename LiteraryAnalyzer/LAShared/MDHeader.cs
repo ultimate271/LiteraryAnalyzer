@@ -9,7 +9,7 @@ namespace LiteraryAnalyzer.LAShared {
 		public int HeaderLevel { get; set; }
 		public string Text { get; set; }
 		public override string ToString() {
-			return String.Format(@"{0} {1}");
+			return String.Format(@"{0} {1}", new String('#', this.HeaderLevel), this.Text);
 		}
 	}
 	public static partial class ParsingTools {

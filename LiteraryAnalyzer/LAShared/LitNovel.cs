@@ -34,6 +34,9 @@ namespace LiteraryAnalyzer.LAShared {
 				novel.AddReferenceDistinct(litRef);
 			}
 		}
+		public static LitRef AddReferenceDistinct(this LitNovel novel, LitRef reference) {
+			return novel.AddReferenceDistinct(reference, true);
+		}
 		/// <summary>
 		/// Will add a new reference to the list of references of the novel, or,
 		/// if the novel has the reference already, will add any new tags that the
@@ -41,7 +44,7 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="novel"></param>
 		/// <param name="reference"></param>
-		public static LitRef AddReferenceDistinct(this LitNovel novel, LitRef reference) {
+		public static LitRef AddReferenceDistinct(this LitNovel novel, LitRef reference, bool generated) {
 			foreach (var currentRef in novel.References) {
 				if (currentRef.IsReferenceIntersection(reference)) {
 					currentRef.CombineRef(reference);
@@ -49,7 +52,9 @@ namespace LiteraryAnalyzer.LAShared {
 				}
 			}
 			novel.References.Add(reference);
-			novel.GeneratedReference.Add(reference);
+			if (generated) {
+				novel.GeneratedReference.Add(reference);
+			}
 			return reference;
 		}
 		/// <summary>
@@ -92,6 +97,10 @@ namespace LiteraryAnalyzer.LAShared {
 				var taggedLines = ParsingTools.TagLines(lines, shortfilename);
 				allLines.AddRange(taggedLines);
 			}
+			var notesFile = files.Where(s => s.Contains(String.Format("{0}notes.md", source.Prefix)));
+			if (notesFile.Count() > 0) {
+				retVal.ParseNotesFile(System.IO.File.ReadAllLines(notesFile.First()));
+			}
 
 			var PartitionedScenes = ParsingTools.PartitionLines(allLines, line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]"));
 
@@ -100,11 +109,16 @@ namespace LiteraryAnalyzer.LAShared {
 				retVal.Scenes.Add(scene);
 			}
 
-			//Some decisions
-			//The very first # does not represent a scene, but instead represents metadata.
-			//The user can define a tag manually. This is done by adding a [Tag Element] tag under the header
-
 			return retVal;
+		}
+		public static void ParseNotesFile(this LitNovel novel, IEnumerable<String> lines) {
+			string pattern = @"^#[^#]";
+			var PartitionedLines = ParsingTools.PartitionLines(lines, (s => System.Text.RegularExpressions.Regex.IsMatch(s, pattern)));
+			LitRef litref = null;
+			foreach (var refLines in PartitionedLines) {
+				litref = ParsingTools.ParseLitRef(refLines);
+				novel.AddReferenceDistinct(litref, false);
+			}
 		}
 		public static LitAnnSource GenerateMarkdown(this LitNovel novel) {
 			throw new NotImplementedException();

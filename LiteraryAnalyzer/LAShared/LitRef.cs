@@ -22,5 +22,43 @@ namespace LiteraryAnalyzer.LAShared {
 				ref1.Commentary = ref2.Commentary;
 			}
 		}
+		public static void AddTag(this LitRef litRef, LitTag tag) {
+			if (!litRef.Tags.Contains(tag, new LitTag())) {
+				litRef.Tags.Add(tag);
+			}
+		}
+	}
+	public static partial class ParsingTools {
+		public static LitRef ParseLitRef(IEnumerable<String> lines) {
+			if (lines.Count() == 0) { return null; }
+			var PartitionedLines = ParsingTools.PartitionLines(lines, l => System.Text.RegularExpressions.Regex.IsMatch(l, @"^##[^#]"));
+			var link = PartitionedLines.First().Select(s => ParseLink(s)).Where(l => l != null).First();
+
+			var retVal = new LitRef();
+			//Do the specific things for this style of reference
+			if (link.Link.Equals("Reference")) {
+				if (link.Tag.Equals("Character")) {
+					retVal = new LitChar();
+					(retVal as LitChar).ParseLitChar(PartitionedLines);
+				}
+			}
+
+			//Get the first tag of the reference
+			string pattern = @"^# (.+)";
+			var match = System.Text.RegularExpressions.Regex.Match(lines.First(), pattern);
+			retVal.Tags.Add(new LitTag(match.Groups[1].Value));
+
+			//Save the commentary
+			retVal.Commentary = SourceLinesToString(PartitionedLines.First());
+
+			//Save the tags
+			pattern = "^## Tags$";
+			var tagsList = PartitionedLines.Where(list => System.Text.RegularExpressions.Regex.IsMatch(list.First(), pattern)).First();
+			foreach (var tagline in tagsList.Where(s => IsSourceLine(s))) {
+				retVal.AddTag(new LitTag(tagline));
+			}
+
+			return retVal;
+		}
 	}
 }

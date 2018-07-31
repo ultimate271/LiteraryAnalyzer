@@ -75,18 +75,7 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 
 			//Extract the source lines
-			var sourceLines = PartitionedLines.First().Where(line => IsSourceLine(line));
-			var paragraphs = ParsingTools.PartitionLines(sourceLines, line => String.IsNullOrWhiteSpace(line));
-			//TODO this should be it's own function
-			StringBuilder sb = new StringBuilder();
-			foreach (var paralist in paragraphs) {
-				foreach (var paraline in paralist.Where(l => !String.IsNullOrEmpty(l))) {
-					sb.Append(paraline.TrimEnd('\r', '\n'));
-					sb.Append(" ");
-				}
-				sb.Append("\r\n");
-			}
-			retVal.Source.Text[sourceInfo] = sb.ToString();
+			retVal.Source.Text[sourceInfo] = SourceLinesToString(PartitionedLines.First());
 
 			//Parse the subevents
 			foreach (var subEventLines in PartitionedLines.Skip(1)) {
