@@ -15,7 +15,8 @@ namespace LiteraryAnalyzer.LAShared {
 	}
 	public static partial class LitExtensions {
 		public static bool IsElmMergeable(this LitElm elm1, LitElm elm2) {
-			if (!elm1.TreeTag.Equals(elm2.TreeTag)) { return false; }
+			if (!elm1.GetType().Equals(elm2.GetType())) { return false; }
+			if (!elm1.TreeTag.Tag.Equals(elm2.TreeTag.Tag)) { return false; }
 			if (elm1.Children.Count != elm2.Children.Count) { return false; }
 			if (elm1.Children.Count == 0 && elm2.Children.Count == 0) { return true; }
 			return elm1.Children.Zip(elm2.Children, (c1, c2) => IsElmMergeable(c1, c2)).Aggregate((b1, b2) => b1 && b2);

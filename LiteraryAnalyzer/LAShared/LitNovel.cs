@@ -79,6 +79,12 @@ namespace LiteraryAnalyzer.LAShared {
 		/// <param name="novel"></param>
 		/// <param name="scene"></param>
 		public static void AddScene(this LitNovel novel, LitScene scene) {
+			foreach (var NovelScene in novel.Scenes) {
+				if (NovelScene.IsElmMergeable(scene)) {
+					NovelScene.MergeScene(scene);
+					return;
+				}
+			}
 			novel.Scenes.Add(scene);
 		}
 		/// <summary>
@@ -114,10 +120,13 @@ namespace LiteraryAnalyzer.LAShared {
 			//	retVal.ParseNotesFile(System.IO.File.ReadAllLines(notesFile.First()));
 			//}
 
+			//Preliminary tagging
 			source.SetAllLitSourceInfo(retVal);
 			source.TagAllSourceFiles();
 
+			//Parse the current notes file
 			retVal.ParseNotesFile(source.Notes.Lines);
+
 			foreach (var sourceFile in source.Sources) {
 				var PartitionedScenes = ParsingTools.PartitionLines(
 					sourceFile.Lines, 
@@ -131,7 +140,6 @@ namespace LiteraryAnalyzer.LAShared {
 
 			}
 
-			//TODO figure out why the notes file is parsing all weird (it's putting "reference -> character" in there)
 			return retVal;
 		}
 		public static void ParseNotesFile(this LitNovel novel, IEnumerable<String> lines) {

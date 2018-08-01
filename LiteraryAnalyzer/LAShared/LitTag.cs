@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public class LitTag : IEqualityComparer<LitTag>{
-		public String Tag { get; set; }
+		public String Tag { get; set; } = "";
 		public LitTag() { }
 		public LitTag(String Tag) {
 			this.Tag = Tag;

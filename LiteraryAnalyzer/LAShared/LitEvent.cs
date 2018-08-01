@@ -10,11 +10,7 @@ namespace LiteraryAnalyzer.LAShared {
 	/// </summary>
 	public class LitEvent : LitElm {
 		/// <summary>
-		/// Represents the source of this node.
-		/// 
-		/// Note that either Children or Source should be Null.
-		/// That is, if a LitEvent has children, it should not have source, 
-		/// and if it has source, it should not have children
+		///Represents a particular node
 		/// </summary>
 		public LitSource Source { get; set; } = new LitSource();
 		public List<LitChar> Speakers { get; set; } = new List<LitChar>();
@@ -36,6 +32,16 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		public static LitEvent MergeEvent(this LitEvent event1, LitEvent event2) {
+			if (!event1.IsElmMergeable(event2)) { throw new Exception(String.Format("Event {0} not mergeable with Event {1}", event1.TreeTag, event2.TreeTag)); }
+			event1.Speakers = new List<LitChar>(event1.Speakers.Union(event2.Speakers));
+			var query = event2.Source.Text.Keys.Where(k => !event1.Source.Text.Keys.Contains(k));
+			foreach (var litSourceInfo in query) {
+				event1.Source.Text[litSourceInfo] = event2.Source.Text[litSourceInfo];
+			}
+			event1.Children = new List<LitEvent>(event1.Children.Zip(event2.Children, (e1, e2) => e1.MergeEvent(e2)));
+			return event1;
+		}
 		public static LitEvent ParseEvent(this LitNovel novel, IEnumerable<string> lines, LitSourceInfo sourceInfo) {
 			var retVal = new LitEvent();
 

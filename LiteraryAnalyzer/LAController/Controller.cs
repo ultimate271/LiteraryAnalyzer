@@ -16,7 +16,7 @@ namespace LiteraryAnalyzer {
 		public Controller(LiteraryAnalyzerContext db) { this.db = db; }
 
 		public void DeveloperDebug () {
-			var sourceInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
+			var sourceInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\bwebster\Source\Repos\notes\test", Prefix = "sil" };
 			var source = sourceInfo.BuildSource();
 			source.TagAllSourceFiles();
 			var x = ParsingTools.ParseAnnSource(source);

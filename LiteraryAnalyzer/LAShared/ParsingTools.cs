@@ -49,6 +49,7 @@ namespace LiteraryAnalyzer.LAShared {
 						i++;
 						retVal.Add(line);
 						retVal.Add(String.Format(@"[Metadata]: # {{{0}}}", tag));
+						retVal.Add(String.Format(@"[TreeTag]: # {{{0}.{1:00}}}", tag, i));
 					}
 					else if (lineHeaderLevel == headerLevel && adding) {
 						i++;

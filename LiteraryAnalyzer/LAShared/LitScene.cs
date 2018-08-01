@@ -96,9 +96,10 @@ namespace LiteraryAnalyzer.LAShared {
 			return retVal;
 		}
 		public static void MergeScene(this LitScene scene1, LitScene scene2) {
-			
-			if (scene1.TreeTag.Equals(scene2.TreeTag)) {
-			}
+			scene1.Actors = new List<LitChar>(scene1.Actors.Union(scene2.Actors));
+			scene1.Location = new List<LitPlace>(scene1.Location.Union(scene2.Location)); 
+			scene1.References = new List<LitRef>(scene1.References.Union(scene2.References));
+			scene1.Children = new List<LitEvent>(scene1.Children.Zip(scene2.Children, (e1, e2) => e1.MergeEvent(e2)));
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace LiteraryAnalyzer.LAShared {
 	}
 	public static partial class ParsingTools {
 		public static void TagLines(this MDSourceFile sourcefile) {
-			ParsingTools.TagLines(sourcefile.Lines, sourcefile.Descriptor);
+			sourcefile.Lines = new List<string>(ParsingTools.TagLines(sourcefile.Lines, sourcefile.Descriptor));
 		}
 		public static void ParseLitSourceInfo(this MDSourceFile source, LitNovel novel) {
 			var litSourceInfo = new LitSourceInfo();
