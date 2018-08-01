@@ -95,5 +95,10 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return retVal;
 		}
+		public static void MergeScene(this LitScene scene1, LitScene scene2) {
+			
+			if (scene1.TreeTag.Equals(scene2.TreeTag)) {
+			}
+		}
 	}
 }

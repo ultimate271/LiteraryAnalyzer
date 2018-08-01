@@ -35,13 +35,13 @@ namespace LiteraryAnalyzer.LAShared {
 				retVal.Sources.Add(SourceObj);
 			}
 
-			//Insert the tags file
+			//Insert the notes file
 			pattern = String.Format(@"{0}notes.md", info.Prefix);
-			var NotesFile = files.Where(s => System.Text.RegularExpressions.Regex.IsMatch(s, pattern));
-			if (NotesFile.Count() > 0) {
-				var TagFile = new MDTagFile();
-				TagFile.Lines = new List<string>(System.IO.File.ReadAllLines(NotesFile.First()));
-				retVal.TagFile = TagFile;
+			var NotesFileLines = files.Where(s => System.Text.RegularExpressions.Regex.IsMatch(s, pattern));
+			if (NotesFileLines.Count() > 0) {
+				var NotesFile = new MDNotesFile();
+				NotesFile.Lines = new List<string>(System.IO.File.ReadAllLines(NotesFileLines.First()));
+				retVal.Notes = NotesFile;
 			}
 
 			return retVal;
@@ -50,6 +50,23 @@ namespace LiteraryAnalyzer.LAShared {
 			foreach (var sourceFile in source.Sources) {
 				sourceFile.TagLines();
 			}
+		}
+		public static void SetAllLitSourceInfo(this LitAnnSource source, LitNovel novel) {
+			foreach (var sourcefile in source.Sources) {
+				sourcefile.ParseLitSourceInfo(novel);
+			}
+		}
+		/// <summary>
+		/// I shouldn't ever use this function
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
+		public static List<String> AllLines(this LitAnnSource source) {
+			var retVal = new List<String>();
+			foreach (var sourcefile in source.Sources) {
+				retVal.AddRange(sourcefile.Lines);
+			}
+			return retVal;
 		}
 	}
 }

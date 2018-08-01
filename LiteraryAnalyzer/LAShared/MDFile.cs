@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public class MDFile {
-		public List<String> Lines { get; set; }
+		public List<String> Lines { get; set; } = new List<String>();
 	}
 }

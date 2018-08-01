@@ -10,6 +10,7 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitRef> References { get; set; } = new List<LitRef>();
 		public String Title { get; set; }
 		public List<LitRef> GeneratedReference { get; set; } = new List<LitRef>();
+		public List<LitSourceInfo> SourceInfo { get; set; } = new List<LitSourceInfo>();
 	}
 	public static partial class LitExtensions {
 		/// <summary>
@@ -58,14 +59,26 @@ namespace LiteraryAnalyzer.LAShared {
 			return reference;
 		}
 		/// <summary>
-		/// I DON'T THINK I WANT TO USE THIS FUNCTION
+		/// Will add a new source info to the novel, and return the current source info 
+		/// </summary>
+		/// <param name="novel"></param>
+		/// <param name="info"></param>
+		/// <returns></returns>
+		public static LitSourceInfo AddSourceInfoDistinct(this LitNovel novel, LitSourceInfo info) {
+			foreach (var currentSourceInfo in novel.SourceInfo) {
+				if (currentSourceInfo.IsSourceInfoIntersection(info)) {
+					return currentSourceInfo;
+				}
+			}
+			novel.SourceInfo.Add(info);
+			return info;
+		}
+		/// <summary>
+		/// Adds the scene to the novel
 		/// </summary>
 		/// <param name="novel"></param>
 		/// <param name="scene"></param>
 		public static void AddScene(this LitNovel novel, LitScene scene) {
-			foreach (var reference in scene.GetAllReferences()) {
-				novel.AddReferenceDistinct(reference);
-			}
 			novel.Scenes.Add(scene);
 		}
 		/// <summary>
@@ -82,32 +95,43 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
-		public static LitNovel ParseAnnSource(this LitAnnSourceInfo source) {
+		public static LitNovel ParseAnnSource(LitAnnSource source) {
 			var retVal = new LitNovel();
 
 			//Aggregate the source
-			var files = System.IO.Directory.GetFiles(source.BaseDir, source.Prefix + "*.md");
-			Array.Sort(files);
-			var query = files.Where(s => !s.Contains("notes.md"));
-			List<String> allLines = new List<String>();
-			foreach (var file in query) {
-				var lines = System.IO.File.ReadAllLines(file);
-				var shortfilename = Helper.ExtractFilename(file);
-				var taggedLines = ParsingTools.TagLines(lines, shortfilename);
-				allLines.AddRange(taggedLines);
-			}
-			var notesFile = files.Where(s => s.Contains(String.Format("{0}notes.md", source.Prefix)));
-			if (notesFile.Count() > 0) {
-				retVal.ParseNotesFile(System.IO.File.ReadAllLines(notesFile.First()));
+			//var files = System.IO.Directory.GetFiles(source.BaseDir, source.Prefix + "*.md");
+			//Array.Sort(files);
+			//var query = files.Where(s => !s.Contains("notes.md"));
+			//List<String> allLines = new List<String>();
+			//foreach (var file in query) {
+			//	var lines = System.IO.File.ReadAllLines(file);
+			//	var shortfilename = Helper.ExtractFilename(file);
+			//	var taggedLines = ParsingTools.TagLines(lines, shortfilename);
+			//	allLines.AddRange(taggedLines);
+			//}
+			//var notesFile = files.Where(s => s.Contains(String.Format("{0}notes.md", source.Prefix)));
+			//if (notesFile.Count() > 0) {
+			//	retVal.ParseNotesFile(System.IO.File.ReadAllLines(notesFile.First()));
+			//}
+
+			source.SetAllLitSourceInfo(retVal);
+			source.TagAllSourceFiles();
+
+			retVal.ParseNotesFile(source.Notes.Lines);
+			foreach (var sourceFile in source.Sources) {
+				var PartitionedScenes = ParsingTools.PartitionLines(
+					sourceFile.Lines, 
+					line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]")
+				);
+
+				foreach (var Scenelines in PartitionedScenes) {
+					var scene = retVal.ParseScene(Scenelines, sourceFile.LitSourceInfo);
+					retVal.AddScene(scene);
+				}
+
 			}
 
-			var PartitionedScenes = ParsingTools.PartitionLines(allLines, line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]"));
-
-			foreach (var Scenelines in PartitionedScenes) {
-				var scene = retVal.ParseScene(Scenelines, source.LitSourceInfo);
-				retVal.Scenes.Add(scene);
-			}
-
+			//TODO figure out why the notes file is parsing all weird (it's putting "reference -> character" in there)
 			return retVal;
 		}
 		public static void ParseNotesFile(this LitNovel novel, IEnumerable<String> lines) {
