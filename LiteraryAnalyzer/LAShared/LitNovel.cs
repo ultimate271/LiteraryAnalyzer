@@ -13,6 +13,13 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitSourceInfo> SourceInfo { get; set; } = new List<LitSourceInfo>();
 	}
 	public static partial class LitExtensions {
+		public static List<String> WriteNovelOutline(this LitNovel novel) {
+			List<String> retVal = new List<String>();
+			foreach (var scene in novel.Scenes) {
+				retVal.AddRange(scene.WriteOutline(1));
+			}
+			return retVal;
+		}
 		/// <summary>
 		/// UPON FURTHER CONSIDERATION, I DONT THINK THIS IS THE PROPER WAY TO DO THINGS
 		/// Will take every reference in the scenes of the novel, and make sure that

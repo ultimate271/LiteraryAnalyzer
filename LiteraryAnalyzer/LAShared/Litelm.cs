@@ -14,6 +14,18 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitEvent> Children { get; set; } = new List<LitEvent>();
 	}
 	public static partial class LitExtensions {
+		public static String WriteHeader(this LitElm elm, int headerlevel) {
+			return String.Format("{0} {1}", new String('#', headerlevel), elm.Header);
+		}
+		public static List<String> WriteOutline(this LitElm elm, int headerlevel) {
+			var retVal = new List<String>();
+			retVal.Add(elm.WriteHeader(headerlevel));
+			foreach (var child in elm.Children) {
+				retVal.AddRange(child.WriteOutline(headerlevel + 1));
+			}
+			return retVal;
+		}
+			
 		public static bool IsElmMergeable(this LitElm elm1, LitElm elm2) {
 			if (!elm1.GetType().Equals(elm2.GetType())) { return false; }
 			if (!elm1.TreeTag.Tag.Equals(elm2.TreeTag.Tag)) { return false; }

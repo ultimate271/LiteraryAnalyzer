@@ -20,6 +20,9 @@ namespace LiteraryAnalyzer {
 			var source = sourceInfo.BuildSource();
 			source.TagAllSourceFiles();
 			var x = ParsingTools.ParseAnnSource(source);
+			var test = x.WriteNovelOutline();
+			System.IO.File.WriteAllLines(@"C:\Users\bwebster\Source\Repos\notes\test\outline.md", test);
+			System.Console.WriteLine("Done");
 
 		}
 		/// <summary>
