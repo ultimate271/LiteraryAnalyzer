@@ -12,6 +12,10 @@ namespace LiteraryAnalyzer.LAShared {
 			this.Tag = Tag;
 		}
 
+		public String ToHyperlink() {
+			return String.Format("{{{0}}}", this.Tag);
+		}
+
 		public bool Equals(LitTag x, LitTag y) {
 			return x.Tag.Equals(y.Tag);
 		}

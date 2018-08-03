@@ -91,5 +91,15 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return retVal;
 		}
+		public static IEnumerable<LitTag> SpeakerTags(this LitEvent litevent, LitChar speaker) {
+			var retVal = new List<LitTag>();
+			if (litevent.Speakers.Contains(speaker)) {
+				retVal.Add(litevent.TreeTag);
+			}
+			foreach (var child in litevent.Children) {
+				retVal.AddRange(child.SpeakerTags(speaker));
+			}
+			return retVal;
+		}
 	}
 }

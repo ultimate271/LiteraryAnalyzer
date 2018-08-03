@@ -158,8 +158,38 @@ namespace LiteraryAnalyzer.LAShared {
 				novel.AddReferenceDistinct(litref, false);
 			}
 		}
+		public static MDNotesFile GenerateNotesFile (this LitNovel novel) {
+			var retVal = new MDNotesFile();
+			foreach (var reference in novel.References) {
+				retVal.Lines.AddRange(reference.ToNotesLines(novel));
+			}
+			return retVal;
+		}
 		public static LitAnnSource GenerateMarkdown(this LitNovel novel) {
+			var retVal = new LitAnnSource();
+			retVal.Notes = new MDNotesFile();
+			
+			foreach (var scene in novel.Scenes) {
+				
+			}
+			
 			throw new NotImplementedException();
+		}
+		/// <summary>
+		/// Returns every tag for the scenes that this actor is contained in
+		/// </summary>
+		/// <param name="novel"></param>
+		/// <param name="actor"></param>
+		/// <returns></returns>
+		public static IEnumerable<LitTag> ActorTags(this LitNovel novel, LitChar actor) {
+			return novel.Scenes.Where(s => s.Actors.Contains(actor)).Select(s => s.TreeTag);
+		}
+		public static IEnumerable<LitTag> SpeakerTags(this LitNovel novel, LitChar speaker) {
+			var retVal = new List<LitTag>();
+			foreach (var scene in novel.Scenes) {
+				retVal.AddRange(scene.SpeakerTags(speaker));
+			}
+			return retVal;
 		}
 	}
 }

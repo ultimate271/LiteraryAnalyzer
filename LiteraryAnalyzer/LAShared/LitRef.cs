@@ -11,6 +11,37 @@ namespace LiteraryAnalyzer.LAShared {
 		public LitRef(LitTag tag) { Tags.Add(tag); }
 		public List<LitTag> Tags { get; set; } = new List<LitTag>();
 		public String Commentary { get; set; } = "";
+
+		public virtual List<String> ToNotesLines(LitNovel novel) {
+			var retVal = new List<String>();
+
+			//Set the tag header
+			var TagHeader = new MDHeader() {
+				HeaderLevel = 1,
+				Text = this.Tags.First().Tag
+			};
+			retVal.Add(TagHeader.ToString());
+
+			//Set the reference link
+			var link = this.RefToLink();
+			retVal.Add(link.ToString());
+
+			//Set the commentary
+			retVal.Add(this.Commentary);
+
+			//Set the tags
+			var tagsHeader = new MDHeader() {
+				HeaderLevel = 2,
+				Text = "Tags"
+			};
+			retVal.Add(tagsHeader.ToString());
+		
+			//Place the tags in the header
+			foreach (var tag in this.Tags) {
+				retVal.Add(tag.Tag);
+			}
+			return retVal;
+		}
 	}
 	public static partial class LitExtensions {
 		public static bool IsReferenceIntersection(this LitRef ref1, LitRef ref2) {
@@ -29,6 +60,50 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		public static MDLinkLine RefToLink(this LitRef reference) {
+			var retVal = new MDLinkLine();
+			retVal.Link = "Reference";
+			if (reference is LitChar) {
+				retVal.Tag = "Character";
+			}
+			else if (reference is LitPlace) {
+				retVal.Tag = "Place";
+			}
+			else {
+				retVal.Tag = "Reference";
+			}
+			return retVal;
+		}
+		public static List<String> ToNotesLines(this LitRef reference, LitNovel novel) {
+			var retVal = new List<String>();
+
+			//Set the tag header
+			var TagHeader = new MDHeader() {
+				HeaderLevel = 1,
+				Text = reference.Tags.First().Tag
+			};
+			retVal.Add(TagHeader.ToString());
+
+			//Set the reference link
+			var link = reference.RefToLink();
+			retVal.Add(link.ToString());
+
+			//Set the commentary
+			retVal.Add(reference.Commentary);
+
+			//Set the tags
+			var tagsHeader = new MDHeader() {
+				HeaderLevel = 2,
+				Text = "Tags"
+			};
+			retVal.Add(tagsHeader.ToString());
+		
+			//Place the tags in the header
+			foreach (var tag in reference.Tags) {
+				retVal.Add(tag.Tag);
+			}
+			return retVal;
+		}
 		public static LitRef ParseLitRef(IEnumerable<String> lines) {
 			if (lines.Count() == 0) { return null; }
 			var PartitionedLines = ParsingTools.PartitionLines(lines, l => System.Text.RegularExpressions.Regex.IsMatch(l, @"^##[^#]"));

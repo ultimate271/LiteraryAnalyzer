@@ -101,5 +101,12 @@ namespace LiteraryAnalyzer.LAShared {
 			scene1.References = new List<LitRef>(scene1.References.Union(scene2.References));
 			scene1.Children = new List<LitEvent>(scene1.Children.Zip(scene2.Children, (e1, e2) => e1.MergeEvent(e2)));
 		}
+		public static IEnumerable<LitTag> SpeakerTags(this LitScene scene, LitChar speaker) {
+			var retVal = new List<LitTag>();
+			foreach (var litevent in scene.Children) {
+				retVal.AddRange(litevent.SpeakerTags(speaker));
+			}
+			return retVal;
+		}
 	}
 }
