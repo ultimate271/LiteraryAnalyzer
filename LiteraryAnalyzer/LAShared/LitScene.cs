@@ -27,7 +27,10 @@ namespace LiteraryAnalyzer.LAShared {
 		/// This should be distinct from all of the other lit tools here.
 		/// </summary>
 		public List<LitRef> References { get; set; } = new List<LitRef>();
-
+		/// <summary>
+		/// Used by the writer to know which scenes should go in which files.
+		/// </summary>
+		public LitSceneMetadata Metadata { get; set; } = new LitSceneMetadata();
 	}
 	public static partial class ParsingTools {
 		/// <summary>

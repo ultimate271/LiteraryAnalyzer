@@ -52,6 +52,7 @@
     <Compile Include="Excerpt.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="LitAnnSource.cs" />
+    <Compile Include="LitSceneMetadata.cs" />
     <Compile Include="MDFile.cs" />
     <Compile Include="MDHeader.cs" />
     <Compile Include="MDLinkLine.cs" />

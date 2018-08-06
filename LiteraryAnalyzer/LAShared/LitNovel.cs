@@ -10,6 +10,7 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitRef> References { get; set; } = new List<LitRef>();
 		public String Title { get; set; }
 		public List<LitRef> GeneratedReference { get; set; } = new List<LitRef>();
+		public List<LitSceneMetadata> SceneMetadata { get; set; } = new List<LitSceneMetadata>();
 		public List<LitSourceInfo> SourceInfo { get; set; } = new List<LitSourceInfo>();
 	}
 	public static partial class LitExtensions {
@@ -80,6 +81,15 @@ namespace LiteraryAnalyzer.LAShared {
 			novel.SourceInfo.Add(info);
 			return info;
 		}
+		public static LitSceneMetadata AddMetadataDistinct(this LitNovel novel, LitSceneMetadata metadata) {
+			foreach (var currentSceneMetadata in novel.SceneMetadata) {
+				if (currentSceneMetadata.Descriptor.Equals(metadata.Descriptor)) {
+					return currentSceneMetadata;
+				}
+			}
+			novel.SceneMetadata.Add(metadata);
+			return metadata;
+		}
 		/// <summary>
 		/// Adds the scene to the novel
 		/// </summary>
@@ -139,6 +149,8 @@ namespace LiteraryAnalyzer.LAShared {
 					sourceFile.Lines, 
 					line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]")
 				);
+
+				var metadata = 
 
 				foreach (var Scenelines in PartitionedScenes) {
 					var scene = retVal.ParseScene(Scenelines, sourceFile.LitSourceInfo);
