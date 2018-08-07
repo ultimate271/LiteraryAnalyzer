@@ -13,6 +13,39 @@ namespace LiteraryAnalyzer.LAShared {
 		public static void TagLines(this MDSourceFile sourcefile) {
 			sourcefile.Lines = new List<string>(ParsingTools.TagLines(sourcefile.Lines, sourcefile.Descriptor));
 		}
+		public static void ParseSource(this LitNovel novel, MDSourceFile sourceFile) {
+			var PartitionedScenes = ParsingTools.PartitionLines(
+				sourceFile.Lines, 
+				line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]")
+			);
+			//Extract and add the metadata
+			var MetadataLines = ParsingTools.ExtractMetadata(PartitionedScenes);
+			var LitSceneMetadata = ParsingTools.ParseMetadata(MetadataLines);
+			LitSceneMetadata = novel.AddMetadataDistinct(LitSceneMetadata);
+
+			//Extract and add the scenes
+			var PartitionedSceneLines = ParsingTools.ExtractScenes(PartitionedScenes);
+			foreach (var Scenelines in PartitionedSceneLines) {
+				var scene = novel.ParseScene(Scenelines, sourceFile.LitSourceInfo, LitSceneMetadata);
+				novel.AddScene(scene);
+			}
+		}
+		public static IEnumerable<String> ExtractMetadata (IEnumerable<IEnumerable<String>> PartitionedScenes){
+			return PartitionedScenes.Where(lines => 
+				lines.Select(l => ParsingTools.ParseLink(l))
+					.Where(link => link != null)
+					.Where(link => link.Link.Equals("Metadata"))
+					.Count() > 0
+				).FirstOrDefault();
+		}
+		public static IEnumerable<IEnumerable<String>> ExtractScenes(IEnumerable<IEnumerable<String>> PartitionedScenes) {
+			return PartitionedScenes.Where(lines =>
+				lines.Select(l => ParsingTools.ParseLink(l))
+					.Where(link => link != null)
+					.Where(link => link.Link.Equals("TreeTag"))
+					.Count() > 0
+				);
+		}
 		public static void ParseLitSourceInfo(this MDSourceFile source, LitNovel novel) {
 			var litSourceInfo = new LitSourceInfo();
 			var query = source.Lines.Select(s => ParsingTools.ParseLink(s))

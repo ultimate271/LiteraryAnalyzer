@@ -24,7 +24,7 @@ namespace LiteraryAnalyzer.LAShared {
 			Array.Sort(files);
 			
 			//Insert the source files
-			string pattern = String.Format(@"{0}([^\.]+)\..*md", info.Prefix);
+			string pattern = String.Format(@"{0}(\d[\d\.]+)\..*md", info.Prefix);
 			var query = files.Select(s => new { File = s, Match = System.Text.RegularExpressions.Regex.Match(s, pattern) })
 				.Where(a => a.Match.Success && !a.Match.Groups[1].Value.Equals("notes"));
 			MDSourceFile SourceObj;

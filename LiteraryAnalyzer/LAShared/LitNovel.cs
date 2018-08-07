@@ -145,18 +145,7 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.ParseNotesFile(source.Notes.Lines);
 
 			foreach (var sourceFile in source.Sources) {
-				var PartitionedScenes = ParsingTools.PartitionLines(
-					sourceFile.Lines, 
-					line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]")
-				);
-
-				var metadata = 
-
-				foreach (var Scenelines in PartitionedScenes) {
-					var scene = retVal.ParseScene(Scenelines, sourceFile.LitSourceInfo);
-					retVal.AddScene(scene);
-				}
-
+				retVal.ParseSource(sourceFile);
 			}
 
 			return retVal;

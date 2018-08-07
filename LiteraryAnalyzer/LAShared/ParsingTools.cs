@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public static partial class ParsingTools {
-		public static readonly string[] GenereratedLinks = { "Metadata", "TreeTag" };
+		public static readonly string[] GenereratedLinks = { "Metadata", "TreeTag", "Descriptor" };
 		/// <summary>
 		/// Breaks up a list of lines into a list of list of lines, where each sublist starts with a single header hash
 		/// </summary>
@@ -49,7 +49,7 @@ namespace LiteraryAnalyzer.LAShared {
 						i++;
 						retVal.Add(line);
 						retVal.Add(String.Format(@"[Metadata]: # {{{0}}}", tag));
-						retVal.Add(String.Format(@"[TreeTag]: # {{{0}.{1:00}}}", tag, i));
+						retVal.Add(String.Format(@"[Descriptor]: # {{{0}}}", tag));
 					}
 					else if (lineHeaderLevel == headerLevel && adding) {
 						i++;

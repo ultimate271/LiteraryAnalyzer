@@ -45,6 +45,9 @@ namespace LiteraryAnalyzer.LAShared {
 		public static LitEvent ParseEvent(this LitNovel novel, IEnumerable<string> lines, LitSourceInfo sourceInfo) {
 			var retVal = new LitEvent();
 
+			//Some checks
+			if (!novel.SourceInfo.Contains(sourceInfo)) { throw new Exception(String.Format("Novel does not contain source info. {0}", sourceInfo.Author)); }
+
 			//Check for lines
 			if (lines.Count() == 0) {
 				throw new Exception("Event must have lines");

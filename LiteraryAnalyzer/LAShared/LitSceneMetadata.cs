@@ -10,9 +10,16 @@ namespace LiteraryAnalyzer.LAShared {
 		public String Header { get; set; } = "";
 	}
 	public static partial class ParsingTools {
-		public static LitSceneMetadata ParseMetadata(this LitNovel novel, MDSourceFile sourceFile) {
-			//TODO There are a few things here that need to be done.
-			//First, I think that the scenes 
+		public static LitSceneMetadata ParseMetadata(IEnumerable<String> sourceLines) {
+			var retVal = new LitSceneMetadata();
+			var links = sourceLines.Select(l => ParsingTools.ParseLink(l)).Where(link => link != null);
+			retVal.Descriptor = links.Where(link => link.Link.Equals("Descriptor")).Select(link => link.Tag).FirstOrDefault();
+
+			var pattern = @"^# (.*)$";
+			var match = System.Text.RegularExpressions.Regex.Match(sourceLines.First(), pattern);
+			retVal.Header = match.Groups[1].Value;
+
+			return retVal;
 		}
 	}
 }

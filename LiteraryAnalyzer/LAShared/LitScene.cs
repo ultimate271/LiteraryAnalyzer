@@ -38,8 +38,12 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="lines"></param>
 		/// <returns></returns>
-		public static LitScene ParseScene(this LitNovel novel, IEnumerable<String> lines, LitSourceInfo sourceInfo) {
+		public static LitScene ParseScene(this LitNovel novel, IEnumerable<String> lines, LitSourceInfo sourceInfo, LitSceneMetadata metadata) {
 			var retVal = new LitScene();
+
+			//Some checks
+			if (!novel.SourceInfo.Contains(sourceInfo)) { throw new Exception(String.Format("Novel does not contain source info. {0}", sourceInfo.Author)); }
+			if (!novel.SceneMetadata.Contains(metadata)) { throw new Exception(String.Format("Novel does not contain metadata. {0}", metadata.Descriptor)); }
 
 			//Parse the header
 			var headerInfo = ParsingTools.ParseHeader(lines.First());
@@ -96,6 +100,7 @@ namespace LiteraryAnalyzer.LAShared {
 				retVal.Children.Add(litEvent);
 			}
 
+			retVal.Metadata = metadata;
 			return retVal;
 		}
 		public static void MergeScene(this LitScene scene1, LitScene scene2) {
