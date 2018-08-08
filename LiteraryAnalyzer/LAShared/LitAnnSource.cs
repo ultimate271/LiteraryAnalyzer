@@ -24,7 +24,7 @@ namespace LiteraryAnalyzer.LAShared {
 			Array.Sort(files);
 			
 			//Insert the source files
-			string pattern = String.Format(@"{0}(\d[\d\.]+)\..*md", info.Prefix);
+			string pattern = String.Format(@"{0}(\d[\d\.]+)\.([^\.]+)\.md", info.Prefix);
 			var query = files.Select(s => new { File = s, Match = System.Text.RegularExpressions.Regex.Match(s, pattern) })
 				.Where(a => a.Match.Success && !a.Match.Groups[1].Value.Equals("notes"));
 			MDSourceFile SourceObj;
@@ -32,6 +32,7 @@ namespace LiteraryAnalyzer.LAShared {
 				SourceObj = new MDSourceFile();
 				SourceObj.Lines = new List<String>(System.IO.File.ReadAllLines(file.File));
 				SourceObj.Descriptor = file.Match.Groups[1].Value;
+				SourceObj.LitSourceInfo = file.Match.Groups[2].Value;
 				retVal.Sources.Add(SourceObj);
 			}
 
@@ -51,6 +52,11 @@ namespace LiteraryAnalyzer.LAShared {
 				sourceFile.TagLines();
 			}
 		}
+		/// <summary>
+		/// Depricated
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="novel"></param>
 		public static void SetAllLitSourceInfo(this LitAnnSource source, LitNovel novel) {
 			foreach (var sourcefile in source.Sources) {
 				sourcefile.ParseLitSourceInfo(novel);

@@ -138,7 +138,7 @@ namespace LiteraryAnalyzer.LAShared {
 			//}
 
 			//Preliminary tagging
-			source.SetAllLitSourceInfo(retVal);
+			//source.SetAllLitSourceInfo(retVal);
 			source.TagAllSourceFiles();
 
 			//Parse the current notes file
@@ -190,6 +190,12 @@ namespace LiteraryAnalyzer.LAShared {
 			foreach (var scene in novel.Scenes) {
 				retVal.AddRange(scene.SpeakerTags(speaker));
 			}
+			return retVal;
+		}
+		public static LitAnnSource CreateSource(this LitNovel novel) {
+			var retVal = new LitAnnSource();
+
+			//TODO: Actually do the writing here. For each author in novel, for each scene in novel, create the MDSourceFile
 			return retVal;
 		}
 	}

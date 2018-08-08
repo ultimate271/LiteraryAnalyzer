@@ -28,6 +28,10 @@ namespace LiteraryAnalyzer.LAShared {
 			throw new NotImplementedException();
 
 		}
+
+		public static String MakeLinkLine(String link, String tag) {
+			return new MDLinkLine() { Link = link, Tag = tag }.ToString();
+		}
 		public static MDLinkLine ParseLink(String s) {
 			var retVal = new MDLinkLine();
 			var match = System.Text.RegularExpressions.Regex.Match(s, @"^\[([^\]]*)\]: # {([^}]*)}$");

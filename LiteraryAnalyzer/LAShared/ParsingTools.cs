@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public static partial class ParsingTools {
-		public static readonly string[] GenereratedLinks = { "Metadata", "TreeTag", "Descriptor" };
+		public static readonly string[] GenereratedLinks = { "Metadata", "TreeTag", "Descriptor", "Author" };
 		/// <summary>
 		/// Breaks up a list of lines into a list of list of lines, where each sublist starts with a single header hash
 		/// </summary>
@@ -27,10 +27,10 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return PartitionedLines;
 		}
-		public static List<String> TagLines(IEnumerable<String> lines, String tag) {
-			return TagLines(lines, tag, 1);
+		public static List<String> TagLines(IEnumerable<String> lines, String tag, String author) {
+			return TagLines(lines, tag, author, 1);
 		}
-		public static List<String> TagLines (IEnumerable<String> lines, String tag, int headerLevel) {
+		public static List<String> TagLines (IEnumerable<String> lines, String tag, String author, int headerLevel) {
 			var retVal = new List<String>();
 			var arg = new List<String>();
 			//First remove the existing tags
@@ -50,6 +50,7 @@ namespace LiteraryAnalyzer.LAShared {
 						retVal.Add(line);
 						retVal.Add(String.Format(@"[Metadata]: # {{{0}}}", tag));
 						retVal.Add(String.Format(@"[Descriptor]: # {{{0}}}", tag));
+						retVal.Add(String.Format(@"[Author]: # {{{0}}}", author));
 					}
 					else if (lineHeaderLevel == headerLevel && adding) {
 						i++;
@@ -62,7 +63,7 @@ namespace LiteraryAnalyzer.LAShared {
 					}
 					else if (lineHeaderLevel == headerLevel && !adding) {
 						//Recursively call the lines we've gathered together, tag them, and add the range
-						retVal.AddRange(TagLines(arg, String.Format(@"{0}.{1:00}", tag, i), headerLevel + 1));
+						retVal.AddRange(TagLines(arg, String.Format(@"{0}.{1:00}", tag, i), author, headerLevel + 1));
 
 						//Begin anew
 						arg = new List<string>();
@@ -84,7 +85,7 @@ namespace LiteraryAnalyzer.LAShared {
 				}
 			}
 			if (arg.Count > 0) {
-				retVal.AddRange(TagLines(arg, String.Format(@"{0}.{1:00}", tag, i), headerLevel + 1));
+				retVal.AddRange(TagLines(arg, String.Format(@"{0}.{1:00}", tag, i), author, headerLevel + 1));
 			}
 			return retVal;
 		}

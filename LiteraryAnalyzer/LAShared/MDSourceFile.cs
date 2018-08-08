@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public class MDSourceFile : MDFile {
-		public String Descriptor { get; set; }
-		public LitSourceInfo LitSourceInfo { get; set; } = new LitSourceInfo();
+		public String Descriptor { get; set; } = "";
+		public String LitSourceInfo { get; set; } = "";
 	}
 	public static partial class ParsingTools {
 		public static void TagLines(this MDSourceFile sourcefile) {
-			sourcefile.Lines = new List<string>(ParsingTools.TagLines(sourcefile.Lines, sourcefile.Descriptor));
+			sourcefile.Lines = new List<string>(ParsingTools.TagLines(sourcefile.Lines, sourcefile.Descriptor, sourcefile.LitSourceInfo));
 		}
 		public static void ParseSource(this LitNovel novel, MDSourceFile sourceFile) {
 			var PartitionedScenes = ParsingTools.PartitionLines(
@@ -23,10 +23,13 @@ namespace LiteraryAnalyzer.LAShared {
 			var LitSceneMetadata = ParsingTools.ParseMetadata(MetadataLines);
 			LitSceneMetadata = novel.AddMetadataDistinct(LitSceneMetadata);
 
+			var LitSourceInfo = ParsingTools.ParseLitSourceInfo(MetadataLines);
+			LitSourceInfo = novel.AddSourceInfoDistinct(LitSourceInfo);
+
 			//Extract and add the scenes
 			var PartitionedSceneLines = ParsingTools.ExtractScenes(PartitionedScenes);
 			foreach (var Scenelines in PartitionedSceneLines) {
-				var scene = novel.ParseScene(Scenelines, sourceFile.LitSourceInfo, LitSceneMetadata);
+				var scene = novel.ParseScene(Scenelines, LitSourceInfo, LitSceneMetadata);
 				novel.AddScene(scene);
 			}
 		}
@@ -46,6 +49,11 @@ namespace LiteraryAnalyzer.LAShared {
 					.Count() > 0
 				);
 		}
+		/// <summary>
+		/// Depricated
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="novel"></param>
 		public static void ParseLitSourceInfo(this MDSourceFile source, LitNovel novel) {
 			var litSourceInfo = new LitSourceInfo();
 			var query = source.Lines.Select(s => ParsingTools.ParseLink(s))
@@ -53,7 +61,7 @@ namespace LiteraryAnalyzer.LAShared {
 			if (query.Count() > 0) {
 				litSourceInfo.Author = query.First().Tag;
 			}
-			source.LitSourceInfo = novel.AddSourceInfoDistinct(litSourceInfo);
+			//source.LitSourceInfo = novel.AddSourceInfoDistinct(litSourceInfo);
 		}
 	}
 }

@@ -16,4 +16,12 @@ namespace LiteraryAnalyzer.LAShared {
 			return info1.Author.Equals(info2.Author);
 		}
 	}
+	public static partial class ParsingTools {
+		public static LitSourceInfo ParseLitSourceInfo(IEnumerable<String> metadatalines) {
+			var retVal = new LitSourceInfo();
+			var links = metadatalines.Select(l => ParsingTools.ParseLink(l)).Where(link => link != null);
+			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag).FirstOrDefault();
+			return retVal;
+		}
+	}
 }

@@ -116,5 +116,25 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return retVal;
 		}
+
+		public static List<String> WriteSceneLinks(this LitScene scene) {
+			var retVal = new List<String>();
+			retVal.Add(MakeLinkLine("TreeTag", scene.TreeTag.Tag));
+			retVal.AddRange(scene.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag)));
+			retVal.AddRange(scene.Actors.Select(a => MakeLinkLine("Actor", a.Tags.First().Tag)));
+			retVal.AddRange(scene.Location.Select(p => MakeLinkLine("Location", p.Tags.First().Tag)));
+			retVal.AddRange(scene.References.Select(r => MakeLinkLine("Reference", r.Tags.First().Tag)));
+			return retVal;
+		}
+
+		public static List<String> ToSourceLines(this LitScene scene, LitSourceInfo sourceinfo) {
+			var retVal = new List<String>();
+			retVal.Add(scene.WriteHeader(1));
+			retVal.AddRange(scene.WriteSceneLinks());
+			foreach (var child in scene.Children) {
+				retVal.AddRange(child.ToSourceLines(sourceinfo, 2));
+			}
+			return retVal;
+		}
 	}
 }
