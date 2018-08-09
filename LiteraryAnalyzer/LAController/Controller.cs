@@ -18,8 +18,8 @@ namespace LiteraryAnalyzer {
 		public void DeveloperDebug () {
 			var sourceInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
 			var source = sourceInfo.BuildSource();
-			source.TagAllSourceFiles();
 			var x = ParsingTools.ParseAnnSource(source);
+			var y = x.CreateSource();
 			var test = x.WriteNovelOutline();
 			System.IO.File.WriteAllLines(@"C:\Users\brett\Source\Repos\notes\test\outline.md", test);
 			System.Console.WriteLine("Done");

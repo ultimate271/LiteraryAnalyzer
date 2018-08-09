@@ -21,5 +21,13 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return retVal;
 		}
+		public static List<String> ToSourceLines(this LitSceneMetadata metadata, LitSourceInfo sourceinfo) {
+			var retVal = new List<String>();
+			retVal.Add(String.Format("# {0}", metadata.Header));
+			retVal.Add(MakeLinkLine("Metadata", metadata.Descriptor));
+			retVal.Add(MakeLinkLine("Descriptor", metadata.Descriptor));
+			retVal.Add(sourceinfo.ToSourceLine());
+			return retVal;
+		}
 	}
 }

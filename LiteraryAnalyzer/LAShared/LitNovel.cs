@@ -194,8 +194,33 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 		public static LitAnnSource CreateSource(this LitNovel novel) {
 			var retVal = new LitAnnSource();
+			foreach (var LitSourceInfo in novel.SourceInfo) {
+				foreach (var Metadata in novel.SceneMetadata) {
+					var lines = Metadata.ToSourceLines(LitSourceInfo);
+					lines.AddRange(novel.Scenes
+						.Where(s => s.Metadata == Metadata)
+						.Select(s => s.ToSourceLines(LitSourceInfo))
+						.Aggregate((acc, l) => { acc.AddRange(l); return acc; })
+					);
+					var SourceFile = new MDSourceFile() {
+						Descriptor = Metadata.Descriptor,
+						LitSourceInfo = LitSourceInfo.Author,
+						Lines = lines
+					};
+					retVal.Sources.Add(SourceFile);
+				}
+			}
+			retVal.Notes = novel.CreateNotesFile();
 
-			//TODO: Actually do the writing here. For each author in novel, for each scene in novel, create the MDSourceFile
+			//TODO: Create tags file
+
+			return retVal;
+		}
+		public static MDNotesFile CreateNotesFile(this LitNovel novel) {
+			var retVal = new MDNotesFile();
+			foreach (var reference in novel.References) {
+				retVal.Lines.AddRange(reference.ToNotesLines(novel));
+			}
 			return retVal;
 		}
 	}

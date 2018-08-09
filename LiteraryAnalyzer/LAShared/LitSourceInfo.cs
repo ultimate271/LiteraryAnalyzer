@@ -23,5 +23,8 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag).FirstOrDefault();
 			return retVal;
 		}
+		public static String ToSourceLine(this LitSourceInfo sourceinfo) {
+			return ParsingTools.MakeLinkLine("Author", sourceinfo.Author);
+		}
 	}
 }
