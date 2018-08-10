@@ -204,7 +204,7 @@ namespace LiteraryAnalyzer.LAShared {
 					);
 					var SourceFile = new MDSourceFile() {
 						Descriptor = Metadata.Descriptor,
-						LitSourceInfo = LitSourceInfo.Author,
+						Author = LitSourceInfo.Author,
 						Lines = lines
 					};
 					retVal.Sources.Add(SourceFile);
@@ -214,13 +214,6 @@ namespace LiteraryAnalyzer.LAShared {
 
 			//TODO: Create tags file
 
-			return retVal;
-		}
-		public static MDNotesFile CreateNotesFile(this LitNovel novel) {
-			var retVal = new MDNotesFile();
-			foreach (var reference in novel.References) {
-				retVal.Lines.AddRange(reference.ToNotesLines(novel));
-			}
 			return retVal;
 		}
 	}

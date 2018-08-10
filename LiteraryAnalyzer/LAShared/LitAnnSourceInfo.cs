@@ -13,6 +13,6 @@ namespace LiteraryAnalyzer.LAShared {
 		public string Prefix { get; set; }
 		public LitSourceInfo LitSourceInfo { get; set; } = new LitSourceInfo() { Author = "Original" };
 	}
-	public static partial class LitExtensions {
+	public static partial class ParsingTools {
 	}
 }

@@ -15,12 +15,8 @@ namespace LiteraryAnalyzer.LAShared {
 		public virtual List<String> ToNotesLines(LitNovel novel) {
 			var retVal = new List<String>();
 
-			//Set the tag header
-			var TagHeader = new MDHeader() {
-				HeaderLevel = 1,
-				Text = this.Tags.First().Tag
-			};
-			retVal.Add(TagHeader.ToString());
+			//Set the header
+			retVal.Add(this.ReferenceHeader());
 
 			//Set the reference link
 			var link = this.RefToLink();
@@ -60,6 +56,13 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		public static string ReferenceHeader(this LitRef reference) {
+			var TagHeader = new MDHeader() {
+				HeaderLevel = 1,
+				Text = reference.Tags.First().Tag
+			};
+			return TagHeader.ToString();
+		}
 		public static MDLinkLine RefToLink(this LitRef reference) {
 			var retVal = new MDLinkLine();
 			retVal.Link = "Reference";

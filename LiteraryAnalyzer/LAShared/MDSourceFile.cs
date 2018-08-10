@@ -7,11 +7,23 @@ using System.Threading.Tasks;
 namespace LiteraryAnalyzer.LAShared {
 	public class MDSourceFile : MDFile {
 		public String Descriptor { get; set; } = "";
-		public String LitSourceInfo { get; set; } = "";
+		public String Author { get; set; } = "";
 	}
 	public static partial class ParsingTools {
+		public static string ToLongFilename(this MDSourceFile source, LitAnnSourceInfo info) {
+			return String.Format("{0}\\{1}", info.BaseDir, source.ToShortFilename(info));
+		}
+		public static string ToShortFilename(this MDSourceFile source, LitAnnSourceInfo info) {
+			return ToShortFilename(info.Prefix, source.Descriptor, source.Author);
+		}
+		public static string ToShortFilename (LitAnnSourceInfo info, LitSourceInfo author, LitSceneMetadata metadata) {
+			return ToShortFilename(info.Prefix, metadata.Descriptor, author.Author);
+		}
+		public static string ToShortFilename (String Prefix,  String descriptor,String author) {
+			return String.Format("{0}{1}.{2}.md", Prefix, descriptor, author);
+		}
 		public static void TagLines(this MDSourceFile sourcefile) {
-			sourcefile.Lines = new List<string>(ParsingTools.TagLines(sourcefile.Lines, sourcefile.Descriptor, sourcefile.LitSourceInfo));
+			sourcefile.Lines = new List<string>(ParsingTools.TagLines(sourcefile.Lines, sourcefile.Descriptor, sourcefile.Author));
 		}
 		public static void ParseSource(this LitNovel novel, MDSourceFile sourceFile) {
 			var PartitionedScenes = ParsingTools.PartitionLines(

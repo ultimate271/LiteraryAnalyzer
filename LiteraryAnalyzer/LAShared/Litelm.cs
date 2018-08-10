@@ -14,24 +14,21 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitEvent> Children { get; set; } = new List<LitEvent>();
 	}
 	public static partial class LitExtensions {
-		public static String WriteHeader(this LitElm elm, int headerlevel) {
-			return String.Format("{0} {1}", new String('#', headerlevel), elm.Header);
-		}
-		public static List<String> WriteOutline(this LitElm elm, int headerlevel) {
-			var retVal = new List<String>();
-			retVal.Add(elm.WriteHeader(headerlevel));
+		public static List<MDTag> GetAllTags(this LitElm elm, String Filename, int HeaderLevel) {
+			var retVal = new List<MDTag>();
+			var tempList = new List<LitTag>();
+
+			tempList.Add(elm.TreeTag);
+			tempList.AddRange(elm.UserTags);
+			retVal = tempList.Select(t => new MDTag() { TagName = t.Tag, TagFile = Filename, TagLine = elm.WriteHeader(HeaderLevel) }).ToList();
+
 			foreach (var child in elm.Children) {
-				retVal.AddRange(child.WriteOutline(headerlevel + 1));
+				retVal.AddRange(child.GetAllTags(Filename, HeaderLevel + 1));
 			}
 			return retVal;
 		}
-			
-		public static bool IsElmMergeable(this LitElm elm1, LitElm elm2) {
-			if (!elm1.GetType().Equals(elm2.GetType())) { return false; }
-			if (!elm1.TreeTag.Tag.Equals(elm2.TreeTag.Tag)) { return false; }
-			if (elm1.Children.Count != elm2.Children.Count) { return false; }
-			if (elm1.Children.Count == 0 && elm2.Children.Count == 0) { return true; }
-			return elm1.Children.Zip(elm2.Children, (c1, c2) => IsElmMergeable(c1, c2)).Aggregate((b1, b2) => b1 && b2);
+		public static String WriteHeader(this LitElm elm, int headerlevel) {
+			return String.Format("{0} {1}", new String('#', headerlevel), elm.Header);
 		}
 		public static IEnumerable<LitRef> GetAllReferences(this LitElm elm) {
 			var retVal = new List<LitRef>();
@@ -61,6 +58,30 @@ namespace LiteraryAnalyzer.LAShared {
 				retVal.AddRange(child.GetAllReferences());
 			}
 			return retVal.Distinct();
+		}
+		public static bool IsElmMergeable(this LitElm elm1, LitElm elm2) {
+			if (!elm1.GetType().Equals(elm2.GetType())) { return false; }
+			if (!elm1.TreeTag.Tag.Equals(elm2.TreeTag.Tag)) { return false; }
+			if (elm1.Children.Count != elm2.Children.Count) { return false; }
+			if (elm1.Children.Count == 0 && elm2.Children.Count == 0) { return true; }
+			return elm1.Children.Zip(elm2.Children, (c1, c2) => IsElmMergeable(c1, c2)).Aggregate((b1, b2) => b1 && b2);
+		}
+	}
+	public static partial class ParsingTools { 
+		public static List<String> WriteOutline(this LitElm elm, int headerlevel) {
+			var retVal = new List<String>();
+			retVal.Add(elm.WriteHeader(headerlevel));
+			foreach (var child in elm.Children) {
+				retVal.AddRange(child.WriteOutline(headerlevel + 1));
+			}
+			return retVal;
+		}
+			
+		public static List<String> WriteElmLinks(this LitElm litelm) {
+			var retVal = new List<String>();
+			retVal.Add(MakeLinkLine("TreeTag", litelm.TreeTag.Tag));
+			retVal.AddRange(litelm.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag)));
+			return retVal;
 		}
 	}
 }

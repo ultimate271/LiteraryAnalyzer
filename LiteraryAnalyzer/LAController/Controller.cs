@@ -20,8 +20,10 @@ namespace LiteraryAnalyzer {
 			var source = sourceInfo.BuildSource();
 			var x = ParsingTools.ParseAnnSource(source);
 			var y = x.CreateSource();
-			var test = x.WriteNovelOutline();
-			System.IO.File.WriteAllLines(@"C:\Users\brett\Source\Repos\notes\test\outline.md", test);
+			var writeInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\testout", Prefix = "sil" };
+			y.TagFile = x.CreateTagsFile(writeInfo);
+			y.WriteToFilesystem(writeInfo);
+
 			System.Console.WriteLine("Done");
 
 		}

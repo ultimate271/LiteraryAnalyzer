@@ -17,6 +17,13 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		public static void WriteToFilesystem(this LitAnnSource sourceObjects, LitAnnSourceInfo info ) {
+			foreach (var source in sourceObjects.Sources) {
+				System.IO.File.WriteAllLines(source.ToLongFilename(info), source.Lines);
+			}
+			System.IO.File.WriteAllLines(sourceObjects.Notes.ToLongFilename(info), sourceObjects.Notes.Lines);
+			System.IO.File.WriteAllLines(sourceObjects.TagFile.ToLongFilename(info), sourceObjects.TagFile.Lines);
+		}
 		public static LitSourceInfo ParseLitSourceInfo(IEnumerable<String> metadatalines) {
 			var retVal = new LitSourceInfo();
 			var links = metadatalines.Select(l => ParsingTools.ParseLink(l)).Where(link => link != null);

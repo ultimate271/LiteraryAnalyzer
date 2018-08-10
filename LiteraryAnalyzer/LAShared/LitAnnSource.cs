@@ -32,7 +32,7 @@ namespace LiteraryAnalyzer.LAShared {
 				SourceObj = new MDSourceFile();
 				SourceObj.Lines = new List<String>(System.IO.File.ReadAllLines(file.File));
 				SourceObj.Descriptor = file.Match.Groups[1].Value;
-				SourceObj.LitSourceInfo = file.Match.Groups[2].Value;
+				SourceObj.Author = file.Match.Groups[2].Value;
 				retVal.Sources.Add(SourceObj);
 			}
 

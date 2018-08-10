@@ -49,9 +49,7 @@ namespace LiteraryAnalyzer.LAShared {
 			if (!novel.SourceInfo.Contains(sourceInfo)) { throw new Exception(String.Format("Novel does not contain source info. {0}", sourceInfo.Author)); }
 
 			//Check for lines
-			if (lines.Count() == 0) {
-				throw new Exception("Event must have lines");
-			}
+			if (lines.Count() == 0) { throw new Exception("Event must have lines"); }
 
 			//Parse the header
 			var header = ParseHeader(lines.First());
@@ -105,9 +103,7 @@ namespace LiteraryAnalyzer.LAShared {
 			return retVal;
 		}
 		public static List<String> WriteEventLinks(this LitEvent litevent) {
-			var retVal = new List<String>();
-			retVal.Add(MakeLinkLine("TreeTag", litevent.TreeTag.Tag));
-			retVal.AddRange(litevent.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag)));
+			var retVal = litevent.WriteElmLinks();
 			retVal.AddRange(litevent.Speakers.Select(a => MakeLinkLine("Speaker", a.Tags.First().Tag)));
 			return retVal;
 		}
