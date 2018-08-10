@@ -89,20 +89,5 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return retVal;
 		}
-		/// <summary>
-		/// Takes all of the source lines of a list of arbitrary strings and turns them into a string
-		/// </summary>
-		public static String SourceLinesToString(IEnumerable<string> lines) {
-			var paragraphs = ParsingTools.PartitionLines(lines.Where(s => IsSourceLine(s)), line => String.IsNullOrWhiteSpace(line));
-			StringBuilder sb = new StringBuilder();
-			foreach (var paralist in paragraphs) {
-				foreach (var paraline in paralist.Where(l => !String.IsNullOrEmpty(l))) {
-					sb.Append(paraline.TrimEnd('\r', '\n'));
-					sb.Append(" ");
-				}
-				sb.Append("\r\n");
-			}
-			return sb.ToString();
-		}
 	}
 }

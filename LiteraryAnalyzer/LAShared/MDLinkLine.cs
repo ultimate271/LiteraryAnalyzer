@@ -32,22 +32,5 @@ namespace LiteraryAnalyzer.LAShared {
 		public static String MakeLinkLine(String link, String tag) {
 			return new MDLinkLine() { Link = link, Tag = tag }.ToString();
 		}
-		public static MDLinkLine ParseLink(String s) {
-			var retVal = new MDLinkLine();
-			var match = System.Text.RegularExpressions.Regex.Match(s, @"^\[([^\]]*)\]: # {([^}]*)}$");
-			if (!match.Success) {
-				return null;
-			}
-			else {
-				try {
-					retVal.Link = match.Groups[1].Value;
-					retVal.Tag = match.Groups[2].Value;
-				}
-				catch {
-					return null;
-				}
-			}
-			return retVal;
-		}
 	}
 }

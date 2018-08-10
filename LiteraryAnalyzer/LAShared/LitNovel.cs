@@ -12,6 +12,10 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitRef> GeneratedReference { get; set; } = new List<LitRef>();
 		public List<LitSceneMetadata> SceneMetadata { get; set; } = new List<LitSceneMetadata>();
 		public List<LitSourceInfo> SourceInfo { get; set; } = new List<LitSourceInfo>();
+		public LitOptions LO { get; set; }
+		public LitNovel(LitOptions LO) {
+			this.LO = LO;
+		}
 	}
 	public static partial class LitExtensions {
 		public static List<String> WriteNovelOutline(this LitNovel novel) {
@@ -118,8 +122,8 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
-		public static LitNovel ParseAnnSource(LitAnnSource source) {
-			var retVal = new LitNovel();
+		public static LitNovel ParseAnnSource(LitAnnSource source, LitOptions LO) {
+			var retVal = new LitNovel(LO);
 
 			//Aggregate the source
 			//var files = System.IO.Directory.GetFiles(source.BaseDir, source.Prefix + "*.md");
@@ -197,11 +201,12 @@ namespace LiteraryAnalyzer.LAShared {
 			foreach (var LitSourceInfo in novel.SourceInfo) {
 				foreach (var Metadata in novel.SceneMetadata) {
 					var lines = Metadata.ToSourceLines(LitSourceInfo);
-					lines.AddRange(novel.Scenes
+					var query = novel.Scenes
 						.Where(s => s.Metadata == Metadata)
-						.Select(s => s.ToSourceLines(LitSourceInfo))
-						.Aggregate((acc, l) => { acc.AddRange(l); return acc; })
-					);
+						.Select(s => novel.LO.WriteSourceLines(s, LitSourceInfo));
+					foreach (var scenelines in query) {
+						lines.AddRange(scenelines);
+					}
 					var SourceFile = new MDSourceFile() {
 						Descriptor = Metadata.Descriptor,
 						Author = LitSourceInfo.Author,

@@ -11,16 +11,17 @@ namespace LiteraryAnalyzer {
 	public class Controller {
 		private LiteraryAnalyzerContext db { get; set; } = new LiteraryAnalyzerContext();
 		public MarkdownOption MarkdownOption { get; set; } = new MarkdownOption();
+		public LitOptions LO { get; set; } = new LitOptions();
 		
 		public Controller() : this (new LiteraryAnalyzerContext()) { }
 		public Controller(LiteraryAnalyzerContext db) { this.db = db; }
 
 		public void DeveloperDebug () {
-			var sourceInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
+			var sourceInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\bwebster\Source\Repos\notes\test", Prefix = "sil" };
 			var source = sourceInfo.BuildSource();
-			var x = ParsingTools.ParseAnnSource(source);
+			var x = ParsingTools.ParseAnnSource(source, LO);
 			var y = x.CreateSource();
-			var writeInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\testout", Prefix = "sil" };
+			var writeInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\bwebster\Source\Repos\notes\testout", Prefix = "sil" };
 			y.TagFile = x.CreateTagsFile(writeInfo);
 			y.WriteToFilesystem(writeInfo);
 

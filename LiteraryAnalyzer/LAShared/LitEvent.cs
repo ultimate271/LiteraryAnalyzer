@@ -52,7 +52,7 @@ namespace LiteraryAnalyzer.LAShared {
 			if (lines.Count() == 0) { throw new Exception("Event must have lines"); }
 
 			//Parse the header
-			var header = ParseHeader(lines.First());
+			var header = novel.LO.ParseHeader(lines.First());
 			try {
 				retVal.Header = header.Text;
 			} catch (NullReferenceException e) {
@@ -61,7 +61,7 @@ namespace LiteraryAnalyzer.LAShared {
 
 			//Partition the subevents
 			var PartitionedLines = PartitionLines(lines, line => {
-				var subheader = ParseHeader(line);
+				var subheader = novel.LO.ParseHeader(line);
 				if (subheader != null) {
 					return subheader.HeaderLevel == header.HeaderLevel + 1;
 				}
@@ -69,7 +69,7 @@ namespace LiteraryAnalyzer.LAShared {
 			});
 
 			//Extract the links from the first partition
-			var links = PartitionedLines.First().Select(line => ParseLink(line)).Where(link => link != null);
+			var links = PartitionedLines.First().Select(line => novel.LO.ParseLink(line)).Where(link => link != null);
 			LitRef novelRef;
 			foreach (var link in links) {
 				if (link.Link.Equals("TreeTag")) {
@@ -82,7 +82,7 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 
 			//Extract the source lines
-			retVal.Source.Text[sourceInfo] = SourceLinesToString(PartitionedLines.First());
+			retVal.Source.Text[sourceInfo] = novel.LO.SourceLinesToString(PartitionedLines.First());
 
 			//Parse the subevents
 			foreach (var subEventLines in PartitionedLines.Skip(1)) {
@@ -102,24 +102,24 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return retVal;
 		}
-		public static List<String> WriteEventLinks(this LitEvent litevent) {
-			var retVal = litevent.WriteElmLinks();
-			retVal.AddRange(litevent.Speakers.Select(a => MakeLinkLine("Speaker", a.Tags.First().Tag)));
-			return retVal;
-		}
+		//public static List<String> WriteEventLinks(this LitEvent litevent) {
+		//	var retVal = litevent.WriteElmLinks();
+		//	retVal.AddRange(litevent.Speakers.Select(a => MakeLinkLine("Speaker", a.Tags.First().Tag)));
+		//	return retVal;
+		//}
 
-		public static List<String> ToSourceLines(this LitEvent litevent, LitSourceInfo sourceinfo, int headerlevel) {
-			var retVal = new List<String>();
-			retVal.Add(litevent.WriteHeader(headerlevel));
-			retVal.AddRange(litevent.WriteEventLinks());
-			try {
-				retVal.Add(litevent.Source.Text[sourceinfo]);
-			}
-			catch { }
-			foreach (var child in litevent.Children) {
-				retVal.AddRange(child.ToSourceLines(sourceinfo, headerlevel + 1));
-			}
-			return retVal;
-		}
+		//public static List<String> ToSourceLines(this LitEvent litevent, LitSourceInfo sourceinfo, int headerlevel) {
+		//	var retVal = new List<String>();
+		//	retVal.Add(litevent.WriteHeader(headerlevel));
+		//	retVal.AddRange(litevent.WriteEventLinks());
+		//	try {
+		//		retVal.Add(litevent.Source.Text[sourceinfo]);
+		//	}
+		//	catch { }
+		//	foreach (var child in litevent.Children) {
+		//		retVal.AddRange(child.ToSourceLines(sourceinfo, headerlevel + 1));
+		//	}
+		//	return retVal;
+		//}
 	}
 }

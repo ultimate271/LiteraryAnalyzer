@@ -46,7 +46,7 @@ namespace LiteraryAnalyzer.LAShared {
 			if (!novel.SceneMetadata.Contains(metadata)) { throw new Exception(String.Format("Novel does not contain metadata. {0}", metadata.Descriptor)); }
 
 			//Parse the header
-			var headerInfo = ParsingTools.ParseHeader(lines.First());
+			var headerInfo = novel.LO.ParseHeader(lines.First());
 			if (headerInfo.HeaderLevel != 1) {
 				throw new Exception("The first line of a scene must have header level 1, " + lines.First());
 			}
@@ -61,7 +61,7 @@ namespace LiteraryAnalyzer.LAShared {
 
 			//Parse the links
 			var query = PartitionedLines.First()
-				.Select(l => ParsingTools.ParseLink(l))
+				.Select(l => novel.LO.ParseLink(l))
 				.Where(l => l != null);
 			foreach (var link in query) {
 				//I feel as though there is a way to use reflection to be super clever here,
@@ -117,22 +117,22 @@ namespace LiteraryAnalyzer.LAShared {
 			return retVal;
 		}
 
-		public static List<String> WriteSceneLinks(this LitScene scene) {
-			var retVal = scene.WriteElmLinks();
-			retVal.AddRange(scene.Actors.Select(a => MakeLinkLine("Actor", a.Tags.First().Tag)));
-			retVal.AddRange(scene.Location.Select(p => MakeLinkLine("Location", p.Tags.First().Tag)));
-			retVal.AddRange(scene.References.Select(r => MakeLinkLine("Reference", r.Tags.First().Tag)));
-			return retVal;
-		}
+		//public static List<String> WriteSceneLinks(this LitScene scene) {
+		//	var retVal = scene.WriteElmLinks();
+		//	retVal.AddRange(scene.Actors.Select(a => MakeLinkLine("Actor", a.Tags.First().Tag)));
+		//	retVal.AddRange(scene.Location.Select(p => MakeLinkLine("Location", p.Tags.First().Tag)));
+		//	retVal.AddRange(scene.References.Select(r => MakeLinkLine("Reference", r.Tags.First().Tag)));
+		//	return retVal;
+		//}
 
-		public static List<String> ToSourceLines(this LitScene scene, LitSourceInfo sourceinfo) {
-			var retVal = new List<String>();
-			retVal.Add(scene.WriteHeader(1));
-			retVal.AddRange(scene.WriteSceneLinks());
-			foreach (var child in scene.Children) {
-				retVal.AddRange(child.ToSourceLines(sourceinfo, 2));
-			}
-			return retVal;
-		}
+		//public static List<String> ToSourceLines(this LitScene scene, LitSourceInfo sourceinfo, LitOptions LO) {
+		//	var retVal = new List<String>();
+		//	retVal.Add(scene.WriteHeader(1));
+		//	retVal.AddRange(LO.WriteElmLinks(scene));
+		//	foreach (var child in scene.Children) {
+		//		retVal.AddRange(child.ToSourceLines(sourceinfo, 2));
+		//	}
+		//	return retVal;
+		//}
 	}
 }

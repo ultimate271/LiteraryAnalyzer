@@ -77,11 +77,5 @@ namespace LiteraryAnalyzer.LAShared {
 			return retVal;
 		}
 			
-		public static List<String> WriteElmLinks(this LitElm litelm) {
-			var retVal = new List<String>();
-			retVal.Add(MakeLinkLine("TreeTag", litelm.TreeTag.Tag));
-			retVal.AddRange(litelm.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag)));
-			return retVal;
-		}
 	}
 }

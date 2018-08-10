@@ -18,6 +18,7 @@ namespace LiteraryAnalyzer.LAShared {
 	}
 	public static partial class ParsingTools {
 		public static bool IsSourceLine(String line) {
+			//TODO THis is awful
 			return ParseHeader(line) == null && ParseLink(line) == null;
 		}
 	}

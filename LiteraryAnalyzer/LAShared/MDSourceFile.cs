@@ -66,14 +66,14 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="novel"></param>
-		public static void ParseLitSourceInfo(this MDSourceFile source, LitNovel novel) {
-			var litSourceInfo = new LitSourceInfo();
-			var query = source.Lines.Select(s => ParsingTools.ParseLink(s))
-				.Where(l => l != null && l.Link.Equals("Author"));
-			if (query.Count() > 0) {
-				litSourceInfo.Author = query.First().Tag;
-			}
-			//source.LitSourceInfo = novel.AddSourceInfoDistinct(litSourceInfo);
-		}
+		//public static void ParseLitSourceInfo(this MDSourceFile source, LitNovel novel) {
+		//	var litSourceInfo = new LitSourceInfo();
+		//	var query = source.Lines.Select(s => ParsingTools.ParseLink(s))
+		//		.Where(l => l != null && l.Link.Equals("Author"));
+		//	if (query.Count() > 0) {
+		//		litSourceInfo.Author = query.First().Tag;
+		//	}
+		//	//source.LitSourceInfo = novel.AddSourceInfoDistinct(litSourceInfo);
+		//}
 	}
 }

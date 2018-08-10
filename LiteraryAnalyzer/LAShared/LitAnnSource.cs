@@ -57,11 +57,11 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="novel"></param>
-		public static void SetAllLitSourceInfo(this LitAnnSource source, LitNovel novel) {
-			foreach (var sourcefile in source.Sources) {
-				sourcefile.ParseLitSourceInfo(novel);
-			}
-		}
+		//public static void SetAllLitSourceInfo(this LitAnnSource source, LitNovel novel) {
+		//	foreach (var sourcefile in source.Sources) {
+		//		sourcefile.ParseLitSourceInfo(novel);
+		//	}
+		//}
 		/// <summary>
 		/// I shouldn't ever use this function
 		/// </summary>
