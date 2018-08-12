@@ -8,13 +8,13 @@ namespace LiteraryAnalyzer.LAShared {
 	public class MDNotesFile : MDFile {
 	}
 	public static partial class ParsingTools {
-		public static String ToNotesShortFilename(LitAnnSourceInfo info) {
+		public static String ToNotesShortFilename(MDAnnSourceInfo info) {
 			return new MDNotesFile().ToShortFilename(info);
 		}
-		public static String ToLongFilename(this MDNotesFile notesfile, LitAnnSourceInfo info) {
+		public static String ToLongFilename(this MDNotesFile notesfile, MDAnnSourceInfo info) {
 			return String.Format("{0}\\{1}", info.BaseDir, notesfile.ToShortFilename(info));
 		}
-		public static String ToShortFilename(this MDNotesFile notesfile, LitAnnSourceInfo info) {
+		public static String ToShortFilename(this MDNotesFile notesfile, MDAnnSourceInfo info) {
 			return String.Format("{0}notes.md", info.Prefix);
 		}
 		public static MDNotesFile CreateNotesFile(this LitNovel novel) {

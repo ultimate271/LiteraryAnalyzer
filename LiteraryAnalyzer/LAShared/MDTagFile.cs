@@ -8,13 +8,13 @@ namespace LiteraryAnalyzer.LAShared {
 	public class MDTagFile : MDFile {
 	}
 	public static partial class ParsingTools {
-		public static String ToLongFilename(this MDTagFile tagfile, LitAnnSourceInfo info) {
+		public static String ToLongFilename(this MDTagFile tagfile, MDAnnSourceInfo info) {
 			return String.Format("{0}\\{1}", info.BaseDir, tagfile.ToShortFilename(info));
 		}
-		public static String ToShortFilename(this MDTagFile tagfile, LitAnnSourceInfo info) {
+		public static String ToShortFilename(this MDTagFile tagfile, MDAnnSourceInfo info) {
 			return "tags";
 		}
-		public static MDTagFile CreateTagsFile(this LitNovel novel, LitAnnSourceInfo info) {
+		public static MDTagFile CreateTagsFile(this LitNovel novel, MDAnnSourceInfo info) {
 			var retVal = new MDTagFile();
 			var Tags = new List<MDTag>();
 			string Filename;
@@ -24,14 +24,14 @@ namespace LiteraryAnalyzer.LAShared {
 					Filename = ParsingTools.ToShortFilename(info, LitSourceInfo, Metadata);
 					var query = novel.Scenes.Where(s => s.Metadata == Metadata);
 					foreach (var scene in query) {
-						Tags.AddRange(scene.GetAllTags(Filename, 1));
+						Tags.AddRange(novel.LO.GetAllTags(scene, Filename));
 					}
 				}
 			}
 			Filename = ToNotesShortFilename(info);
 			foreach (var litRef in novel.References) {
 				foreach (var Tag in litRef.Tags) {
-					Tags.Add(new MDTag() { TagName = Tag.Tag, TagFile = Filename, TagLine = litRef.ReferenceHeader() });
+					Tags.Add(new MDTag() { TagName = Tag.Tag, TagFile = Filename, TagLine = novel.LO.WriteNotesHeader(litRef) });
 				}
 			}
 

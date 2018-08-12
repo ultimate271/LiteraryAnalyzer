@@ -14,13 +14,9 @@ namespace LiteraryAnalyzer.LAShared {
 		/// <summary>
 		/// This is a dictionary to allow for concurrent source
 		/// </summary>
-		public Dictionary<LitSourceInfo, String> Text { get; set; } = new Dictionary<LitSourceInfo, string>();
+		public Dictionary<LitAuthor, String> Text { get; set; } = new Dictionary<LitAuthor, string>();
 	}
 	public static partial class ParsingTools {
-		public static bool IsSourceLine(String line) {
-			//TODO THis is awful
-			return ParseHeader(line) == null && ParseLink(line) == null;
-		}
 	}
 	public static partial class LitExtensions {
 		//public static LitSource ParseSource(this String s) {

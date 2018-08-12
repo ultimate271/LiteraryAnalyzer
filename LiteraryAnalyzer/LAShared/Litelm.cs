@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 
 namespace LiteraryAnalyzer.LAShared {
+	/// <summary>
+	/// Represents a scene or event in the novel.
+	/// </summary>
 	public abstract class LitElm {
 		public int LitelmID { get; set; }
 		public string Header { get; set; }
@@ -14,22 +17,19 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitEvent> Children { get; set; } = new List<LitEvent>();
 	}
 	public static partial class LitExtensions {
-		public static List<MDTag> GetAllTags(this LitElm elm, String Filename, int HeaderLevel) {
-			var retVal = new List<MDTag>();
-			var tempList = new List<LitTag>();
+		//public static List<MDTag> GetAllTags(this LitElm elm, String Filename, int HeaderLevel) {
+		//	var retVal = new List<MDTag>();
+		//	var tempList = new List<LitTag>();
 
-			tempList.Add(elm.TreeTag);
-			tempList.AddRange(elm.UserTags);
-			retVal = tempList.Select(t => new MDTag() { TagName = t.Tag, TagFile = Filename, TagLine = elm.WriteHeader(HeaderLevel) }).ToList();
+		//	tempList.Add(elm.TreeTag);
+		//	tempList.AddRange(elm.UserTags);
+		//	retVal = tempList.Select(t => new MDTag() { TagName = t.Tag, TagFile = Filename, TagLine = elm.WriteHeader(HeaderLevel) }).ToList();
 
-			foreach (var child in elm.Children) {
-				retVal.AddRange(child.GetAllTags(Filename, HeaderLevel + 1));
-			}
-			return retVal;
-		}
-		public static String WriteHeader(this LitElm elm, int headerlevel) {
-			return String.Format("{0} {1}", new String('#', headerlevel), elm.Header);
-		}
+		//	foreach (var child in elm.Children) {
+		//		retVal.AddRange(child.GetAllTags(Filename, HeaderLevel + 1));
+		//	}
+		//	return retVal;
+		//}
 		public static IEnumerable<LitRef> GetAllReferences(this LitElm elm) {
 			var retVal = new List<LitRef>();
 			//USES REFLECTION
@@ -68,14 +68,14 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools { 
-		public static List<String> WriteOutline(this LitElm elm, int headerlevel) {
-			var retVal = new List<String>();
-			retVal.Add(elm.WriteHeader(headerlevel));
-			foreach (var child in elm.Children) {
-				retVal.AddRange(child.WriteOutline(headerlevel + 1));
-			}
-			return retVal;
-		}
+		//public static List<String> WriteOutline(this LitElm elm, int headerlevel) {
+		//	var retVal = new List<String>();
+		//	retVal.Add(elm.WriteHeader(headerlevel));
+		//	foreach (var child in elm.Children) {
+		//		retVal.AddRange(child.WriteOutline(headerlevel + 1));
+		//	}
+		//	return retVal;
+		//}
 			
 	}
 }

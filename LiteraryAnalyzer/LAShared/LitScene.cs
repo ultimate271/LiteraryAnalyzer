@@ -32,13 +32,28 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		public LitSceneMetadata Metadata { get; set; } = new LitSceneMetadata();
 	}
+	public static partial class LitExtensions {
+		/// <summary>
+		/// Takes a scene and returns all of the treetags for the speaker
+		/// </summary>
+		/// <param name="scene"></param>
+		/// <param name="speaker"></param>
+		/// <returns></returns>
+		public static IEnumerable<LitTag> SpeakerTags(this LitScene scene, LitChar speaker) {
+			var retVal = new List<LitTag>();
+			foreach (var litevent in scene.Children) {
+				retVal.AddRange(litevent.SpeakerTags(speaker));
+			}
+			return retVal;
+		}
+	}
 	public static partial class ParsingTools {
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="lines"></param>
 		/// <returns></returns>
-		public static LitScene ParseScene(this LitNovel novel, IEnumerable<String> lines, LitSourceInfo sourceInfo, LitSceneMetadata metadata) {
+		public static LitScene ParseScene(this LitNovel novel, IEnumerable<String> lines, LitAuthor sourceInfo, LitSceneMetadata metadata) {
 			var retVal = new LitScene();
 
 			//Some checks
@@ -108,13 +123,6 @@ namespace LiteraryAnalyzer.LAShared {
 			scene1.Location = new List<LitPlace>(scene1.Location.Union(scene2.Location)); 
 			scene1.References = new List<LitRef>(scene1.References.Union(scene2.References));
 			scene1.Children = new List<LitEvent>(scene1.Children.Zip(scene2.Children, (e1, e2) => e1.MergeEvent(e2)));
-		}
-		public static IEnumerable<LitTag> SpeakerTags(this LitScene scene, LitChar speaker) {
-			var retVal = new List<LitTag>();
-			foreach (var litevent in scene.Children) {
-				retVal.AddRange(litevent.SpeakerTags(speaker));
-			}
-			return retVal;
 		}
 
 		//public static List<String> WriteSceneLinks(this LitScene scene) {

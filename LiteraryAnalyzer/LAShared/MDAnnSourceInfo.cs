@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	/// <summary>
-	/// Represents the set of source files that I have annotated
+	/// Represents the information about where the LitAnnSource should be written to
 	/// </summary>
-	public class LitAnnSourceInfo {
+	public class MDAnnSourceInfo {
 		public string BaseDir { get; set; }
 		public string Prefix { get; set; }
-		public LitSourceInfo LitSourceInfo { get; set; } = new LitSourceInfo() { Author = "Original" };
 	}
 	public static partial class ParsingTools {
 	}

@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
-	public class LitAnnSource {
+	/// <summary>
+	/// Object represenation of the files that get written to/read from the file system
+	/// </summary>
+	public class MDAnnSource {
 		public List<MDSourceFile> Sources { get; set; } = new List<MDSourceFile>();
 		public MDNotesFile Notes { get; set; } = new MDNotesFile();
 		public MDTagFile TagFile { get; set; } = new MDTagFile();
@@ -16,8 +19,8 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="info"></param>
 		/// <returns></returns>
-		public static LitAnnSource BuildSource(this LitAnnSourceInfo info) {
-			var retVal = new LitAnnSource();
+		public static MDAnnSource BuildSource(this MDAnnSourceInfo info) {
+			var retVal = new MDAnnSource();
 
 			//Get the filenames
 			var files = System.IO.Directory.GetFiles(info.BaseDir, info.Prefix + "*.md");
@@ -47,9 +50,9 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return retVal;
 		}
-		public static void TagAllSourceFiles(this LitAnnSource source) {
+		public static void TagAllSourceFiles(this LitOptions LO, MDAnnSource source) {
 			foreach (var sourceFile in source.Sources) {
-				sourceFile.TagLines();
+				LO.TagLines(sourceFile);
 			}
 		}
 		/// <summary>
@@ -67,7 +70,7 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="source"></param>
 		/// <returns></returns>
-		public static List<String> AllLines(this LitAnnSource source) {
+		public static List<String> AllLines(this MDAnnSource source) {
 			var retVal = new List<String>();
 			foreach (var sourcefile in source.Sources) {
 				retVal.AddRange(sourcefile.Lines);

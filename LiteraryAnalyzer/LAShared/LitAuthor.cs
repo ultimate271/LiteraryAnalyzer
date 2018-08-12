@@ -8,29 +8,23 @@ namespace LiteraryAnalyzer.LAShared {
 	/// <summary>
 	/// Represents the information about where a LitSource came from
 	/// </summary>
-	public class LitSourceInfo {
+	public class LitAuthor {
 		public String Author { get; set; } = "Original";
 	}
 	public static partial class LitExtensions {
-		public static bool IsSourceInfoIntersection(this LitSourceInfo info1, LitSourceInfo info2) {
+		public static bool IsSourceInfoIntersection(this LitAuthor info1, LitAuthor info2) {
 			return info1.Author.Equals(info2.Author);
 		}
 	}
 	public static partial class ParsingTools {
-		public static void WriteToFilesystem(this LitAnnSource sourceObjects, LitAnnSourceInfo info ) {
+		public static void WriteToFilesystem(this MDAnnSource sourceObjects, MDAnnSourceInfo info ) {
 			foreach (var source in sourceObjects.Sources) {
 				System.IO.File.WriteAllLines(source.ToLongFilename(info), source.Lines);
 			}
 			System.IO.File.WriteAllLines(sourceObjects.Notes.ToLongFilename(info), sourceObjects.Notes.Lines);
 			System.IO.File.WriteAllLines(sourceObjects.TagFile.ToLongFilename(info), sourceObjects.TagFile.Lines);
 		}
-		public static LitSourceInfo ParseLitSourceInfo(IEnumerable<String> metadatalines) {
-			var retVal = new LitSourceInfo();
-			var links = metadatalines.Select(l => ParsingTools.ParseLink(l)).Where(link => link != null);
-			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag).FirstOrDefault();
-			return retVal;
-		}
-		public static String ToSourceLine(this LitSourceInfo sourceinfo) {
+		public static String ToSourceLine(this LitAuthor sourceinfo) {
 			return ParsingTools.MakeLinkLine("Author", sourceinfo.Author);
 		}
 	}

@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
+	/// <summary>
+	/// Reference to a character in the novel (speaker, actor, etc)
+	/// </summary>
 	public class LitChar : LitRef {
 		public LitChar() : base() { }
 		public LitChar(String tag) : base(tag) { }

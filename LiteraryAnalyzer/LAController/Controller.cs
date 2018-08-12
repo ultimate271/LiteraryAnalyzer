@@ -17,11 +17,11 @@ namespace LiteraryAnalyzer {
 		public Controller(LiteraryAnalyzerContext db) { this.db = db; }
 
 		public void DeveloperDebug () {
-			var sourceInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\bwebster\Source\Repos\notes\test", Prefix = "sil" };
+			var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
 			var source = sourceInfo.BuildSource();
 			var x = ParsingTools.ParseAnnSource(source, LO);
 			var y = x.CreateSource();
-			var writeInfo = new LitAnnSourceInfo() { BaseDir = @"C:\Users\bwebster\Source\Repos\notes\testout", Prefix = "sil" };
+			var writeInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\testout", Prefix = "sil" };
 			y.TagFile = x.CreateTagsFile(writeInfo);
 			y.WriteToFilesystem(writeInfo);
 

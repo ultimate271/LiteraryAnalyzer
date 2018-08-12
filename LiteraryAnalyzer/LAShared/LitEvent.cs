@@ -32,6 +32,12 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		/// <summary>
+		/// Takes two events, and if they are mergable, merges them together, returning the merged event
+		/// </summary>
+		/// <param name="event1"></param>
+		/// <param name="event2"></param>
+		/// <returns></returns>
 		public static LitEvent MergeEvent(this LitEvent event1, LitEvent event2) {
 			if (!event1.IsElmMergeable(event2)) { throw new Exception(String.Format("Event {0} not mergeable with Event {1}", event1.TreeTag, event2.TreeTag)); }
 			event1.Speakers = new List<LitChar>(event1.Speakers.Union(event2.Speakers));
@@ -42,13 +48,18 @@ namespace LiteraryAnalyzer.LAShared {
 			event1.Children = new List<LitEvent>(event1.Children.Zip(event2.Children, (e1, e2) => e1.MergeEvent(e2)));
 			return event1;
 		}
-		public static LitEvent ParseEvent(this LitNovel novel, IEnumerable<string> lines, LitSourceInfo sourceInfo) {
+		/// <summary>
+		/// Takes some event lines, determined to be syntactically correct, and creates an event object
+		/// </summary>
+		/// <param name="novel"></param>
+		/// <param name="lines"></param>
+		/// <param name="sourceInfo"></param>
+		/// <returns></returns>
+		public static LitEvent ParseEvent(this LitNovel novel, IEnumerable<string> lines, LitAuthor sourceInfo) {
 			var retVal = new LitEvent();
 
 			//Some checks
 			if (!novel.SourceInfo.Contains(sourceInfo)) { throw new Exception(String.Format("Novel does not contain source info. {0}", sourceInfo.Author)); }
-
-			//Check for lines
 			if (lines.Count() == 0) { throw new Exception("Event must have lines"); }
 
 			//Parse the header
@@ -92,6 +103,12 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return retVal;
 		}
+		/// <summary>
+		/// Takes a LitEvent and returns all of the speakers in this event or the child events.
+		/// </summary>
+		/// <param name="litevent"></param>
+		/// <param name="speaker"></param>
+		/// <returns></returns>
 		public static IEnumerable<LitTag> SpeakerTags(this LitEvent litevent, LitChar speaker) {
 			var retVal = new List<LitTag>();
 			if (litevent.Speakers.Contains(speaker)) {

@@ -14,9 +14,5 @@ namespace LiteraryAnalyzer.LAShared {
 	}
 	public static partial class ParsingTools {
 
-		public static MDHeader ParseHeaderOther(this LitOptions LO, String line) {
-
-			return new MDHeader() { HeaderLevel = 12, Text = LO.SourceLinesToString(new String[] { line }) };
-		}
 	}
 }
