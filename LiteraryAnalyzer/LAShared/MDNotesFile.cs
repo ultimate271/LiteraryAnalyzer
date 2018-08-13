@@ -17,7 +17,7 @@ namespace LiteraryAnalyzer.LAShared {
 			var PartitionedLines = LO.ExtractNotesRefs(notesfile);
 			LitRef litref = null;
 			foreach (var refLines in PartitionedLines) {
-				litref = LO.ParseToLitRef(refLines);
+				litref = LO.ParseToLitRef(novel, refLines);
 				novel.AddReferenceDistinct(litref, false);
 			}
 		}
@@ -35,10 +35,10 @@ namespace LiteraryAnalyzer.LAShared {
 		public static String ToShortFilename(this MDNotesFile notesfile, MDAnnSourceInfo info) {
 			return String.Format("{0}notes.md", info.Prefix);
 		}
-		public static MDNotesFile CreateNotesFile(this LitNovel novel) {
+		public static MDNotesFile WriteNotesFileDefault(this LitOptions LO, LitNovel novel) {
 			var retVal = new MDNotesFile();
 			foreach (var reference in novel.References) {
-				retVal.Lines.AddRange(reference.ToNotesLines(novel));
+				retVal.Lines.AddRange(LO.WriteNotesLines(novel, reference));
 			}
 			return retVal;
 		}

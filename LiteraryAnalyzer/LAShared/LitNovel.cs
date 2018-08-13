@@ -154,7 +154,7 @@ namespace LiteraryAnalyzer.LAShared {
 			var retVal = new LitNovel();
 
 			//Preliminary tagging
-			LO.TagAllSourceFiles(source);
+			LO.TagAnnSource(source);
 
 			//Parse the current notes file and fill the novel with current references
 			LO.ParseNotesFile(retVal, source.Notes);

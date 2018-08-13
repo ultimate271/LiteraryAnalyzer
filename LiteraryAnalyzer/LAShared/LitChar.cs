@@ -12,31 +12,6 @@ namespace LiteraryAnalyzer.LAShared {
 		public LitChar() : base() { }
 		public LitChar(String tag) : base(tag) { }
 		public LitChar(LitTag tag) : base(tag) { }
-		public override List<string> ToNotesLines(LitNovel novel) {
-			var retVal = base.ToNotesLines(novel);
-
-			//Show actor instances
-			var actorHeader = new MDHeader() {
-				HeaderLevel = 2,
-				Text = "Actor in"
-			};
-			retVal.Add(actorHeader.ToString());
-
-			//Place all of the tags for the actor
-			retVal.AddRange(novel.ActorTags(this).Select(t => t.ToHyperlink()));
-
-			//Show speaker instances
-			var speakerHeader = new MDHeader() {
-				HeaderLevel = 2,
-				Text = "Speaker in"
-			};
-			retVal.Add(speakerHeader.ToString());
-
-			//Place all of the tags for the speaker
-			retVal.AddRange(novel.SpeakerTags(this).Select(t => t.ToHyperlink()));
-
-			return retVal;
-		}
 	}
 	public static partial class ParsingTools {
 		/// <summary>
@@ -46,6 +21,30 @@ namespace LiteraryAnalyzer.LAShared {
 		/// <param name="lines"></param>
 		public static void ParseLitChar(this LitChar retVal, IEnumerable<IEnumerable<String>> lines) {
 
+		}
+		public static List<String> WriteNotesCharLinesDefault(this LitOptions LO, LitNovel novel, LitChar character) {
+			var retVal = new List<String>();
+			//Show actor instances
+			var actorHeader = new MDHeader() {
+				HeaderLevel = 2,
+				Text = "Actor in"
+			};
+			retVal.Add(actorHeader.ToString());
+
+			//Place all of the tags for the actor
+			retVal.AddRange(novel.ActorTags(character).Select(t => t.ToHyperlink()));
+
+			//Show speaker instances
+			var speakerHeader = new MDHeader() {
+				HeaderLevel = 2,
+				Text = "Speaker in"
+			};
+			retVal.Add(speakerHeader.ToString());
+
+			//Place all of the tags for the speaker
+			retVal.AddRange(novel.SpeakerTags(character).Select(t => t.ToHyperlink()));
+
+			return retVal;
 		}
 	}
 }

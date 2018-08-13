@@ -21,6 +21,14 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return novel.AddMetadataDistinct(retVal);
 		}
+		public static IEnumerable<String> ExtractMetadataDefault (this LitOptions LO, IEnumerable<IEnumerable<String>> PartitionedScenes){
+			return PartitionedScenes.Where(lines => 
+				lines.Select(l => LO.ParseLink(l))
+					.Where(link => link != null)
+					.Where(link => link.Link.Equals("Metadata"))
+					.Count() > 0
+				).FirstOrDefault();
+		}
 		public static List<String> WriteMetadataDefault(this LitOptions LO, LitSceneMetadata metadata, LitAuthor sourceinfo) {
 			var retVal = new List<String>();
 			retVal.Add(String.Format("# {0}", metadata.Header));

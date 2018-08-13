@@ -68,6 +68,73 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools { 
+		/// <summary>
+		/// Takes a litelm and writes it's header at a particular level
+		/// </summary>
+		/// <param name="LO"></param>
+		/// <param name="elm"></param>
+		/// <param name="headerlevel"></param>
+		/// <returns></returns>
+		public static String WriteElmHeaderDefault(this LitOptions LO, LitElm elm, int headerlevel) {
+			return String.Format("{0} {1}", new String('#', headerlevel), elm.Header);
+		}
+		/// <summary>
+		/// Takes a litelm and writes all of the lines for that elm that go into the source for a particular Author
+		/// </summary>
+		/// <param name="LO"></param>
+		/// <param name="litElm"></param>
+		/// <param name="sourceinfo"></param>
+		/// <returns></returns>
+		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor sourceinfo) {
+			return ParsingTools.WriteSourceLinesDefault(LO, litElm, sourceinfo, 1);
+		}
+		/// <summary>
+		/// Takes a litelm and writes all of the lines for that elm that go into the source for a particular Author
+		/// </summary>
+		/// <param name="LO"></param>
+		/// <param name="litElm"></param>
+		/// <param name="sourceinfo"></param>
+		/// <param name="headerlevel"></param>
+		/// <returns></returns>
+		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor sourceinfo, int headerlevel) {
+			var retVal = new List<String>();
+			retVal.Add(LO.WriteElmHeader(litElm, headerlevel));
+			retVal.AddRange(LO.WriteElmLinks(litElm));
+			if (litElm is LitEvent) { 
+				try {
+					retVal.AddRange(LO.WriteElmText((litElm as LitEvent).Source.Text[sourceinfo]));
+				}
+				catch { }
+			}
+			foreach (var child in litElm.Children) {
+				retVal.AddRange(WriteSourceLinesDefault(LO, child, sourceinfo, headerlevel + 1));
+			}
+			return retVal;
+		}
+		/// <summary>
+		/// Takes a litelm and writes the links for it that go under the header
+		/// </summary>
+		/// <param name="litelm"></param>
+		/// <returns></returns>
+		public static List<String> WriteElmLinksDefault(this LitOptions LO, LitElm litelm) {
+			var retVal = new List<String>();
+			retVal.Add(MakeLinkLine("TreeTag", litelm.TreeTag.Tag));
+			retVal.AddRange(litelm.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag)));
+			if (litelm is LitEvent) {
+				retVal.AddRange((litelm as LitEvent).Speakers.Select(a => MakeLinkLine("Speaker", a.Tags.First().Tag)));
+			}
+			if (litelm is LitScene) {
+				retVal.AddRange((litelm as LitScene).Actors.Select(a => MakeLinkLine("Actor", a.Tags.First().Tag)));
+				retVal.AddRange((litelm as LitScene).Location.Select(p => MakeLinkLine("Location", p.Tags.First().Tag)));
+				retVal.AddRange((litelm as LitScene).References.Select(r => MakeLinkLine("Reference", r.Tags.First().Tag)));
+			}
+			return retVal;
+		}
+		public static List<String> WriteElmTextDefault(this LitOptions LO, String Text) {
+			var retVal = new List<String>();
+			retVal.Add(Text);
+			return retVal;
+		}
 		//public static List<String> WriteOutline(this LitElm elm, int headerlevel) {
 		//	var retVal = new List<String>();
 		//	retVal.Add(elm.WriteHeader(headerlevel));

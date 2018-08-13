@@ -135,23 +135,26 @@ namespace LiteraryAnalyzer.LAShared {
 		#endregion
 
 		#region "Notes Writing"
-		public delegate String WriteNotesHeaderDelegate(LitRef reference);
+		public delegate MDNotesFile WriteNotesFileDelegate(LitNovel novel);
+		public WriteNotesFileDelegate WriteNotesFile { get; set; }
+
+		public delegate String WriteNotesHeaderDelegate(LitNovel novel, LitRef reference);
 		public WriteNotesHeaderDelegate WriteNotesHeader { get; set; }
 
-		public delegate String WriteNotesLinkDelegate(LitRef reference);
+		public delegate String WriteNotesLinkDelegate(LitNovel novel, LitRef reference);
 		public WriteNotesLinkDelegate WriteNotesLink { get; set; }
 
-		public delegate List<String> WriteNotesCommentaryDelegate(LitRef reference);
+		public delegate List<String> WriteNotesCommentaryDelegate(LitNovel novel, LitRef reference);
 		public WriteNotesCommentaryDelegate WriteNotesCommentary { get; set; }
 
-		public delegate List<String> WriteNotesTagsDelegate(LitRef reference);
+		public delegate List<String> WriteNotesTagsDelegate(LitNovel novel, LitRef reference);
 		public WriteNotesTagsDelegate WriteNotesTags { get; set; }
 
-		public delegate List<String> WriteNotesLinesDelegate(LitRef reference);
+		public delegate List<String> WriteNotesLinesDelegate(LitNovel novel, LitRef reference);
 		public WriteNotesLinesDelegate WriteNotesLines { get; set; }
 
-		public delegate List<String> WriteNotesLitcharLinesDelegate(LitChar character);
-		public WriteNotesLitcharLinesDelegate WriteNotesLitcharLines { get; set; }
+		public delegate List<String> WriteNotesCharLinesDelegate(LitNovel novel, LitChar character);
+		public WriteNotesCharLinesDelegate WriteNotesCharLines { get; set; }
 
 		public delegate List<MDTag> GetAllTagsDelegate(LitElm elm, String Filename);
 		public GetAllTagsDelegate GetAllTags { get; set; }
@@ -202,16 +205,18 @@ namespace LiteraryAnalyzer.LAShared {
 
 			this.WriteAnnSource = this.WriteAnnSourceDefault;
 			this.WriteMetadata = this.WriteMetadataDefault;
-			//
 			this.WriteElmSourceLines = this.WriteSourceLinesDefault;
 			this.WriteElmHeader = this.WriteElmHeaderDefault;
 			this.WriteElmLinks = this.WriteElmLinksDefault;
 			this.WriteElmText = this.WriteElmTextDefault;
+
+			this.WriteNotesFile = this.WriteNotesFileDefault;
+			this.WriteNotesLines = this.WriteNotesLinesDefault;
 			this.WriteNotesHeader = this.WriteNotesHeaderDefault;
 			this.WriteNotesLink = this.WriteNotesLinkDefault;
 			this.WriteNotesCommentary = this.WriteNotesCommentaryDefault;
 			this.WriteNotesTags = this.WriteNotesTagsDefault;
-			this.WriteNotesLines = this.WriteNotesLinesDefault;
+			this.WriteNotesCharLines = this.WriteNotesCharLinesDefault;
 			this.GetAllTags = this.GetAllTagsDefault;
 		}
 	}
@@ -232,123 +237,8 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return sb.ToString().Trim();
 		}
-		/// <summary>
-		/// Takes a litelm and writes all of the lines for that elm that go into the source for a particular Author
-		/// </summary>
-		/// <param name="LO"></param>
-		/// <param name="litElm"></param>
-		/// <param name="sourceinfo"></param>
-		/// <returns></returns>
-		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor sourceinfo) {
-			return ParsingTools.WriteSourceLinesDefault(LO, litElm, sourceinfo, 1);
-		}
-		/// <summary>
-		/// Takes a litelm and writes all of the lines for that elm that go into the source for a particular Author
-		/// </summary>
-		/// <param name="LO"></param>
-		/// <param name="litElm"></param>
-		/// <param name="sourceinfo"></param>
-		/// <param name="headerlevel"></param>
-		/// <returns></returns>
-		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor sourceinfo, int headerlevel) {
-			var retVal = new List<String>();
-			retVal.Add(LO.WriteElmHeader(litElm, headerlevel));
-			retVal.AddRange(LO.WriteElmLinks(litElm));
-			if (litElm is LitEvent) { 
-				try {
-					retVal.AddRange(LO.WriteElmText((litElm as LitEvent).Source.Text[sourceinfo]));
-				}
-				catch { }
-			}
-			foreach (var child in litElm.Children) {
-				retVal.AddRange(WriteSourceLinesDefault(LO, child, sourceinfo, headerlevel + 1));
-			}
-			return retVal;
-		}
-		/// <summary>
-		/// Takes a litelm and writes the links for it that go under the header
-		/// </summary>
-		/// <param name="litelm"></param>
-		/// <returns></returns>
-		public static List<String> WriteElmLinksDefault(this LitOptions LO, LitElm litelm) {
-			var retVal = new List<String>();
-			retVal.Add(MakeLinkLine("TreeTag", litelm.TreeTag.Tag));
-			retVal.AddRange(litelm.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag)));
-			if (litelm is LitEvent) {
-				retVal.AddRange((litelm as LitEvent).Speakers.Select(a => MakeLinkLine("Speaker", a.Tags.First().Tag)));
-			}
-			if (litelm is LitScene) {
-				retVal.AddRange((litelm as LitScene).Actors.Select(a => MakeLinkLine("Actor", a.Tags.First().Tag)));
-				retVal.AddRange((litelm as LitScene).Location.Select(p => MakeLinkLine("Location", p.Tags.First().Tag)));
-				retVal.AddRange((litelm as LitScene).References.Select(r => MakeLinkLine("Reference", r.Tags.First().Tag)));
-			}
-			return retVal;
-		}
-		public static List<String> WriteElmTextDefault(this LitOptions LO, String Text) {
-			var retVal = new List<String>();
-			retVal.Add(Text);
-			return retVal;
-		}
-		public static String WriteNotesHeaderDefault(this LitOptions LO, LitRef reference) {
-			var TagHeader = new MDHeader() {
-				HeaderLevel = 1,
-				Text = reference.Tags.First().Tag
-			};
-			return TagHeader.ToString();
-		}
-		public static String WriteNotesLinkDefault(this LitOptions LO, LitRef reference) {
-			var retVal = new MDLinkLine();
-			retVal.Link = "Reference";
-			if (reference is LitChar) {
-				retVal.Tag = "Character";
-			}
-			else if (reference is LitPlace) {
-				retVal.Tag = "Place";
-			}
-			else {
-				retVal.Tag = "Reference";
-			}
-			return retVal.ToString();
-		}
-		public static List<String> WriteNotesCommentaryDefault(this LitOptions LO, LitRef reference) {
-			return new List<string>(new String[] { reference.Commentary });
-		}
-		public static List<String> WriteNotesTagsDefault(this LitOptions LO, LitRef reference) {
-			var retVal = new List<string>();
-
-			var tagsHeader = new MDHeader() {
-				HeaderLevel = 2,
-				Text = "Tags"
-			};
-			retVal.Add(tagsHeader.ToString());
-		
-			//Place the tags in the header
-			foreach (var tag in reference.Tags) {
-				retVal.Add(tag.Tag);
-			}
-
-			return retVal;
-		}
-		public static IEnumerable<String> ExtractMetadataDefault (this LitOptions LO, IEnumerable<IEnumerable<String>> PartitionedScenes){
-			return PartitionedScenes.Where(lines => 
-				lines.Select(l => LO.ParseLink(l))
-					.Where(link => link != null)
-					.Where(link => link.Link.Equals("Metadata"))
-					.Count() > 0
-				).FirstOrDefault();
-		}
 		public static bool IsSourceLineDefault(this LitOptions LO, String line) {
 			return LO.ParseHeader(line) == null && LO.ParseLink(line) == null;
-		}
-		public static List<String> WriteNotesLinesDefault(this LitOptions LO, LitRef reference, LitNovel novel) {
-			var retVal = new List<String>();
-
-			retVal.Add(LO.WriteNotesHeader(reference));
-			retVal.Add(LO.WriteNotesLink(reference));
-			retVal.AddRange(LO.WriteNotesCommentary(reference));
-			retVal.AddRange(LO.WriteNotesTags(reference));
-
-			return retVal;
 		}
 
 		public static List<MDTag> GetAllTagsDefault(this LitOptions LO, LitElm elm, String Filename) {
@@ -366,9 +256,6 @@ namespace LiteraryAnalyzer.LAShared {
 				retVal.AddRange(ParsingTools.GetAllTagsDefault(LO, child, Filename, HeaderLevel + 1));
 			}
 			return retVal;
-		}
-		public static List<String> WriteNotesLitcharLinesDelegate(this LitOptions LO, LitChar character) {
-
 		}
 	}
 }

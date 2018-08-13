@@ -22,25 +22,26 @@ namespace LiteraryAnalyzer.LAShared {
 		public static string ToShortFilename (String Prefix,  String descriptor,String author) {
 			return String.Format("{0}{1}.{2}.md", Prefix, descriptor, author);
 		}
-		public static void ParseSourceToNovel(this LitNovel novel, MDSourceFile sourceFile) {
-			var PartitionedScenes = ParsingTools.PartitionLines(
-				sourceFile.Lines, 
-				line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]")
-			);
-			//Extract and add the metadata
-			var MetadataLines = novel.LO.ExtractMetadata(PartitionedScenes);
-			var LitSceneMetadata = novel.LO.ParseMetadata(MetadataLines);
-			LitSceneMetadata = novel.AddMetadataDistinct(LitSceneMetadata);
+		public static void ParseSourceFileDefault(this LitOptions LO, LitNovel novel, MDSourceFile sourceFile) {
+			var PartitionedScenes = LO.ExtractFromSourceFile(sourceFile);
 
-			var LitSourceInfo = novel.LO.ParseLitAuthor(MetadataLines);
-			LitSourceInfo = novel.AddSourceInfoDistinct(LitSourceInfo);
+			//Extract and add the metadata
+			var MetadataLines = LO.ExtractMetadata(PartitionedScenes);
+			var LitSceneMetadata = LO.ParseMetadata(novel, MetadataLines);
+			var Author = LO.ParseAuthor(novel, MetadataLines);
 
 			//Extract and add the scenes
-			var PartitionedSceneLines = novel.LO.ExtractScenes(PartitionedScenes);
+			var PartitionedSceneLines = LO.ExtractScenes(PartitionedScenes);
 			foreach (var Scenelines in PartitionedSceneLines) {
-				var scene = novel.ParseScene(Scenelines, LitSourceInfo, LitSceneMetadata);
+				var scene = LO.ParseToScene(novel, LitSceneMetadata, Author, Scenelines);
 				novel.AddScene(scene);
 			}
+		}
+		public static IEnumerable<IEnumerable<String>> ExtractFromSourceFileDefault(this LitOptions LO, MDSourceFile sourcefile) {
+			return ParsingTools.PartitionLines(
+				sourcefile.Lines, 
+				line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]")
+			);
 		}
 		public static void TagSourceFileDefault(this LitOptions LO, MDSourceFile sourcefile) {
 			sourcefile.Lines = new List<string>(TagSourceFileDefault(LO, sourcefile.Lines, sourcefile.Descriptor, sourcefile.Author));

@@ -17,6 +17,12 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		public static LitAuthor ParseAuthorDefault(this LitOptions LO, LitNovel novel, IEnumerable<String> metadatalines) {
+			var retVal = new LitAuthor();
+			var links = metadatalines.Select(l => LO.ParseLink(l)).Where(link => link != null);
+			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag).FirstOrDefault();
+			return novel.AddAuthorDistinct(retVal);
+		} 
 		public static void WriteToFilesystem(this MDAnnSource sourceObjects, MDAnnSourceInfo info ) {
 			foreach (var source in sourceObjects.Sources) {
 				System.IO.File.WriteAllLines(source.ToLongFilename(info), source.Lines);

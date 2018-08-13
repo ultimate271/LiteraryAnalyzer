@@ -38,7 +38,7 @@ namespace LiteraryAnalyzer.LAShared {
 					retVal.Sources.Add(SourceFile);
 				}
 			}
-			retVal.Notes = novel.CreateNotesFile();
+			retVal.Notes = LO.WriteNotesFile(novel);
 
 			return retVal;
 		}
@@ -81,7 +81,7 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 		public static void TagAnnSourceDefault(this LitOptions LO, MDAnnSource source) {
 			foreach (var sourceFile in source.Sources) {
-				LO.TagLines(sourceFile);
+				LO.TagSourceFile(sourceFile);
 			}
 		}
 		/// <summary>
