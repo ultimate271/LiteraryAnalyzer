@@ -13,6 +13,23 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		public static MDLinkLine ParseLinkDefault(this LitOptions LO, String s) {
+			var retVal = new MDLinkLine();
+			var match = System.Text.RegularExpressions.Regex.Match(s, @"^\[([^\]]*)\]: # {([^}]*)}$");
+			if (!match.Success) {
+				return null;
+			}
+			else {
+				try {
+					retVal.Link = match.Groups[1].Value;
+					retVal.Tag = match.Groups[2].Value;
+				}
+				catch {
+					return null;
+				}
+			}
+			return retVal;
+		}
 		/// <summary>
 		/// Will look through all of the generic list types of the element,
 		/// and based upon the name of the link, return a new LitRef with

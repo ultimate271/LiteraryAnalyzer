@@ -21,7 +21,6 @@ namespace LiteraryAnalyzer.LAShared {
 		/// <returns>The MDHeader object, or null if the parse failed</returns>
 		public static MDHeader ParseHeaderDefault(this LitOptions LO, String line) {
 			var retVal = new MDHeader();
-			LO.ParseLink(line);
 			var match = System.Text.RegularExpressions.Regex.Match(line, @"^(#+)([^#].*)$");
 			if (!match.Success) {
 				return null;
