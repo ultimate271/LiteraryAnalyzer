@@ -13,6 +13,29 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
-
+		/// <summary>
+		/// Default implementaiton for parsing a line into a MDHeader object.
+		/// GOOD!
+		/// </summary>
+		/// <param name="line"></param>
+		/// <returns>The MDHeader object, or null if the parse failed</returns>
+		public static MDHeader ParseHeaderDefault(this LitOptions LO, String line) {
+			var retVal = new MDHeader();
+			LO.ParseLink(line);
+			var match = System.Text.RegularExpressions.Regex.Match(line, @"^(#+)([^#].*)$");
+			if (!match.Success) {
+				return null;
+			}
+			else {
+				try {
+					retVal.HeaderLevel = match.Groups[1].Value.Length;
+					retVal.Text = match.Groups[2].Value.Trim();
+				}
+				catch {
+					return null;
+				}
+			}
+			return retVal;
+		}
 	}
 }

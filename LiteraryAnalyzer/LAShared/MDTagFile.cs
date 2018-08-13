@@ -19,7 +19,7 @@ namespace LiteraryAnalyzer.LAShared {
 			var Tags = new List<MDTag>();
 			string Filename;
 
-			foreach (var LitSourceInfo in novel.SourceInfo) {
+			foreach (var LitSourceInfo in novel.Authors) {
 				foreach (var Metadata in novel.SceneMetadata) {
 					Filename = ParsingTools.ToShortFilename(info, LitSourceInfo, Metadata);
 					var query = novel.Scenes.Where(s => s.Metadata == Metadata);

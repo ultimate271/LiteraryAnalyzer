@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public class LitOptions {
+		#region "MDParsing"
 		public delegate MDHeader ParseHeaderDelegate(String line);
 		public ParseHeaderDelegate ParseHeader { get; set; }
 
@@ -18,26 +19,112 @@ namespace LiteraryAnalyzer.LAShared {
 		public delegate String SourceLinesToStringDelegate(IEnumerable<String> lines);
 		public SourceLinesToStringDelegate SourceLinesToString { get; set; }
 
-		public delegate void TagLinesDelegate(MDSourceFile sourceFile);
-		public TagLinesDelegate TagLines { get; set; }
+		#endregion
 
-		public delegate LitAuthor ParseLitSourceInfoDelegate(IEnumerable<String> metadatalines);
-		public ParseLitSourceInfoDelegate ParseLitSourceInfo { get; set; }
+		#region "Build MDAnnSource"
+		public delegate MDAnnSource BuildAnnSourceDelegate(MDAnnSourceInfo AnnSourceInfo);
+		public BuildAnnSourceDelegate BuildAnnSource { get; set; }
 
-		public delegate LitRef ParseLitRefDelegate(IEnumerable<String> lines);
-		public ParseLitRefDelegate ParseLitRef { get; set; }
+		public delegate IEnumerable<MDSourceFile> BuildSourceFilesDelegate(MDAnnSourceInfo AnnSourceInfo);
+		public BuildSourceFilesDelegate BuildSourceFiles { get; set; }
 
-		public delegate IEnumerable<IEnumerable<String>> ExtractScenesDelegate(IEnumerable<IEnumerable<String>> PartitionedScenes);
-		public ExtractScenesDelegate ExtractScenes { get; set; }
+		public delegate MDNotesFile BuildNotesFileDelegate(MDAnnSourceInfo AnnSourceInfo);
+		public BuildNotesFileDelegate BuildNotesFile { get; set; }
+		#endregion
 
+		#region "Source Parsing"
+		public delegate LitNovel ParseAnnSourceDelegate(MDAnnSource AnnSource);
+		public ParseAnnSourceDelegate ParseAnnSource { get; set; }
+
+		#region "Tagging"
+		public delegate void TagAnnSourceDelegate(MDAnnSource AnnSource);
+		public TagAnnSourceDelegate TagAnnSource { get; set; }
+
+		public delegate void TagSourceFileDelegate(MDSourceFile SourceFile);
+		public TagSourceFileDelegate TagSourceFile { get; set; }
+
+		#endregion
+
+		#region "Notes File Parsing"
+		public delegate void ParseNotesFileDelegate(LitNovel novel, MDNotesFile notesFile);
+		public ParseNotesFileDelegate ParseNotesFile { get; set; }
+
+		public delegate IEnumerable<IEnumerable<String>> ExtractNotesRefsDelegate(MDNotesFile notesfile);
+		public ExtractNotesRefsDelegate ExtractNotesRefs { get; set; }
+
+		public delegate LitRef ParseToLitRefDelegate(LitNovel novel, IEnumerable<String> lines);
+		public ParseToLitRefDelegate ParseToLitRef { get; set; }
+
+		#endregion
+
+		#region "Source File Parsing"
+		public delegate void ParseSourceFileDelegate(LitNovel novel, MDSourceFile sourcefile);
+		public ParseSourceFileDelegate ParseSourceFile { get; set; }
+
+		public delegate IEnumerable<IEnumerable<String>> ExtractFromSourceFileDelegate(MDSourceFile sourceFile);
+		public ExtractFromSourceFileDelegate ExtractFromSourceFile { get; set; }
+
+		#region "Metadata Parsing"
 		public delegate IEnumerable<String> ExtractMetadataDelegate(IEnumerable<IEnumerable<String>> PartitionedScenes);
 		public ExtractMetadataDelegate ExtractMetadata { get; set; }
 
-		public delegate LitSceneMetadata ParseMetadataDelegate(IEnumerable<String> sourceLines);
+		public delegate LitSceneMetadata ParseMetadataDelegate(LitNovel novel, IEnumerable<String> metadataLines);
 		public ParseMetadataDelegate ParseMetadata { get; set; }
 
-		public delegate LitAuthor ParseLitAuthorDelegate(IEnumerable<String> metadatalines);
-		public ParseLitAuthorDelegate ParseLitAuthor { get; set; }
+		public delegate LitAuthor ParseAuthorDelegate(LitNovel novel, IEnumerable<String> metadatalines);
+		public ParseAuthorDelegate ParseAuthor { get; set; }
+
+		#endregion
+
+		#region "Scene Parsing"
+		public delegate IEnumerable<IEnumerable<String>> ExtractScenesDelegate(IEnumerable<IEnumerable<String>> PartitionedScenes);
+		public ExtractScenesDelegate ExtractScenes { get; set; }
+
+		public delegate LitScene ParseToSceneDelegate(LitNovel novel, LitSceneMetadata metadata, LitAuthor author, IEnumerable<String> scenelines);
+		public ParseToSceneDelegate ParseToScene { get; set; }
+
+		public delegate void ParseSceneHeaderDelegate(LitNovel novel, LitScene scene, IEnumerable<String> scenelines);
+		public ParseSceneHeaderDelegate ParseSceneHeader { get; set; }
+
+		public delegate void ParseSceneLinksDelegate(LitNovel novel, LitScene scene, IEnumerable<String> scenelines);
+		public ParseSceneLinksDelegate ParseSceneLinks { get; set; }
+
+		#endregion
+
+		#region "Event Parsing"
+		public delegate IEnumerable<IEnumerable<String>> ExtractEventsDelegate(IEnumerable<String> lines, int HeaderLevel);
+		public ExtractEventsDelegate ExtractEvents { get; set; }
+
+		public delegate LitEvent ParseToEventDelegate(LitNovel novel, LitAuthor author, IEnumerable<String> eventlines);
+		public ParseToEventDelegate ParseToEvent { get; set; }
+
+		public delegate void ParseEventHeaderDelegate(LitNovel novel, LitEvent litevent, IEnumerable<String> eventlines);
+		public ParseEventHeaderDelegate ParseEventHeader { get; set; }
+
+		public delegate void ParseEventLinksDelegate(LitNovel novel, LitEvent litevent, IEnumerable<String> eventlines);
+		public ParseEventLinksDelegate ParseEventLinks { get; set; }
+
+		public delegate void ParseEventTextDelegate(LitNovel novel, LitEvent litevent, LitAuthor author, IEnumerable<String> eventlines);
+		public ParseEventTextDelegate ParseEventText { get; set; }
+
+		#endregion
+
+		#endregion
+
+		#endregion
+
+
+
+
+
+
+
+		#region "Source Writing"
+		public delegate MDAnnSource WriteAnnSourceDelegate(LitNovel novel);
+		public WriteAnnSourceDelegate WriteAnnSource { get; set; }
+
+		public delegate List<String> WriteMetadataDelegate(LitSceneMetadata metadata, LitAuthor author);
+		public WriteMetadataDelegate WriteMetadata { get; set; }
 
 		public delegate List<String> WriteElmSourceLinesDelegate(LitElm litelm, LitAuthor sourceInfo);
 		public WriteElmSourceLinesDelegate WriteElmSourceLines { get; set; }
@@ -51,6 +138,9 @@ namespace LiteraryAnalyzer.LAShared {
 		public delegate List<String> WriteElmTextDelegate(String Text);
 		public WriteElmTextDelegate WriteElmText { get; set; }
 
+		#endregion
+
+		#region "Notes Writing"
 		public delegate String WriteNotesHeaderDelegate(LitRef reference);
 		public WriteNotesHeaderDelegate WriteNotesHeader { get; set; }
 
@@ -66,8 +156,13 @@ namespace LiteraryAnalyzer.LAShared {
 		public delegate List<String> WriteNotesLinesDelegate(LitRef reference);
 		public WriteNotesLinesDelegate WriteNotesLines { get; set; }
 
+		public delegate List<String> WriteNotesLitcharLinesDelegate(LitChar character);
+		public WriteNotesLitcharLinesDelegate WriteNotesLitcharLines { get; set; }
+
 		public delegate List<MDTag> GetAllTagsDelegate(LitElm elm, String Filename);
 		public GetAllTagsDelegate GetAllTags { get; set; }
+
+		#endregion
 
 
 		//BuildSource
@@ -79,13 +174,41 @@ namespace LiteraryAnalyzer.LAShared {
 			this.ParseLink = this.ParseLinkDefault;
 			this.IsSourceLine = this.IsSourceLineDefault;
 			this.SourceLinesToString = this.SourceLinesToStringDefault;
-			this.TagLines = this.TagLinesDefault;
-			this.ParseLitSourceInfo = this.ParseLitSourceInfoDefault;
-			this.ParseLitRef = this.ParseLitRefDefault;
-			this.ExtractScenes = this.ExtractScenesDefault;
+
+			this.BuildAnnSource = this.BuildAnnSourceDefault;
+			//this.BuildSourceFiles = this.BuildSourceFilesDefault;
+			//this.BuildNotesFile = this.BuildNotesFileDefault;
+
+			this.ParseAnnSource = this.ParseAnnSourceDefault;
+
+			this.TagAnnSource = this.TagAnnSourceDefault;
+			this.TagSourceFile = this.TagSourceFileDefault;
+
+			this.ParseNotesFile = this.ParseNotesFileDefault;
+			this.ExtractNotesRefs = this.ExtractNotesRefsDefault;
+			this.ParseToLitRef = this.ParseToLitRefDefault;
+
+			this.ParseSourceFile = this.ParseSourceFileDefault;
+			this.ExtractFromSourceFile = this.ExtractFromSourceFileDefault;
+
 			this.ExtractMetadata = this.ExtractMetadataDefault;
 			this.ParseMetadata = this.ParseMetadataDefault;
-			this.ParseLitAuthor = this.ParseLitAuthorDefault;
+			this.ParseAuthor = this.ParseAuthorDefault;
+
+			this.ExtractScenes = this.ExtractScenesDefault;
+			this.ParseToScene = this.ParseToSceneDefault;
+			this.ParseSceneHeader = this.ParseSceneHeaderDefault;
+			this.ParseSceneLinks = this.ParseSceneLinksDefault;
+
+			this.ExtractEvents = this.ExtractEventsDefault;
+			this.ParseToEvent = this.ParseToEventDefault;
+			this.ParseEventHeader = this.ParseEventHeaderDefault;
+			this.ParseEventLinks = this.ParseEventLinksDefault;
+			this.ParseEventText = this.ParseEventTextDefault;
+
+			this.WriteAnnSource = this.WriteAnnSourceDefault;
+			this.WriteMetadata = this.WriteMetadataDefault;
+			//
 			this.WriteElmSourceLines = this.WriteSourceLinesDefault;
 			this.WriteElmHeader = this.WriteElmHeaderDefault;
 			this.WriteElmLinks = this.WriteElmLinksDefault;
@@ -100,30 +223,8 @@ namespace LiteraryAnalyzer.LAShared {
 	}
 	public static partial class ParsingTools {
 		/// <summary>
-		/// Default implementaiton for parsing a line into a MDHeader object.
-		/// </summary>
-		/// <param name="line"></param>
-		/// <returns>The MDHeader object, or null if the parse failed</returns>
-		public static MDHeader ParseHeaderDefault(this LitOptions LO, String line) {
-			var retVal = new MDHeader();
-			LO.ParseLink(line);
-			var match = System.Text.RegularExpressions.Regex.Match(line, @"^(#+)([^#].*)$");
-			if (!match.Success) {
-				return null;
-			}
-			else {
-				try {
-					retVal.HeaderLevel = match.Groups[1].Value.Length;
-					retVal.Text = match.Groups[2].Value.Trim();
-				}
-				catch {
-					return null;
-				}
-			}
-			return retVal;
-		}
-		/// <summary>
 		/// Default implentation to takes all of the source lines of a list of arbitrary strings and turns them into a string
+		/// GOOD!
 		/// </summary>
 		public static String SourceLinesToStringDefault(this LitOptions LO, IEnumerable<string> lines) {
 			var paragraphs = ParsingTools.PartitionLines(lines.Where(s => LO.IsSourceLine(s)), line => String.IsNullOrWhiteSpace(line));
@@ -136,47 +237,6 @@ namespace LiteraryAnalyzer.LAShared {
 				sb.Append("\r\n");
 			}
 			return sb.ToString().Trim();
-		}
-		/// <summary>
-		/// Default implentation to parse a link line into a MDLink
-		/// </summary>
-		/// <param name="LO"></param>
-		/// <param name="s"></param>
-		/// <returns></returns>
-		public static MDLinkLine ParseLinkDefault(this LitOptions LO, String s) {
-			var retVal = new MDLinkLine();
-			var match = System.Text.RegularExpressions.Regex.Match(s, @"^\[([^\]]*)\]: # {([^}]*)}$");
-			if (!match.Success) {
-				return null;
-			}
-			else {
-				try {
-					retVal.Link = match.Groups[1].Value;
-					retVal.Tag = match.Groups[2].Value;
-				}
-				catch {
-					return null;
-				}
-			}
-			return retVal;
-		}
-		/// <summary>
-		/// Takes a litelm and writes it's header at a particular level
-		/// </summary>
-		/// <param name="LO"></param>
-		/// <param name="elm"></param>
-		/// <param name="headerlevel"></param>
-		/// <returns></returns>
-		public static String WriteElmHeaderDefault(this LitOptions LO, LitElm elm, int headerlevel) {
-			return String.Format("{0} {1}", new String('#', headerlevel), elm.Header);
-		}
-		public static IEnumerable<IEnumerable<String>> ExtractScenesDefault(this LitOptions LO, IEnumerable<IEnumerable<String>> PartitionedScenes) {
-			return PartitionedScenes.Where(lines =>
-				lines.Select(l => LO.ParseLink(l))
-					.Where(link => link != null)
-					.Where(link => link.Link.Equals("TreeTag"))
-					.Count() > 0
-				);
 		}
 		/// <summary>
 		/// Takes a litelm and writes all of the lines for that elm that go into the source for a particular Author
@@ -275,37 +335,6 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return retVal;
 		}
-		public static LitRef ParseLitRefDefault(this LitOptions LO, IEnumerable<String> lines) {
-			if (lines.Count() == 0) { return null; }
-			var PartitionedLines = ParsingTools.PartitionLines(lines, l => System.Text.RegularExpressions.Regex.IsMatch(l, @"^##[^#]"));
-			var link = PartitionedLines.First().Select(s => LO.ParseLink(s)).Where(l => l != null).First();
-
-			var retVal = new LitRef();
-			//Do the specific things for this style of reference
-			if (link.Link.Equals("Reference")) {
-				if (link.Tag.Equals("Character")) {
-					retVal = new LitChar();
-					(retVal as LitChar).ParseLitChar(PartitionedLines);
-				}
-			}
-
-			//Get the first tag of the reference
-			string pattern = @"^# (.+)";
-			var match = System.Text.RegularExpressions.Regex.Match(lines.First(), pattern);
-			retVal.Tags.Add(new LitTag(match.Groups[1].Value));
-
-			//Save the commentary
-			retVal.Commentary = LO.SourceLinesToString(PartitionedLines.First());
-
-			//Save the tags
-			pattern = "^## Tags$";
-			var tagsList = PartitionedLines.Where(list => System.Text.RegularExpressions.Regex.IsMatch(list.First(), pattern)).First();
-			foreach (var tagline in tagsList.Where(s => LO.IsSourceLine(s))) {
-				retVal.AddTag(new LitTag(tagline));
-			}
-
-			return retVal;
-		}
 		public static IEnumerable<String> ExtractMetadataDefault (this LitOptions LO, IEnumerable<IEnumerable<String>> PartitionedScenes){
 			return PartitionedScenes.Where(lines => 
 				lines.Select(l => LO.ParseLink(l))
@@ -314,33 +343,10 @@ namespace LiteraryAnalyzer.LAShared {
 					.Count() > 0
 				).FirstOrDefault();
 		}
-		public static LitSceneMetadata ParseMetadataDefault(this LitOptions LO, IEnumerable<String> sourceLines) {
-			var retVal = new LitSceneMetadata();
-			var links = sourceLines.Select(l => LO.ParseLink(l)).Where(link => link != null);
-			retVal.Descriptor = links.Where(link => link.Link.Equals("Descriptor")).Select(link => link.Tag).FirstOrDefault();
-
-			var pattern = @"^# (.*)$";
-			var match = System.Text.RegularExpressions.Regex.Match(sourceLines.First(), pattern);
-			retVal.Header = match.Groups[1].Value;
-
-			return retVal;
-		}
-		public static LitAuthor ParseLitAuthorDefault(this LitOptions LO, IEnumerable<String> metadatalines) {
-			var retVal = new LitAuthor();
-			var links = metadatalines.Select(l => LO.ParseLink(l)).Where(link => link != null);
-			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag).FirstOrDefault();
-			return retVal;
-		}
 		public static bool IsSourceLineDefault(this LitOptions LO, String line) {
 			return LO.ParseHeader(line) == null && LO.ParseLink(line) == null;
 		}
-		public static LitAuthor ParseLitSourceInfoDefault(this LitOptions LO, IEnumerable<String> metadatalines) {
-			var retVal = new LitAuthor();
-			var links = metadatalines.Select(l => LO.ParseLink(l)).Where(link => link != null);
-			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag).FirstOrDefault();
-			return retVal;
-		}
-		public static List<String> WriteNotesLinesDefault(this LitOptions LO, LitRef reference) {
+		public static List<String> WriteNotesLinesDefault(this LitOptions LO, LitRef reference, LitNovel novel) {
 			var retVal = new List<String>();
 
 			retVal.Add(LO.WriteNotesHeader(reference));
@@ -367,70 +373,8 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return retVal;
 		}
-		public static void TagLinesDefault(this LitOptions LO, MDSourceFile sourcefile) {
-			sourcefile.Lines = new List<string>(TagLinesDefault(LO, sourcefile.Lines, sourcefile.Descriptor, sourcefile.Author));
-		}
-		public static List<String> TagLinesDefault(this LitOptions LO, IEnumerable<String> lines, String tag, String author) {
-			return TagLinesDefault(LO, lines, tag, author, 1);
-		}
-		public static List<String> TagLinesDefault (this LitOptions LO, IEnumerable<String> lines, String tag, String author, int headerLevel) {
-			var retVal = new List<String>();
-			var arg = new List<String>();
-			//First remove the existing tags
-			var query = lines.Where(s => {
-				var linkLine = LO.ParseLink(s);
-				return linkLine == null || !ParsingTools.GenereratedLinks.Contains(linkLine.Link);
-			} );
-			int i = headerLevel == 1 ? -1 : 0;
-			bool adding = true;
-			foreach (var line in query) {
-				var pattern = @"^(#+)[^#]";
-				var match = System.Text.RegularExpressions.Regex.Match(line, pattern);
-				if (match.Success) {
-					int lineHeaderLevel = match.Groups[1].Length;
-					if (i < 0) { //i should only ever equal 0 if this is the metadata scene, and it's the first scene of the file
-						i++;
-						retVal.Add(line);
-						retVal.Add(String.Format(@"[Metadata]: # {{{0}}}", tag));
-						retVal.Add(String.Format(@"[Descriptor]: # {{{0}}}", tag));
-						retVal.Add(String.Format(@"[Author]: # {{{0}}}", author));
-					}
-					else if (lineHeaderLevel == headerLevel && adding) {
-						i++;
-						retVal.Add(line);
-						retVal.Add(String.Format(@"[TreeTag]: # {{{0}.{1:00}}}", tag, i));
-					}
-					else if (lineHeaderLevel > headerLevel) {
-						adding = false;
-						arg.Add(line);
-					}
-					else if (lineHeaderLevel == headerLevel && !adding) {
-						//Recursively call the lines we've gathered together, tag them, and add the range
-						retVal.AddRange(TagLinesDefault(LO, arg, String.Format(@"{0}.{1:00}", tag, i), author, headerLevel + 1));
+		public static List<String> WriteNotesLitcharLinesDelegate(this LitOptions LO, LitChar character) {
 
-						//Begin anew
-						arg = new List<string>();
-						adding = true;
-
-						//Start with this header line
-						i++;
-						retVal.Add(line);
-						retVal.Add(String.Format(@"[TreeTag]: # {{{0}.{1:00}}}", tag, i));
-					}
-				}
-				else { //If this is not a header line, and just a regular line
-					if (adding) {
-						retVal.Add(line);
-					}
-					else {
-						arg.Add(line);
-					}
-				}
-			}
-			if (arg.Count > 0) {
-				retVal.AddRange(TagLinesDefault(LO, arg, String.Format(@"{0}.{1:00}", tag, i), author, headerLevel + 1));
-			}
-			return retVal;
 		}
 	}
 }

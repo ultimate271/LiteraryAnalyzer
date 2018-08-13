@@ -15,11 +15,40 @@ namespace LiteraryAnalyzer.LAShared {
 	}
 	public static partial class ParsingTools {
 		/// <summary>
+		/// Kick off point for creating the source objects out of the novel
+		/// </summary>
+		/// <param name="novel"></param>
+		/// <returns></returns>
+		public static MDAnnSource WriteAnnSourceDefault(this LitOptions LO, LitNovel novel) {
+			var retVal = new MDAnnSource();
+			foreach (var author in novel.Authors) {
+				foreach (var metadata in novel.SceneMetadata) {
+					var lines = LO.WriteMetadata(metadata, author);
+					var query = novel.Scenes
+						.Where(s => s.Metadata == metadata)
+						.Select(s => LO.WriteElmSourceLines(s, author));
+					foreach (var scenelines in query) {
+						lines.AddRange(scenelines);
+					}
+					var SourceFile = new MDSourceFile() {
+						Descriptor = metadata.Descriptor,
+						Author = author.Author,
+						Lines = lines
+					};
+					retVal.Sources.Add(SourceFile);
+				}
+			}
+			retVal.Notes = novel.CreateNotesFile();
+
+			return retVal;
+		}
+		/// <summary>
 		/// Takes the source info, and compiles it all together into a LitAnnSource object
 		/// </summary>
 		/// <param name="info"></param>
 		/// <returns></returns>
-		public static MDAnnSource BuildSource(this MDAnnSourceInfo info) {
+		public static MDAnnSource BuildAnnSourceDefault(this LitOptions LO, MDAnnSourceInfo info) {
+			//TODO modularize this function
 			var retVal = new MDAnnSource();
 
 			//Get the filenames
@@ -50,7 +79,7 @@ namespace LiteraryAnalyzer.LAShared {
 
 			return retVal;
 		}
-		public static void TagAllSourceFiles(this LitOptions LO, MDAnnSource source) {
+		public static void TagAnnSourceDefault(this LitOptions LO, MDAnnSource source) {
 			foreach (var sourceFile in source.Sources) {
 				LO.TagLines(sourceFile);
 			}

@@ -53,55 +53,60 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="novel"></param>
 		/// <param name="lines"></param>
-		/// <param name="sourceInfo"></param>
+		/// <param name="author"></param>
 		/// <returns></returns>
-		public static LitEvent ParseEvent(this LitNovel novel, IEnumerable<string> lines, LitAuthor sourceInfo) {
+		public static LitEvent ParseToEventDefault(this LitOptions LO, LitNovel novel, LitAuthor author, IEnumerable<string> lines) {
 			var retVal = new LitEvent();
 
 			//Some checks
-			if (!novel.SourceInfo.Contains(sourceInfo)) { throw new Exception(String.Format("Novel does not contain source info. {0}", sourceInfo.Author)); }
+			if (!novel.Authors.Contains(author)) { throw new Exception(String.Format("Novel does not contain source info. {0}", author.Author)); }
 			if (lines.Count() == 0) { throw new Exception("Event must have lines"); }
 
-			//Parse the header
-			var header = novel.LO.ParseHeader(lines.First());
-			try {
-				retVal.Header = header.Text;
-			} catch (NullReferenceException e) {
-				throw new Exception("The first line of an event must me a header", e);
-			}
+			LO.ParseEventHeader(novel, retVal, lines);
 
-			//Partition the subevents
-			var PartitionedLines = PartitionLines(lines, line => {
-				var subheader = novel.LO.ParseHeader(line);
-				if (subheader != null) {
-					return subheader.HeaderLevel == header.HeaderLevel + 1;
-				}
-				return false;
-			});
+			//TODO this is a bit ugly
+			var PartitionedLines = LO.ExtractEvents(lines, LO.ParseHeader(lines.First()).HeaderLevel + 1);
 
-			//Extract the links from the first partition
-			var links = PartitionedLines.First().Select(line => novel.LO.ParseLink(line)).Where(link => link != null);
-			LitRef novelRef;
-			foreach (var link in links) {
-				if (link.Link.Equals("TreeTag")) {
-					retVal.TreeTag = new LitTag(link.Tag);
-				}
-				else if (link.Link.Equals("Speaker")) {
-					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
-					retVal.Speakers.Add(novelRef as LitChar);
-				}	
-			}
+			LO.ParseEventLinks(novel, retVal, PartitionedLines.First());
 
 			//Extract the source lines
-			retVal.Source.Text[sourceInfo] = novel.LO.SourceLinesToString(PartitionedLines.First());
+			LO.ParseEventText(novel, retVal, author, PartitionedLines.First());
 
 			//Parse the subevents
 			foreach (var subEventLines in PartitionedLines.Skip(1)) {
-				var litEvent = novel.ParseEvent(subEventLines, sourceInfo);
+				var litEvent = LO.ParseToEvent(novel, author, subEventLines);
 				retVal.Children.Add(litEvent);
 			}
 
 			return retVal;
+		}
+		public static void ParseEventHeaderDefault(this LitOptions LO, LitNovel novel, LitEvent litevent, IEnumerable<String> lines) {
+			//Parse the header
+			var header = LO.ParseHeader(lines.First());
+			try {
+				litevent.Header = header.Text;
+			} catch (NullReferenceException e) {
+				throw new Exception("The first line of an event must me a header", e);
+			}
+		}
+		public static void ParseEventLinksDefault(this LitOptions LO, LitNovel novel, LitEvent litevent, IEnumerable<String> lines) {
+			//Extract the links from the first partition
+			var links = lines
+				.Select(line => LO.ParseLink(line))
+				.Where(link => link != null);
+			LitRef novelRef;
+			foreach (var link in links) {
+				if (link.Link.Equals("TreeTag")) {
+					litevent.TreeTag = new LitTag(link.Tag);
+				}
+				else if (link.Link.Equals("Speaker")) {
+					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
+					litevent.Speakers.Add(novelRef as LitChar);
+				}	
+			}
+		}
+		public static void ParseEventTextDefault(this LitOptions LO, LitNovel novel, LitEvent litevent, LitAuthor author, IEnumerable<String> lines) {
+			litevent.Source.Text[author] = LO.SourceLinesToString(lines);
 		}
 		/// <summary>
 		/// Takes a LitEvent and returns all of the speakers in this event or the child events.
@@ -118,6 +123,12 @@ namespace LiteraryAnalyzer.LAShared {
 				retVal.AddRange(child.SpeakerTags(speaker));
 			}
 			return retVal;
+		}
+
+		public static IEnumerable<IEnumerable<String>> ExtractEventsDefault(this LitOptions LO, IEnumerable<String> lines, int headerLevel) {
+			//Partition the events
+			var pattern = String.Format(@"^{0}[^#]", new String('#', headerLevel));
+			return ParsingTools.PartitionLines(lines, line => System.Text.RegularExpressions.Regex.IsMatch(line, pattern));
 		}
 		//public static List<String> WriteEventLinks(this LitEvent litevent) {
 		//	var retVal = litevent.WriteElmLinks();

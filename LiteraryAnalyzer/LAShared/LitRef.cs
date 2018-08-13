@@ -75,6 +75,37 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
+		public static LitRef ParseToLitRefDefault(this LitOptions LO, LitNovel novel, IEnumerable<String> lines) {
+			if (lines.Count() == 0) { return null; }
+			var PartitionedLines = ParsingTools.PartitionLines(lines, l => System.Text.RegularExpressions.Regex.IsMatch(l, @"^##[^#]"));
+			var link = PartitionedLines.First().Select(s => LO.ParseLink(s)).Where(l => l != null).First();
+
+			var retVal = new LitRef();
+			//Do the specific things for this style of reference
+			if (link.Link.Equals("Reference")) {
+				if (link.Tag.Equals("Character")) {
+					retVal = new LitChar();
+					(retVal as LitChar).ParseLitChar(PartitionedLines);
+				}
+			}
+
+			//Get the first tag of the reference
+			string pattern = @"^# (.+)";
+			var match = System.Text.RegularExpressions.Regex.Match(lines.First(), pattern);
+			retVal.Tags.Add(new LitTag(match.Groups[1].Value));
+
+			//Save the commentary
+			retVal.Commentary = LO.SourceLinesToString(PartitionedLines.First());
+
+			//Save the tags
+			pattern = "^## Tags$";
+			var tagsList = PartitionedLines.Where(list => System.Text.RegularExpressions.Regex.IsMatch(list.First(), pattern)).First();
+			foreach (var tagline in tagsList.Where(s => LO.IsSourceLine(s))) {
+				retVal.AddTag(new LitTag(tagline));
+			}
+
+			return novel.AddReferenceDistinct(retVal);
+		}
 		public static String ReferenceHeader(this LitRef reference) {
 			var TagHeader = new MDHeader() {
 				HeaderLevel = 1,

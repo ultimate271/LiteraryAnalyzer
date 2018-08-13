@@ -53,30 +53,42 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="lines"></param>
 		/// <returns></returns>
-		public static LitScene ParseScene(this LitNovel novel, IEnumerable<String> lines, LitAuthor sourceInfo, LitSceneMetadata metadata) {
+		public static LitScene ParseToSceneDefault(this LitOptions LO, LitNovel novel, LitSceneMetadata metadata, LitAuthor author, IEnumerable<String> lines) {
 			var retVal = new LitScene();
 
 			//Some checks
-			if (!novel.SourceInfo.Contains(sourceInfo)) { throw new Exception(String.Format("Novel does not contain source info. {0}", sourceInfo.Author)); }
+			if (!novel.Authors.Contains(author)) { throw new Exception(String.Format("Novel does not contain source info. {0}", author.Author)); }
 			if (!novel.SceneMetadata.Contains(metadata)) { throw new Exception(String.Format("Novel does not contain metadata. {0}", metadata.Descriptor)); }
 
 			//Parse the header
-			var headerInfo = novel.LO.ParseHeader(lines.First());
-			if (headerInfo.HeaderLevel != 1) {
-				throw new Exception("The first line of a scene must have header level 1, " + lines.First());
-			}
-			retVal.Header = headerInfo.Text;
+			LO.ParseSceneHeader(novel, retVal, lines);
 
-			//Partition the events
-			var pattern = @"^##[^#]";
-			var PartitionedLines = ParsingTools.PartitionLines(lines, line => System.Text.RegularExpressions.Regex.IsMatch(line, pattern));
+			var PartitionedLines = LO.ExtractEvents(lines, 2);
 			//if (PartitionedLines.Count <= 1) {
 			//	throw new Exception("A scene must have at least one event in it");
 			//}
 
+			LO.ParseSceneLinks(novel, retVal, PartitionedLines.First());
+
+			foreach (var eventLines in PartitionedLines.Skip(1)) {
+				var litEvent = LO.ParseToEvent(novel, author, eventLines);
+				retVal.Children.Add(litEvent);
+			}
+
+			retVal.Metadata = metadata;
+			return retVal;
+		}
+		public static void ParseSceneHeaderDefault(this LitOptions LO, LitNovel novel, LitScene scene, IEnumerable<String> SceneLines) {
+			var headerInfo = LO.ParseHeader(SceneLines.First());
+			if (headerInfo.HeaderLevel != 1) {
+				throw new Exception("The first line of a scene must have header level 1, " + SceneLines.First());
+			}
+			scene.Header = headerInfo.Text;
+		}
+		public static void ParseSceneLinksDefault(this LitOptions LO, LitNovel novel, LitScene scene, IEnumerable<String> SceneLines) {
 			//Parse the links
-			var query = PartitionedLines.First()
-				.Select(l => novel.LO.ParseLink(l))
+			var query = SceneLines
+				.Select(l => LO.ParseLink(l))
 				.Where(l => l != null);
 			foreach (var link in query) {
 				//I feel as though there is a way to use reflection to be super clever here,
@@ -91,32 +103,40 @@ namespace LiteraryAnalyzer.LAShared {
 				//It will be not terribly difficult to do (at least, only as difficult as reflection is)
 				LitRef novelRef;
 				if (link.Link.Equals("TreeTag")) {
-					retVal.TreeTag = new LitTag(link.Tag);
+					scene.TreeTag = new LitTag(link.Tag);
 				}
 				else if (link.Link.Equals("UserTag")) {
 					//TODO UserTags must be unique, not only and that should be checked somewhere here
-					retVal.UserTags.Add(new LitTag(link.Tag));
+					scene.UserTags.Add(new LitTag(link.Tag));
 				}
 				else if (link.Link.Equals("Actor")) {
 					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
-					retVal.Actors.Add(novelRef as LitChar);
+					scene.Actors.Add(novelRef as LitChar);
 				}
 				else if (link.Link.Equals("Location")) {
 					novelRef = novel.AddReferenceDistinct(new LitPlace(link.Tag));
-					retVal.Location.Add(novelRef as LitPlace);
+					scene.Location.Add(novelRef as LitPlace);
 				}
 				else if (link.Link.Equals("Reference")) {
 					novelRef = novel.AddReferenceDistinct(new LitRef(link.Tag));
-					retVal.References.Add(novelRef);
+					scene.References.Add(novelRef);
 				}
 			}
-			foreach (var eventLines in PartitionedLines.Skip(1)) {
-				var litEvent = novel.ParseEvent(eventLines, sourceInfo);
-				retVal.Children.Add(litEvent);
-			}
 
-			retVal.Metadata = metadata;
-			return retVal;
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="LO"></param>
+		/// <param name="PartitionedScenes"></param>
+		/// <returns></returns>
+		public static IEnumerable<IEnumerable<String>> ExtractScenesDefault(this LitOptions LO, IEnumerable<IEnumerable<String>> PartitionedScenes) {
+			return PartitionedScenes.Where(lines =>
+				lines.Select(l => LO.ParseLink(l))
+					.Where(link => link != null)
+					.Where(link => link.Link.Equals("TreeTag"))
+					.Count() > 0
+				);
 		}
 		public static void MergeScene(this LitScene scene1, LitScene scene2) {
 			scene1.Actors = new List<LitChar>(scene1.Actors.Union(scene2.Actors));

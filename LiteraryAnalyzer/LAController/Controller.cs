@@ -18,7 +18,7 @@ namespace LiteraryAnalyzer {
 
 		public void DeveloperDebug () {
 			var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
-			var source = sourceInfo.BuildSource();
+			var source = LO.BuildAnnSource(sourceInfo);
 			var x = ParsingTools.ParseAnnSource(source, LO);
 			var y = x.CreateSource();
 			var writeInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\testout", Prefix = "sil" };

@@ -8,6 +8,24 @@ namespace LiteraryAnalyzer.LAShared {
 	public class MDNotesFile : MDFile {
 	}
 	public static partial class ParsingTools {
+		/// <summary>
+		/// Takes the lines of the notes, and populates the novel References and such appropiately
+		/// </summary>
+		/// <param name="novel"></param>
+		/// <param name="lines"></param>
+		public static void ParseNotesFileDefault(this LitOptions LO, LitNovel novel, MDNotesFile notesfile) {
+			var PartitionedLines = LO.ExtractNotesRefs(notesfile);
+			LitRef litref = null;
+			foreach (var refLines in PartitionedLines) {
+				litref = LO.ParseToLitRef(refLines);
+				novel.AddReferenceDistinct(litref, false);
+			}
+		}
+
+		public static IEnumerable<IEnumerable<String>> ExtractNotesRefsDefault(this LitOptions LO, MDNotesFile notesfile) {
+			string pattern = @"^#[^#]";
+			return ParsingTools.PartitionLines(notesfile.Lines, (s => System.Text.RegularExpressions.Regex.IsMatch(s, pattern)));
+		}
 		public static String ToNotesShortFilename(MDAnnSourceInfo info) {
 			return new MDNotesFile().ToShortFilename(info);
 		}
