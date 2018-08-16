@@ -14,15 +14,15 @@ namespace LiteraryAnalyzer.LAShared {
 		public static String ToShortFilename(this MDTagFile tagfile, MDAnnSourceInfo info) {
 			return "tags";
 		}
-		public static MDTagFile CreateTagsFile(this LitOptions LO, LitNovel novel, MDAnnSourceInfo info) {
+		public static MDTagFile WriteTagFileDefault(this LitOptions LO, LitNovel novel, MDAnnSourceInfo info) {
 			var retVal = new MDTagFile();
 			var Tags = new List<MDTag>();
 			string Filename;
 
-			foreach (var LitSourceInfo in novel.Authors) {
-				foreach (var Metadata in novel.SceneMetadata) {
-					Filename = ParsingTools.ToShortFilename(info, LitSourceInfo, Metadata);
-					var query = novel.Scenes.Where(s => s.Metadata == Metadata);
+			foreach (var author in novel.Authors) {
+				foreach (var metadata in novel.SceneMetadata) {
+					Filename = LO.ToShortFilename(info, author, metadata);
+					var query = novel.Scenes.Where(s => s.Metadata == metadata);
 					foreach (var scene in query) {
 						Tags.AddRange(LO.GetAllTags(scene, Filename));
 					}

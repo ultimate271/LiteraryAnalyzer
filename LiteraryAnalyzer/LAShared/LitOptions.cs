@@ -25,10 +25,13 @@ namespace LiteraryAnalyzer.LAShared {
 		public delegate MDAnnSource BuildAnnSourceDelegate(MDAnnSourceInfo AnnSourceInfo);
 		public BuildAnnSourceDelegate BuildAnnSource { get; set; }
 
-		public delegate IEnumerable<MDSourceFile> BuildSourceFilesDelegate(MDAnnSourceInfo AnnSourceInfo);
+		public delegate IEnumerable<String> BuildSourceFilenamesDelegate(MDAnnSourceInfo info);
+		public BuildSourceFilenamesDelegate BuildSourceFilenames { get; set; }
+
+		public delegate List<MDSourceFile> BuildSourceFilesDelegate(MDAnnSourceInfo AnnSourceInfo, IEnumerable<String> files);
 		public BuildSourceFilesDelegate BuildSourceFiles { get; set; }
 
-		public delegate MDNotesFile BuildNotesFileDelegate(MDAnnSourceInfo AnnSourceInfo);
+		public delegate MDNotesFile BuildNotesFileDelegate(MDAnnSourceInfo AnnSourceInfo, IEnumerable<String> files);
 		public BuildNotesFileDelegate BuildNotesFile { get; set; }
 		#endregion
 
@@ -113,6 +116,13 @@ namespace LiteraryAnalyzer.LAShared {
 
 		#endregion
 
+		#region "Writing"
+		public delegate String ToShortFilenameDelegate(MDAnnSourceInfo info, LitAuthor author, LitSceneMetadata metadata);
+		public ToShortFilenameDelegate ToShortFilename { get; set; }
+
+		public delegate String ToLongFilenameDelegate(MDAnnSourceInfo info, MDSourceFile source);
+		public ToLongFilenameDelegate ToLongFilename { get; set; }
+
 		#region "Source Writing"
 		public delegate MDAnnSource WriteAnnSourceDelegate(LitNovel novel);
 		public WriteAnnSourceDelegate WriteAnnSource { get; set; }
@@ -161,6 +171,15 @@ namespace LiteraryAnalyzer.LAShared {
 
 		#endregion
 
+		#region "Tag File Writing"
+		public delegate MDTagFile WriteTagFileDelegate(LitNovel novel, MDAnnSourceInfo info);
+		public WriteTagFileDelegate WriteTagFile { get; set; }
+		#endregion
+
+		public delegate void WriteToFileSystemDelegate(MDAnnSource source, MDAnnSourceInfo info);
+		public WriteToFileSystemDelegate WriteToFileSystem { get; set; }
+
+		#endregion
 
 		//BuildSource
 		//Parse event links (litevent.cs::ParseEvent)
@@ -173,8 +192,9 @@ namespace LiteraryAnalyzer.LAShared {
 			this.SourceLinesToString = this.SourceLinesToStringDefault;
 
 			this.BuildAnnSource = this.BuildAnnSourceDefault;
-			//this.BuildSourceFiles = this.BuildSourceFilesDefault;
-			//this.BuildNotesFile = this.BuildNotesFileDefault;
+			this.BuildSourceFilenames = this.BuildSourceFilenamesDefault;
+			this.BuildSourceFiles = this.BuildSourceFilesDefault;
+			this.BuildNotesFile = this.BuildNotesFileDefault;
 
 			this.ParseAnnSource = this.ParseAnnSourceDefault;
 
@@ -218,6 +238,13 @@ namespace LiteraryAnalyzer.LAShared {
 			this.WriteNotesTags = this.WriteNotesTagsDefault;
 			this.WriteNotesCharLines = this.WriteNotesCharLinesDefault;
 			this.GetAllTags = this.GetAllTagsDefault;
+
+			this.WriteTagFile = this.WriteTagFileDefault;
+			this.ToShortFilename = this.ToShortFilenameDefault;
+			this.ToLongFilename = this.ToLongFilenameDefault;
+			this.WriteToFileSystem = this.WriteToFileSystemDefault;
+
+
 		}
 	}
 	public static partial class ParsingTools {

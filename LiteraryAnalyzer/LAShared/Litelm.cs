@@ -104,7 +104,7 @@ namespace LiteraryAnalyzer.LAShared {
 				try {
 					retVal.AddRange(LO.WriteElmText((litElm as LitEvent).Source.Text[sourceinfo]));
 				}
-				catch { }
+				catch (KeyNotFoundException) { }
 			}
 			foreach (var child in litElm.Children) {
 				retVal.AddRange(WriteSourceLinesDefault(LO, child, sourceinfo, headerlevel + 1));
@@ -133,6 +133,32 @@ namespace LiteraryAnalyzer.LAShared {
 		public static List<String> WriteElmTextDefault(this LitOptions LO, String Text) {
 			var retVal = new List<String>();
 			retVal.Add(Text);
+			return retVal;
+		}
+		public static List<String> WriteElmTextGQQ(this LitOptions LO, String Text, int LineLength) {
+			var retVal = new List<String>();
+			var paragraphs = System.Text.RegularExpressions.Regex.Split(Text, "\r\n");
+			int fromIndex, toIndex, seekIndex;
+			foreach (var paragraph in paragraphs) {
+				fromIndex = 0;
+				toIndex = 0;
+				seekIndex = 1;
+				while (fromIndex < paragraph.Length) {
+					while (toIndex + seekIndex < paragraph.Length && toIndex + seekIndex - fromIndex < LineLength) {
+						if (paragraph[toIndex + seekIndex] == ' ') {
+							toIndex = toIndex + seekIndex;
+							seekIndex = 0;
+						}
+						seekIndex++;
+					}
+					if (toIndex + seekIndex >= paragraph.Length) { toIndex = toIndex + seekIndex; }
+					retVal.Add(paragraph.Substring(fromIndex, toIndex - fromIndex));
+					toIndex++; //Skip the space
+					fromIndex = toIndex;
+					seekIndex = 1;
+				}
+				retVal.Add("");
+			}
 			return retVal;
 		}
 		//public static List<String> WriteOutline(this LitElm elm, int headerlevel) {

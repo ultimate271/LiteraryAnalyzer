@@ -52,31 +52,44 @@ namespace LiteraryAnalyzer.LAShared {
 			var retVal = new MDAnnSource();
 
 			//Get the filenames
+			var files = LO.BuildSourceFilenames(info);
+
+			//Insert the source files
+			retVal.Sources = LO.BuildSourceFiles(info, files);
+
+			//Insert the notes file
+			retVal.Notes = LO.BuildNotesFile(info, files);
+
+			return retVal;
+		}
+		public static IEnumerable<String> BuildSourceFilenamesDefault(this LitOptions LO, MDAnnSourceInfo info) {
 			var files = System.IO.Directory.GetFiles(info.BaseDir, info.Prefix + "*.md");
 			Array.Sort(files);
-			
-			//Insert the source files
+			return files;
+		}
+		public static List<MDSourceFile> BuildSourceFilesDefault(this LitOptions LO, MDAnnSourceInfo info, IEnumerable<String> files) {
+			var retVal = new List<MDSourceFile>();
 			string pattern = String.Format(@"{0}(\d[\d\.]+)\.([^\.]+)\.md", info.Prefix);
-			var query = files.Select(s => new { File = s, Match = System.Text.RegularExpressions.Regex.Match(s, pattern) })
-				.Where(a => a.Match.Success && !a.Match.Groups[1].Value.Equals("notes"));
+			var query = files.Select(s => new { File = s, Match = System.Text.RegularExpressions.Regex.Match(s, pattern) });
 			MDSourceFile SourceObj;
 			foreach (var file in query) {
 				SourceObj = new MDSourceFile();
 				SourceObj.Lines = new List<String>(System.IO.File.ReadAllLines(file.File));
 				SourceObj.Descriptor = file.Match.Groups[1].Value;
 				SourceObj.Author = file.Match.Groups[2].Value;
-				retVal.Sources.Add(SourceObj);
+				retVal.Add(SourceObj);
 			}
-
-			//Insert the notes file
-			pattern = String.Format(@"{0}notes.md", info.Prefix);
+			return retVal;
+		}
+		public static MDNotesFile BuildNotesFileDefault(this LitOptions LO, MDAnnSourceInfo info, IEnumerable<String> files) {
+			var retVal = new MDNotesFile();
+			var pattern = String.Format(@"{0}notes.md", info.Prefix);
 			var NotesFileLines = files.Where(s => System.Text.RegularExpressions.Regex.IsMatch(s, pattern));
 			if (NotesFileLines.Count() > 0) {
 				var NotesFile = new MDNotesFile();
 				NotesFile.Lines = new List<string>(System.IO.File.ReadAllLines(NotesFileLines.First()));
-				retVal.Notes = NotesFile;
+				retVal = NotesFile;
 			}
-
 			return retVal;
 		}
 		public static void TagAnnSourceDefault(this LitOptions LO, MDAnnSource source) {

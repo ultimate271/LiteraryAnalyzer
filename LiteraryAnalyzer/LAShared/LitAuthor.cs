@@ -23,9 +23,9 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag).FirstOrDefault();
 			return novel.AddAuthorDistinct(retVal);
 		} 
-		public static void WriteToFilesystem(this MDAnnSource sourceObjects, MDAnnSourceInfo info ) {
+		public static void WriteToFileSystemDefault(this LitOptions LO, MDAnnSource sourceObjects, MDAnnSourceInfo info ) {
 			foreach (var source in sourceObjects.Sources) {
-				System.IO.File.WriteAllLines(source.ToLongFilename(info), source.Lines);
+				System.IO.File.WriteAllLines(LO.ToLongFilename(info, source), source.Lines);
 			}
 			System.IO.File.WriteAllLines(sourceObjects.Notes.ToLongFilename(info), sourceObjects.Notes.Lines);
 			System.IO.File.WriteAllLines(sourceObjects.TagFile.ToLongFilename(info), sourceObjects.TagFile.Lines);

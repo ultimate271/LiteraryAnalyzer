@@ -10,16 +10,16 @@ namespace LiteraryAnalyzer.LAShared {
 		public String Author { get; set; } = "";
 	}
 	public static partial class ParsingTools {
-		public static string ToLongFilename(this MDSourceFile source, MDAnnSourceInfo info) {
-			return String.Format("{0}\\{1}", info.BaseDir, source.ToShortFilename(info));
+		public static String ToLongFilenameDefault(this LitOptions LO, MDAnnSourceInfo info, MDSourceFile source ) {
+			return String.Format("{0}\\{1}", info.BaseDir, ToShortFilenameDefault(LO, info, source));
 		}
-		public static string ToShortFilename(this MDSourceFile source, MDAnnSourceInfo info) {
-			return ToShortFilename(info.Prefix, source.Descriptor, source.Author);
+		public static String ToShortFilenameDefault(this LitOptions LO, MDAnnSourceInfo info, MDSourceFile source) {
+			return ToShortFilenameDefault(LO, info.Prefix, source.Descriptor, source.Author);
 		}
-		public static string ToShortFilename (MDAnnSourceInfo info, LitAuthor author, LitSceneMetadata metadata) {
-			return ToShortFilename(info.Prefix, metadata.Descriptor, author.Author);
+		public static String ToShortFilenameDefault (this LitOptions LO, MDAnnSourceInfo info, LitAuthor author, LitSceneMetadata metadata) {
+			return ToShortFilenameDefault(LO, info.Prefix, metadata.Descriptor, author.Author);
 		}
-		public static string ToShortFilename (String Prefix,  String descriptor,String author) {
+		public static String ToShortFilenameDefault (this LitOptions LO, String Prefix, String descriptor,String author) {
 			return String.Format("{0}{1}.{2}.md", Prefix, descriptor, author);
 		}
 		public static void ParseSourceFileDefault(this LitOptions LO, LitNovel novel, MDSourceFile sourceFile) {

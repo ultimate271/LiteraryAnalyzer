@@ -18,12 +18,13 @@ namespace LiteraryAnalyzer {
 
 		public void DeveloperDebug () {
 			var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\bwebster\Source\Repos\notes\test", Prefix = "sil" };
+			LO.WriteElmText = (text) => LO.WriteElmTextGQQ(text, 80);
 			var source = LO.BuildAnnSource(sourceInfo);
 			var novel = LO.ParseAnnSource(source);
 			var sourceOut = LO.WriteAnnSource(novel);
 			var writeInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\bwebster\Source\Repos\notes\testout", Prefix = "sil" };
-			sourceOut.TagFile = LO.CreateTagsFile(novel, writeInfo);
-			sourceOut.WriteToFilesystem(writeInfo);
+			sourceOut.TagFile = LO.WriteTagFile(novel, writeInfo);
+			LO.WriteToFileSystem(sourceOut, writeInfo);
 
 			System.Console.WriteLine("Done");
 
