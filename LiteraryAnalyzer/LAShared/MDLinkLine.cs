@@ -30,20 +30,12 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return retVal;
 		}
-		/// <summary>
-		/// Will look through all of the generic list types of the element,
-		/// and based upon the name of the link, return a new LitRef with
-		/// the appropiate type, with the correct tag, so that it can be added
-		/// to the element.
-		/// It does not add the reference to the element, it merely creates the correct
-		/// kind of reference
-		/// </summary>
-		/// <param name="link"></param>
-		/// <param name="elm"></param>
-		/// <returns></returns>
-		public static LitRef LinkToRef(this MDLinkLine link, LitNovel novel, LitElm elm) {
-			throw new NotImplementedException();
 
+		public static String WriteLinkDefault(
+			this LitOptions LO,
+			MDLinkLine link
+		) {
+			return String.Format(@"[{0}]: # {{{1}}}", link.Link, link.Tag);
 		}
 
 		public static String MakeLinkLine(String link, String tag) {

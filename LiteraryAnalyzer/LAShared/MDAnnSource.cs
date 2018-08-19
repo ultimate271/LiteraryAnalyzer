@@ -19,25 +19,18 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="novel"></param>
 		/// <returns></returns>
-		public static MDAnnSource WriteAnnSourceDefault(this LitOptions LO, LitNovel novel) {
+		public static MDAnnSource WriteAnnSourceDefault(
+			this LitOptions LO,
+			LitNovel novel
+		){
 			var retVal = new MDAnnSource();
+			//Write source files
 			foreach (var author in novel.Authors) {
 				foreach (var metadata in novel.SceneMetadata) {
-					var lines = LO.WriteMetadata(metadata, author);
-					var query = novel.Scenes
-						.Where(s => s.Metadata == metadata)
-						.Select(s => LO.WriteElmSourceLines(s, author));
-					foreach (var scenelines in query) {
-						lines.AddRange(scenelines);
-					}
-					var SourceFile = new MDSourceFile() {
-						Descriptor = metadata.Descriptor,
-						Author = author.Author,
-						Lines = lines
-					};
-					retVal.Sources.Add(SourceFile);
+					retVal.Sources.Add(LO.WriteSourceFile(novel, metadata, author));
 				}
 			}
+			//Write notes file
 			retVal.Notes = LO.WriteNotesFile(novel);
 
 			return retVal;
@@ -47,17 +40,14 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="info"></param>
 		/// <returns></returns>
-		public static MDAnnSource BuildAnnSourceDefault(this LitOptions LO, MDAnnSourceInfo info) {
-			//TODO modularize this function
+		public static MDAnnSource BuildAnnSourceDefault(
+			this LitOptions LO, 
+			MDAnnSourceInfo info
+		){
 			var retVal = new MDAnnSource();
 
-			//Get the filenames
 			var files = LO.BuildSourceFilenames(info);
-
-			//Insert the source files
 			retVal.Sources = LO.BuildSourceFiles(info, files);
-
-			//Insert the notes file
 			retVal.Notes = LO.BuildNotesFile(info, files);
 
 			return retVal;
@@ -70,13 +60,24 @@ namespace LiteraryAnalyzer.LAShared {
 		public static List<MDSourceFile> BuildSourceFilesDefault(this LitOptions LO, MDAnnSourceInfo info, IEnumerable<String> files) {
 			var retVal = new List<MDSourceFile>();
 			string pattern = String.Format(@"{0}(\d[\d\.]+)\.([^\.]+)\.md", info.Prefix);
-			var query = files.Select(s => new { File = s, Match = System.Text.RegularExpressions.Regex.Match(s, pattern) });
+			var query = files
+				.Select(s => new {
+					File = s,
+					Match = System.Text.RegularExpressions.Regex.Match(s, pattern)
+				})
+				.Where(f => f.Match.Success);
 			MDSourceFile SourceObj;
 			foreach (var file in query) {
 				SourceObj = new MDSourceFile();
-				SourceObj.Lines = new List<String>(System.IO.File.ReadAllLines(file.File));
-				SourceObj.Descriptor = file.Match.Groups[1].Value;
-				SourceObj.Author = file.Match.Groups[2].Value;
+				SourceObj.Lines = new List<String>(
+					System.IO.File.ReadAllLines(file.File)
+				);
+				SourceObj.Metadata = new LitSceneMetadata() {
+					Descriptor = file.Match.Groups[1].Value
+				};
+				SourceObj.Author = new LitAuthor(){
+					Author = file.Match.Groups[2].Value
+				};
 				retVal.Add(SourceObj);
 			}
 			return retVal;

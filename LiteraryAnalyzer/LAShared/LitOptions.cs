@@ -117,15 +117,45 @@ namespace LiteraryAnalyzer.LAShared {
 		#endregion
 
 		#region "Writing"
-		public delegate String ToShortFilenameDelegate(MDAnnSourceInfo info, LitAuthor author, LitSceneMetadata metadata);
-		public ToShortFilenameDelegate ToShortFilename { get; set; }
 
-		public delegate String ToLongFilenameDelegate(MDAnnSourceInfo info, MDSourceFile source);
-		public ToLongFilenameDelegate ToLongFilename { get; set; }
+		public delegate String WriteLinkDelegate(MDLinkLine link);
+		public WriteLinkDelegate WriteLink { get; set; }
+
+		#region "Filename Writers"
+		public delegate String ToShortSourceFilenameDelegate(
+			MDAnnSourceInfo info, LitSceneMetadata metadata, LitAuthor author);
+		public ToShortSourceFilenameDelegate ToShourtSourceFilename { get; set; }
+
+		public delegate String ToLongSourceFilenameDelegate(
+			MDAnnSourceInfo info, MDSourceFile source);
+		public ToLongSourceFilenameDelegate ToLongSourceFilename { get; set; }
+
+		public delegate String ToShortNotesFilenameDelegate(
+			MDAnnSourceInfo info);
+		public ToShortNotesFilenameDelegate ToShortNotesFilename { get; set; }
+
+		public delegate String ToLongNotesFilenameDelegate(
+			MDAnnSourceInfo info);
+		public ToLongNotesFilenameDelegate ToLongNotesFilename { get; set; }
+
+		public delegate String ToShortTagFilenameDelegate(
+			MDAnnSourceInfo info);
+		public ToShortTagFilenameDelegate ToShortTagFilename { get; set; }
+
+		public delegate String ToLongTagFilenameDelegate(
+			MDAnnSourceInfo info);
+		public ToLongTagFilenameDelegate ToLongTagFilename { get; set; }
+
+		#endregion
+
 
 		#region "Source Writing"
 		public delegate MDAnnSource WriteAnnSourceDelegate(LitNovel novel);
 		public WriteAnnSourceDelegate WriteAnnSource { get; set; }
+
+		public delegate MDSourceFile WriteSoruceFileDelegate(
+			LitNovel novel, LitSceneMetadata metadata, LitAuthor author);
+		public WriteSoruceFileDelegate WriteSourceFile { get; set; }
 
 		public delegate List<String> WriteMetadataDelegate(LitSceneMetadata metadata, LitAuthor author);
 		public WriteMetadataDelegate WriteMetadata { get; set; }
@@ -224,6 +254,7 @@ namespace LiteraryAnalyzer.LAShared {
 			this.ParseEventText = this.ParseEventTextDefault;
 
 			this.WriteAnnSource = this.WriteAnnSourceDefault;
+			this.WriteSourceFile = this.WriteSourceFileDefault;
 			this.WriteMetadata = this.WriteMetadataDefault;
 			this.WriteElmSourceLines = this.WriteSourceLinesDefault;
 			this.WriteElmHeader = this.WriteElmHeaderDefault;
@@ -240,8 +271,12 @@ namespace LiteraryAnalyzer.LAShared {
 			this.GetAllTags = this.GetAllTagsDefault;
 
 			this.WriteTagFile = this.WriteTagFileDefault;
-			this.ToShortFilename = this.ToShortFilenameDefault;
-			this.ToLongFilename = this.ToLongFilenameDefault;
+			this.ToShourtSourceFilename = this.ToShortFilenameDefault;
+			this.ToLongSourceFilename = this.ToLongFilenameDefault;
+			this.ToShortNotesFilename = this.ToShortNotesFilenameDefault;
+			this.ToLongNotesFilename = this.ToLongNotesFilenameDefault;
+			this.ToShortTagFilename = this.ToShortTagFilenameDefault;
+			this.ToLongTagFilename = this.ToLongTagFilenameDefault;
 			this.WriteToFileSystem = this.WriteToFileSystemDefault;
 
 

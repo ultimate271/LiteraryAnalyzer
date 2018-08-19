@@ -13,7 +13,10 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="novel"></param>
 		/// <param name="lines"></param>
-		public static void ParseNotesFileDefault(this LitOptions LO, LitNovel novel, MDNotesFile notesfile) {
+		public static void ParseNotesFileDefault(this LitOptions LO, 
+			LitNovel novel, 
+			MDNotesFile notesfile
+		){
 			var PartitionedLines = LO.ExtractNotesRefs(notesfile);
 			LitRef litref = null;
 			foreach (var refLines in PartitionedLines) {
@@ -22,18 +25,31 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 		}
 
-		public static IEnumerable<IEnumerable<String>> ExtractNotesRefsDefault(this LitOptions LO, MDNotesFile notesfile) {
+		public static IEnumerable<IEnumerable<String>> ExtractNotesRefsDefault(
+			this LitOptions LO, 
+			MDNotesFile notesfile
+		){  
 			string pattern = @"^#[^#]";
-			return ParsingTools.PartitionLines(notesfile.Lines, (s => System.Text.RegularExpressions.Regex.IsMatch(s, pattern)));
+			return ParsingTools.PartitionLines(
+				notesfile.Lines, 
+				(s => System.Text.RegularExpressions.Regex.IsMatch(s, pattern))
+			);
 		}
-		public static String ToNotesShortFilename(MDAnnSourceInfo info) {
-			return new MDNotesFile().ToShortFilename(info);
-		}
-		public static String ToLongFilename(this MDNotesFile notesfile, MDAnnSourceInfo info) {
-			return String.Format("{0}\\{1}", info.BaseDir, notesfile.ToShortFilename(info));
-		}
-		public static String ToShortFilename(this MDNotesFile notesfile, MDAnnSourceInfo info) {
+		public static String ToShortNotesFilenameDefault(
+			this LitOptions LO, 
+			MDAnnSourceInfo info
+		){
 			return String.Format("{0}notes.md", info.Prefix);
+		}
+		public static String ToLongNotesFilenameDefault(
+			this LitOptions LO, 
+			MDAnnSourceInfo info
+		){
+			return String.Format(
+				"{0}\\{1}",
+				info.BaseDir,
+				LO.ToShortNotesFilename(info)
+			);
 		}
 		public static MDNotesFile WriteNotesFileDefault(this LitOptions LO, LitNovel novel) {
 			var retVal = new MDNotesFile();

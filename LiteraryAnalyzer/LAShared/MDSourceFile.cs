@@ -6,23 +6,51 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public class MDSourceFile : MDFile {
-		public String Descriptor { get; set; } = "";
-		public String Author { get; set; } = "";
+		public LitSceneMetadata Metadata { get; set; } = new LitSceneMetadata();
+		public LitAuthor Author { get; set; } = new LitAuthor();
 	}
 	public static partial class ParsingTools {
 		public static String ToLongFilenameDefault(this LitOptions LO, MDAnnSourceInfo info, MDSourceFile source ) {
 			return String.Format("{0}\\{1}", info.BaseDir, ToShortFilenameDefault(LO, info, source));
 		}
-		public static String ToShortFilenameDefault(this LitOptions LO, MDAnnSourceInfo info, MDSourceFile source) {
-			return ToShortFilenameDefault(LO, info.Prefix, source.Descriptor, source.Author);
+		public static String ToShortFilenameDefault(
+			this LitOptions LO, 
+			MDAnnSourceInfo info, 
+			MDSourceFile source
+		){
+			return ToShortFilenameDefault(
+				LO,
+				info, 
+				source.Metadata, 
+				source.Author
+			);
 		}
-		public static String ToShortFilenameDefault (this LitOptions LO, MDAnnSourceInfo info, LitAuthor author, LitSceneMetadata metadata) {
-			return ToShortFilenameDefault(LO, info.Prefix, metadata.Descriptor, author.Author);
+		public static String ToShortFilenameDefault (
+			this LitOptions LO,
+			MDAnnSourceInfo info,
+			LitSceneMetadata metadata,
+			LitAuthor author
+		){
+			return ToShortFilenameDefault(
+				LO, 
+				info.Prefix, 
+				metadata.Descriptor, 
+				author.Author
+			);
 		}
-		public static String ToShortFilenameDefault (this LitOptions LO, String Prefix, String descriptor,String author) {
+		public static String ToShortFilenameDefault (
+			this LitOptions LO,
+			String Prefix,
+			String descriptor,
+			String author
+		){
 			return String.Format("{0}{1}.{2}.md", Prefix, descriptor, author);
 		}
-		public static void ParseSourceFileDefault(this LitOptions LO, LitNovel novel, MDSourceFile sourceFile) {
+		public static void ParseSourceFileDefault(
+			this LitOptions LO,
+			LitNovel novel, 
+			MDSourceFile sourceFile
+		){
 			var PartitionedScenes = LO.ExtractFromSourceFile(sourceFile);
 
 			//Extract and add the metadata
@@ -37,14 +65,49 @@ namespace LiteraryAnalyzer.LAShared {
 				novel.AddScene(scene);
 			}
 		}
-		public static IEnumerable<IEnumerable<String>> ExtractFromSourceFileDefault(this LitOptions LO, MDSourceFile sourcefile) {
+		public static MDSourceFile WriteSourceFileDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitSceneMetadata metadata,
+			LitAuthor author
+		) {
+					//Write all of the lines of the file
+			var lines = LO.WriteMetadata(metadata, author);
+			var query = novel.Scenes
+				.Where(s => s.Metadata == metadata)
+				.Select(s => LO.WriteElmSourceLines(s, author));
+			foreach (var scenelines in query) {
+				lines.AddRange(scenelines);
+			}
+			//Create the file
+			var SourceFile = new MDSourceFile() {
+				Metadata = metadata,
+				Author = author,
+				Lines = lines
+			};
+			return SourceFile;
+		}
+		public static IEnumerable<IEnumerable<String>> ExtractFromSourceFileDefault(
+			this LitOptions LO, 
+			MDSourceFile sourcefile
+		){
 			return ParsingTools.PartitionLines(
 				sourcefile.Lines, 
 				line => System.Text.RegularExpressions.Regex.IsMatch(line, @"^#[^#]")
 			);
 		}
-		public static void TagSourceFileDefault(this LitOptions LO, MDSourceFile sourcefile) {
-			sourcefile.Lines = new List<string>(TagSourceFileDefault(LO, sourcefile.Lines, sourcefile.Descriptor, sourcefile.Author));
+		public static void TagSourceFileDefault(
+			this LitOptions LO,
+			MDSourceFile sourcefile
+		){
+			sourcefile.Lines = new List<string>(
+				TagSourceFileDefault(
+					LO,
+					sourcefile.Lines, 
+					sourcefile.Metadata.Descriptor,
+					sourcefile.Author.Author
+				)
+			);
 		}
 		public static List<String> TagSourceFileDefault(this LitOptions LO, IEnumerable<String> lines, String tag, String author) {
 			return TagSourceFileDefault(LO, lines, tag, author, 1);
