@@ -21,6 +21,15 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitAuthor> Authors { get; set; } = new List<LitAuthor>();
 	}
 	public static partial class LitExtensions {
+		public static IEnumerable<LitElm> AllElms(
+			this LitNovel novel
+		) {
+			var retVal = new List<LitElm>();
+			foreach (var scene in novel.Scenes) {
+				retVal.AddRange(scene.AllElms());
+			}
+			return retVal;
+		}
 		/// <summary>
 		/// Returns every tag for the scenes that this actor is contained in
 		/// </summary>

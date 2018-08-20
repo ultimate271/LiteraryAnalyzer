@@ -16,17 +16,12 @@ namespace LiteraryAnalyzer.LAShared {
 		/// # Julie and Susan discuss politics as they walk from Point A to Point B
 		/// In this example, the scene is the discussion of politics.
 		/// </summary>
-		public List<LitPlace> Location { get; set; } = new List<LitPlace>();
+		public List<LitPlace> Locations { get; set; } = new List<LitPlace>();
 		/// <summary>
 		/// This list will contain all of the characters that are involved in the scene.
 		/// This will also include all of the speakers from the events, if they are not included in the annotated markdown.
 		/// </summary>
 		public List<LitChar> Actors { get; set; } = new List<LitChar>();
-		/// <summary>
-		/// Will include any other references to anything that the reader might want to know while reading this scene.
-		/// This should be distinct from all of the other lit tools here.
-		/// </summary>
-		public List<LitRef> References { get; set; } = new List<LitRef>();
 		/// <summary>
 		/// Used by the writer to know which scenes should go in which files.
 		/// </summary>
@@ -68,7 +63,11 @@ namespace LiteraryAnalyzer.LAShared {
 			//	throw new Exception("A scene must have at least one event in it");
 			//}
 
-			LO.ParseSceneLinks(novel, retVal, PartitionedLines.First());
+			LO.ParseElmLinks(
+				novel,
+				retVal, 
+				LO.ExtractElmLinkLines(PartitionedLines.First())
+			);
 
 			foreach (var eventLines in PartitionedLines.Skip(1)) {
 				var litEvent = LO.ParseToEvent(novel, author, eventLines);
@@ -85,44 +84,23 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			scene.Header = headerInfo.Text;
 		}
-		public static void ParseSceneLinksDefault(this LitOptions LO, LitNovel novel, LitScene scene, IEnumerable<String> SceneLines) {
-			//Parse the links
-			var query = SceneLines
-				.Select(l => LO.ParseLink(l))
-				.Where(l => l != null);
-			foreach (var link in query) {
-				//I feel as though there is a way to use reflection to be super clever here,
-				//But upon thinking about it, I think it would only create more confusion than it
-				//would help, since the actual properties of the scene are not that numerous,
-				//and to be honest there would probably me more exceptional cases than I am willing
-				//To admit, so at this juncture, I will use a elseif chain to do what I want.
-				//I don't like it, but at the same time I sort of do because it is more explicit and easier
-				//To work with, and an if else chain makes sense.
-				//I want to use reflection so bad, but it's probably for the best that I do this in
-				//The concrete way for now, and if at some point down the road, I want to change this to use reflection,
-				//It will be not terribly difficult to do (at least, only as difficult as reflection is)
+		public static void ParseSceneLinksDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitScene scene,
+			IEnumerable<MDLinkLine> links
+		){
+			foreach (var link in links) {
 				LitRef novelRef;
-				if (link.Link.Equals("TreeTag")) {
-					scene.TreeTag = new LitTag(link.Tag);
-				}
-				else if (link.Link.Equals("UserTag")) {
-					//TODO UserTags must be unique, not only and that should be checked somewhere here
-					scene.UserTags.Add(new LitTag(link.Tag));
-				}
-				else if (link.Link.Equals("Actor")) {
+				if (link.Link.Equals("Actor")) {
 					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
 					scene.Actors.Add(novelRef as LitChar);
 				}
 				else if (link.Link.Equals("Location")) {
 					novelRef = novel.AddReferenceDistinct(new LitPlace(link.Tag));
-					scene.Location.Add(novelRef as LitPlace);
-				}
-				else if (link.Link.Equals("Reference")) {
-					novelRef = novel.AddReferenceDistinct(new LitRef(link.Tag));
-					scene.References.Add(novelRef);
+					scene.Locations.Add(novelRef as LitPlace);
 				}
 			}
-
 		}
 		/// <summary>
 		/// 
@@ -140,18 +118,24 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 		public static void MergeScene(this LitScene scene1, LitScene scene2) {
 			scene1.Actors = new List<LitChar>(scene1.Actors.Union(scene2.Actors));
-			scene1.Location = new List<LitPlace>(scene1.Location.Union(scene2.Location)); 
+			scene1.Locations = new List<LitPlace>(scene1.Locations.Union(scene2.Locations)); 
 			scene1.References = new List<LitRef>(scene1.References.Union(scene2.References));
 			scene1.Children = new List<LitEvent>(scene1.Children.Zip(scene2.Children, (e1, e2) => e1.MergeEvent(e2)));
 		}
 
-		//public static List<String> WriteSceneLinks(this LitScene scene) {
-		//	var retVal = scene.WriteElmLinks();
-		//	retVal.AddRange(scene.Actors.Select(a => MakeLinkLine("Actor", a.Tags.First().Tag)));
-		//	retVal.AddRange(scene.Location.Select(p => MakeLinkLine("Location", p.Tags.First().Tag)));
-		//	retVal.AddRange(scene.References.Select(r => MakeLinkLine("Reference", r.Tags.First().Tag)));
-		//	return retVal;
-		//}
+		public static List<String> WriteSceneLinksDefault(
+			this LitOptions LO,
+			LitScene scene
+		){
+			var retVal = new List<String>();
+			retVal.AddRange(scene.Actors.Select(a => 
+				MakeLinkLine("Actor", a.Tags.First().Tag)
+			));
+			retVal.AddRange(scene.Locations.Select(p => 
+				MakeLinkLine("Location", p.Tags.First().Tag)
+			));
+			return retVal;
+		}
 
 		//public static List<String> ToSourceLines(this LitScene scene, LitSourceInfo sourceinfo, LitOptions LO) {
 		//	var retVal = new List<String>();

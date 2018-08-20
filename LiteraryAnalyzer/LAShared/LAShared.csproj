@@ -51,6 +51,7 @@
     <Compile Include="ExceptionLog.cs" />
     <Compile Include="Excerpt.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="LitObject.cs" />
     <Compile Include="MDAnnSource.cs" />
     <Compile Include="LitSceneMetadata.cs" />
     <Compile Include="MDFile.cs" />

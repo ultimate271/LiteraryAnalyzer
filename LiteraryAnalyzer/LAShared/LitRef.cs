@@ -7,6 +7,23 @@ using System.Threading.Tasks;
 namespace LiteraryAnalyzer.LAShared {
 	/// <summary>
 	/// Base class for References throughout the novel
+	/// <remarks>
+	/// For my reference, here is the sort of heirachy for links and references
+	/// LitChar
+	///		Actor (Scene level)
+	///		Speaker (Event level)
+	///		Character (Character reference)
+	///	LitPlace
+	///		Location (Scene level)
+	///		Place (Location Reference)
+	///	LitMyth
+	///		Event (Event level)
+	///		Myth (Myth Reference)
+	/// LitObject
+	///		Item (Event level)
+	///		Object (Object Reference)
+	///		
+	/// </remarks>
 	/// </summary>
 	public class LitRef {
 		public LitRef() { }
@@ -49,7 +66,26 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools {
-		public static List<String> WriteNotesLinesDefault(this LitOptions LO, LitNovel novel, LitRef reference) {
+		public static String WriteReferenceLinkDefault(
+			this LitOptions LO,
+			LitRef reference
+		){
+			string link = "";
+			if (reference is LitChar) { link = "Character"; }
+			else if (reference is LitPlace) { link = "Place"; }
+			else if (reference is LitMyth) { link = "Myth"; }
+			else if (reference is LitObject) { link = "Object"; }
+			return LO.WriteLink(new MDLinkLine() {
+				Tag = reference.Tags.First().Tag,
+				Link = link
+			});
+
+		}
+		public static List<String> WriteNotesLinesDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitRef reference
+		){
 			var retVal = new List<String>();
 
 			retVal.Add(LO.WriteNotesHeader(novel, reference));
@@ -60,17 +96,34 @@ namespace LiteraryAnalyzer.LAShared {
 			if (reference is LitChar) {
 				retVal.AddRange(LO.WriteNotesCharLines(novel, reference as LitChar));
 			}
+			if (reference is LitPlace) {
+				retVal.AddRange(LO.WriteNotesPlaceLines(novel, reference as LitPlace));
+			}
+			if (reference is LitMyth) {
+				retVal.AddRange(LO.WriteNotesMythLines(novel, reference as LitMyth));
+			}
+			if (reference is LitObject) {
+				retVal.AddRange(LO.WriteNotesObjectLines(novel, reference as LitObject));
+			}
 
 			return retVal;
 		}
-		public static String WriteNotesHeaderDefault(this LitOptions LO, LitNovel novel, LitRef reference) {
+		public static String WriteNotesHeaderDefault(
+			this LitOptions LO, 
+			LitNovel novel, 
+			LitRef reference
+		){
 			var TagHeader = new MDHeader() {
 				HeaderLevel = 1,
 				Text = reference.Tags.First().Tag
 			};
 			return TagHeader.ToString();
 		}
-		public static String WriteNotesLinkDefault(this LitOptions LO, LitNovel novel, LitRef reference) {
+		public static String WriteNotesLinkDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitRef reference
+		){
 			var retVal = new MDLinkLine();
 			retVal.Link = "Reference";
 			if (reference is LitChar) {
@@ -79,15 +132,29 @@ namespace LiteraryAnalyzer.LAShared {
 			else if (reference is LitPlace) {
 				retVal.Tag = "Place";
 			}
+			else if (reference is LitMyth) {
+				retVal.Tag = "Myth";
+			}
+			else if (reference is LitObject) {
+				retVal.Tag = "Object";
+			}
 			else {
 				retVal.Tag = "Reference";
 			}
 			return retVal.ToString();
 		}
-		public static List<String> WriteNotesCommentaryDefault(this LitOptions LO, LitNovel novel, LitRef reference) {
+		public static List<String> WriteNotesCommentaryDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitRef reference
+		){
 			return new List<string>(new String[] { reference.Commentary });
 		}
-		public static List<String> WriteNotesTagsDefault(this LitOptions LO, LitNovel novel, LitRef reference) {
+		public static List<String> WriteNotesTagsDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitRef reference
+		){
 			var retVal = new List<string>();
 
 			var tagsHeader = new MDHeader() {

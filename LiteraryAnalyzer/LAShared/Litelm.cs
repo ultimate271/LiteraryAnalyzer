@@ -15,8 +15,19 @@ namespace LiteraryAnalyzer.LAShared {
 		public List<LitTag> UserTags { get; set; } = new List<LitTag>();
 		public LitTag TreeTag { get; set; } = new LitTag();
 		public List<LitEvent> Children { get; set; } = new List<LitEvent>();
+		public List<LitRef> References { get; set; } = new List<LitRef>();
 	}
 	public static partial class LitExtensions {
+		public static IEnumerable<LitElm> AllElms(
+			this LitElm elm
+		) {
+			var retVal = new List<LitElm>();
+			retVal.Add(elm);
+			foreach (var child in elm.Children) {
+				retVal.AddRange(child.AllElms());
+			}
+			return retVal;
+		}
 		//public static List<MDTag> GetAllTags(this LitElm elm, String Filename, int HeaderLevel) {
 		//	var retVal = new List<MDTag>();
 		//	var tempList = new List<LitTag>();
@@ -68,6 +79,64 @@ namespace LiteraryAnalyzer.LAShared {
 		}
 	}
 	public static partial class ParsingTools { 
+		public static IEnumerable<MDLinkLine> ExtractElmLinkLinesDefault(
+			this LitOptions LO,
+			IEnumerable<String> lines
+		){
+			return lines
+				.Select(l => LO.ParseLink(l))
+				.Where(l => l != null);
+		}
+		public static void ParseElmLinksDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitElm elm,
+			IEnumerable<MDLinkLine> links
+		){
+			foreach (var link in links) {
+				//I feel as though there is a way to use reflection to be super clever here,
+				//But upon thinking about it, I think it would only create more confusion than it
+				//would help, since the actual properties of the scene are not that numerous,
+				//and to be honest there would probably me more exceptional cases than I am willing
+				//To admit, so at this juncture, I will use a elseif chain to do what I want.
+				//I don't like it, but at the same time I sort of do because it is more explicit and easier
+				//To work with, and an if else chain makes sense.
+				//I want to use reflection so bad, but it's probably for the best that I do this in
+				//The concrete way for now, and if at some point down the road, I want to change this to use reflection,
+				//It will be not terribly difficult to do (at least, only as difficult as reflection is)
+				LitRef novelRef;
+				if (link.Link.Equals("TreeTag")) {
+					elm.TreeTag = new LitTag(link.Tag);
+				}
+				else if (link.Link.Equals("UserTag")) {
+					//TODO UserTags must be unique, not only and that should be checked somewhere here
+					elm.UserTags.Add(new LitTag(link.Tag));
+				}
+				else if (link.Link.Equals("Character")) {
+					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
+					elm.References.Add(novelRef as LitChar);
+				}
+				else if (link.Link.Equals("Place")) {
+					novelRef = novel.AddReferenceDistinct(new LitPlace(link.Tag));
+					elm.References.Add(novelRef as LitPlace);
+				}
+				else if (link.Link.Equals("Myth")) {
+					novelRef = novel.AddReferenceDistinct(new LitMyth(link.Tag));
+					elm.References.Add(novelRef as LitMyth);
+				}
+				else if (link.Link.Equals("Object")) {
+					novelRef = novel.AddReferenceDistinct(new LitObject(link.Tag));
+					elm.References.Add(novelRef as LitObject);
+				}
+			}
+			if (elm is LitScene) {
+				LO.ParseSceneLinks(novel, elm as LitScene, links);
+			}
+			if (elm is LitEvent) {
+				LO.ParseEventLinks(novel, elm as LitEvent, links);
+			}
+			
+		}
 		/// <summary>
 		/// Takes a litelm and writes it's header at a particular level
 		/// </summary>
@@ -118,15 +187,16 @@ namespace LiteraryAnalyzer.LAShared {
 		/// <returns></returns>
 		public static List<String> WriteElmLinksDefault(this LitOptions LO, LitElm litelm) {
 			var retVal = new List<String>();
-			retVal.Add(MakeLinkLine("TreeTag", litelm.TreeTag.Tag));
-			retVal.AddRange(litelm.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag)));
+			retVal.Add( MakeLinkLine("TreeTag", litelm.TreeTag.Tag) );
+			retVal.AddRange(litelm.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag) ));
+			foreach (var reference in litelm.References) {
+				retVal.Add( LO.WriteReferenceLink(reference) );
+			}
 			if (litelm is LitEvent) {
-				retVal.AddRange((litelm as LitEvent).Speakers.Select(a => MakeLinkLine("Speaker", a.Tags.First().Tag)));
+				retVal.AddRange( LO.WriteEventLinks(litelm as LitEvent) );
 			}
 			if (litelm is LitScene) {
-				retVal.AddRange((litelm as LitScene).Actors.Select(a => MakeLinkLine("Actor", a.Tags.First().Tag)));
-				retVal.AddRange((litelm as LitScene).Location.Select(p => MakeLinkLine("Location", p.Tags.First().Tag)));
-				retVal.AddRange((litelm as LitScene).References.Select(r => MakeLinkLine("Reference", r.Tags.First().Tag)));
+				retVal.AddRange( LO.WriteSceneLinks(litelm as LitScene) );
 			}
 			return retVal;
 		}

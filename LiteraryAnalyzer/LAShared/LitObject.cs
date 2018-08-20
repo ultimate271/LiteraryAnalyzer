@@ -5,46 +5,43 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
-	/// <summary>
-	/// This will contain any background material that might be relevent to the reader
-	/// </summary>
-	public class LitMyth : LitRef {
-		public LitMyth() : base() { }
-		public LitMyth(String tag) : base(tag) { }
-		public LitMyth(LitTag tag) : base(tag) { }
+	public class LitObject : LitRef {
+		public LitObject() : base() { }
+		public LitObject(String tag) : base(tag) { }
+		public LitObject(LitTag tag) : base(tag) { }
 	}
 	public static partial class ParsingTools {
-		public static List<String> WriteNotesMythLinesDefault(
+		public static List<String> WriteNotesObjectLinesDefault(
 			this LitOptions LO,
 			LitNovel novel,
-			LitMyth myth
+			LitObject obj
 		){
 			var retVal = new List<String>();
 			var AllElms = novel.AllElms();
 
-			//Show actor instances
-			var eventHeader = new MDHeader() {
+			//Show speaker instances
+			var itemHeader = new MDHeader() {
 				HeaderLevel = 2,
-				Text = "Event of"
+				Text = "Speaker in"
 			};
-			retVal.Add(eventHeader.ToString());
+			retVal.Add(itemHeader.ToString());
 			retVal.AddRange(
 				AllElms
 				.Where(e => e is LitEvent)
 				.Select(e => e as LitEvent)
-				.Where(e => e.Events.Contains(myth))
+				.Where(e => e.Items.Contains(obj))
 				.Select(e => e.TreeTag.ToHyperlink())
 			);
 
 			//Show mentions
-			var mythHeader = new MDHeader() {
+			var objectHeader = new MDHeader() {
 				HeaderLevel = 2,
 				Text = "Mentioned in"
 			};
-			retVal.Add(mythHeader.ToString());
+			retVal.Add(objectHeader.ToString());
 			retVal.AddRange(
 				AllElms
-				.Where(e => e.References.Contains(myth))
+				.Where(e => e.References.Contains(obj))
 				.Select(e => e.TreeTag.ToHyperlink())
 			);
 

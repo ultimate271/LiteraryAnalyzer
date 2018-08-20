@@ -14,6 +14,8 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		public LitSource Source { get; set; } = new LitSource();
 		public List<LitChar> Speakers { get; set; } = new List<LitChar>();
+		public List<LitMyth> Events { get; set; } = new List<LitMyth>();
+		public List<LitObject> Items { get; set; } = new List<LitObject>();
 	}
 	public static partial class LitExtensions {
 		/// <summary>
@@ -41,6 +43,9 @@ namespace LiteraryAnalyzer.LAShared {
 		public static LitEvent MergeEvent(this LitEvent event1, LitEvent event2) {
 			if (!event1.IsElmMergeable(event2)) { throw new Exception(String.Format("Event {0} not mergeable with Event {1}", event1.TreeTag, event2.TreeTag)); }
 			event1.Speakers = new List<LitChar>(event1.Speakers.Union(event2.Speakers));
+			event1.Events = new List<LitMyth>(event1.Events.Union(event2.Events));
+			event1.Items = new List<LitObject>(event1.Items.Union(event2.Items));
+			event1.References = new List<LitRef>(event1.References.Union(event2.References));
 			var query = event2.Source.Text.Keys.Where(k => !event1.Source.Text.Keys.Contains(k));
 			foreach (var litSourceInfo in query) {
 				event1.Source.Text[litSourceInfo] = event2.Source.Text[litSourceInfo];
@@ -67,7 +72,11 @@ namespace LiteraryAnalyzer.LAShared {
 			//TODO this is a bit ugly
 			var PartitionedLines = LO.ExtractEvents(lines, LO.ParseHeader(lines.First()).HeaderLevel + 1);
 
-			LO.ParseEventLinks(novel, retVal, PartitionedLines.First());
+			LO.ParseElmLinks(
+				novel, 
+				retVal, 
+				LO.ExtractElmLinkLines(PartitionedLines.First())
+			);
 
 			//Extract the source lines
 			LO.ParseEventText(novel, retVal, author, PartitionedLines.First());
@@ -89,20 +98,26 @@ namespace LiteraryAnalyzer.LAShared {
 				throw new Exception("The first line of an event must me a header", e);
 			}
 		}
-		public static void ParseEventLinksDefault(this LitOptions LO, LitNovel novel, LitEvent litevent, IEnumerable<String> lines) {
-			//Extract the links from the first partition
-			var links = lines
-				.Select(line => LO.ParseLink(line))
-				.Where(link => link != null);
+		public static void ParseEventLinksDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitEvent litevent,
+			IEnumerable<MDLinkLine> links
+		){
 			LitRef novelRef;
 			foreach (var link in links) {
-				if (link.Link.Equals("TreeTag")) {
-					litevent.TreeTag = new LitTag(link.Tag);
-				}
-				else if (link.Link.Equals("Speaker")) {
+				if (link.Link.Equals("Speaker")) {
 					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
 					litevent.Speakers.Add(novelRef as LitChar);
 				}	
+				else if (link.Link.Equals("Event")) {
+					novelRef = novel.AddReferenceDistinct(new LitMyth(link.Tag));
+					litevent.Events.Add(novelRef as LitMyth);
+				}
+				else if (link.Link.Equals("Item")) {
+					novelRef = novel.AddReferenceDistinct(new LitObject(link.Tag));
+					litevent.Items.Add(novelRef as LitObject);
+				}
 			}
 		}
 		public static void ParseEventTextDefault(this LitOptions LO, LitNovel novel, LitEvent litevent, LitAuthor author, IEnumerable<String> lines) {
@@ -130,11 +145,22 @@ namespace LiteraryAnalyzer.LAShared {
 			var pattern = String.Format(@"^{0}[^#]", new String('#', headerLevel));
 			return ParsingTools.PartitionLines(lines, line => System.Text.RegularExpressions.Regex.IsMatch(line, pattern));
 		}
-		//public static List<String> WriteEventLinks(this LitEvent litevent) {
-		//	var retVal = litevent.WriteElmLinks();
-		//	retVal.AddRange(litevent.Speakers.Select(a => MakeLinkLine("Speaker", a.Tags.First().Tag)));
-		//	return retVal;
-		//}
+		public static List<String> WriteEventLinksDefault(
+			this LitOptions LO,
+			LitEvent litevent
+		){
+			var retVal = new List<String>();
+			retVal.AddRange(litevent.Speakers.Select(a => 
+				MakeLinkLine("Speaker", a.Tags.First().Tag)
+			));
+			retVal.AddRange(litevent.Events.Select(a =>
+				MakeLinkLine("Event", a.Tags.First().Tag)
+			));
+			retVal.AddRange(litevent.Items.Select(a =>
+				MakeLinkLine("Item", a.Tags.First().Tag)
+			));
+			return retVal;
+		}
 
 		//public static List<String> ToSourceLines(this LitEvent litevent, LitSourceInfo sourceinfo, int headerlevel) {
 		//	var retVal = new List<String>();

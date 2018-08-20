@@ -22,17 +22,27 @@ namespace LiteraryAnalyzer.LAShared {
 		public static void ParseLitChar(this LitChar retVal, IEnumerable<IEnumerable<String>> lines) {
 
 		}
-		public static List<String> WriteNotesCharLinesDefault(this LitOptions LO, LitNovel novel, LitChar character) {
+		public static List<String> WriteNotesCharLinesDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitChar character
+		){
 			var retVal = new List<String>();
+			var AllElms = novel.AllElms();
+
 			//Show actor instances
 			var actorHeader = new MDHeader() {
 				HeaderLevel = 2,
 				Text = "Actor in"
 			};
 			retVal.Add(actorHeader.ToString());
-
-			//Place all of the tags for the actor
-			retVal.AddRange(novel.ActorTags(character).Select(t => t.ToHyperlink()));
+			retVal.AddRange(
+				AllElms
+				.Where(e => e is LitScene)
+				.Select(e => e as LitScene)
+				.Where(s => s.Actors.Contains(character))
+				.Select(s => s.TreeTag.ToHyperlink())
+			);
 
 			//Show speaker instances
 			var speakerHeader = new MDHeader() {
@@ -40,9 +50,25 @@ namespace LiteraryAnalyzer.LAShared {
 				Text = "Speaker in"
 			};
 			retVal.Add(speakerHeader.ToString());
+			retVal.AddRange(
+				AllElms
+				.Where(e => e is LitEvent)
+				.Select(e => e as LitEvent)
+				.Where(e => e.Speakers.Contains(character))
+				.Select(e => e.TreeTag.ToHyperlink())
+			);
 
-			//Place all of the tags for the speaker
-			retVal.AddRange(novel.SpeakerTags(character).Select(t => t.ToHyperlink()));
+			//Show mentions
+			var characterHeader = new MDHeader() {
+				HeaderLevel = 2,
+				Text = "Mentioned in"
+			};
+			retVal.Add(characterHeader.ToString());
+			retVal.AddRange(
+				AllElms
+				.Where(e => e.References.Contains(character))
+				.Select(e => e.TreeTag.ToHyperlink())
+			);
 
 			return retVal;
 		}
