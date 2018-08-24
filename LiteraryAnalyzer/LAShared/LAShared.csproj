@@ -78,6 +78,7 @@
     <Compile Include="MDSourceFile.cs" />
     <Compile Include="MDTag.cs" />
     <Compile Include="MDTagFile.cs" />
+    <Compile Include="NovelLitOptions.cs" />
     <Compile Include="ParsingTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
