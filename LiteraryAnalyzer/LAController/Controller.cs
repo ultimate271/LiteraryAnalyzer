@@ -17,8 +17,11 @@ namespace LiteraryAnalyzer {
 		public Controller(LiteraryAnalyzerContext db) { this.db = db; }
 
 		public void DeveloperDebug () {
-			var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
-			LO.WriteElmText = (text) => LO.WriteTextGQQ(text, 80);
+			//var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
+			var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\source", Prefix = "dostoyevsky possessed.txt" };
+			LO.BuildSourceFilenames = LO.BuildSourceFilenamesNovel;
+			LO.BuildSourceFiles = LO.BuildSourceFilesNovel;
+			LO.WriteElmText = (text) => LO.WriteElmTextGQQ(text, 80);
 			var source = LO.BuildAnnSource(sourceInfo);
 			var novel = LO.ParseAnnSource(source);
 			var sourceOut = LO.WriteAnnSource(novel);
