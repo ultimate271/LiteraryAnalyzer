@@ -8,6 +8,7 @@ namespace LiteraryAnalyzer.LAShared {
 	public class LitSceneMetadata {
 		public String Descriptor { get; set; } = "";
 		public String Header { get; set; } = "";
+		public List<String> Text { get; set; } = new List<String>();
 	}
 	public static partial class ParsingTools {
 		public static LitSceneMetadata ParseMetadataDefault(this LitOptions LO, LitNovel novel, IEnumerable<String> sourceLines) {
@@ -35,6 +36,7 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.Add(MakeLinkLine("Metadata", metadata.Descriptor));
 			retVal.Add(MakeLinkLine("Descriptor", metadata.Descriptor));
 			retVal.Add(sourceinfo.ToSourceLine());
+			retVal.AddRange(metadata.Text);
 			return retVal;
 		}
 	}

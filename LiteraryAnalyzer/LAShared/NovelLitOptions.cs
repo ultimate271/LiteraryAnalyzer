@@ -25,5 +25,61 @@ namespace LiteraryAnalyzer.LAShared {
 				}
 			});
 		}
+		public static MDAnnSource WriteAnnSourceNovel(
+			this LitOptions LO,
+			LitNovel novel
+		){
+			var retVal = new MDAnnSource();
+			var list = new List<MDSourceFile>();
+			foreach (var scene in novel.Scenes) {
+				list.AddRange(
+					WriteSourceFileNovel(
+						LO,
+						new[] { scene.Header },
+						scene,
+						novel.Authors.First()
+					)
+				);
+			}
+			retVal.Sources = list;
+			return retVal;
+		}
+
+		//TODO
+		//Make a LitOptionsFactory
+		public static List<MDSourceFile> WriteSourceFileNovel(
+			this LitOptions LO,
+			IEnumerable<String> Accumulator,
+			LitElm sourceElm,
+			LitAuthor author
+		){
+			var retVal = new List<MDSourceFile>();
+			//Base Case
+			if (sourceElm.Children.Count == 0) {
+				var sourcefile = new MDSourceFile();
+				sourcefile.Metadata = new LitSceneMetadata() {
+					Text = Accumulator.ToList(),
+					Descriptor = sourceElm.TreeTag.Tag.TrimStart('.'),
+					Header = String.Join(" - ", Accumulator)
+				};
+				sourcefile.Author = author;
+
+				//This is an inelegent way to force the treetag to be the first scene of the novel
+				sourceElm.TreeTag.Tag = String.Format("{0}.01", sourceElm.TreeTag.Tag);
+				sourcefile.Lines = new List<String>(
+					LO.WriteMetadata(sourcefile.Metadata, sourcefile.Author)
+					.Concat(LO.WriteElmSourceLines(sourceElm, author))
+				);
+				retVal.Add(sourcefile);
+			}
+			//Inductive Case
+			else {
+				foreach (var child in sourceElm.Children) {
+					var newAcc = Accumulator.Concat(new [] {child.Header});
+					retVal.AddRange(WriteSourceFileNovel(LO, newAcc, child, author));
+				}
+			}
+			return retVal;
+		}
 	}
 }

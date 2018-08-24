@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiteraryAnalyzer.LAShared {
 	public static partial class ParsingTools {
-		public static readonly string[] GenereratedLinks = { "Metadata", "TreeTag", "Descriptor", "Author" };
+		public static readonly string[] GenereratedLinks = { "Metadata", "TreeTag", "Descriptor" };
 		/// <summary>
 		/// Breaks up a list of lines into a list of list of lines, where each sublist starts with a single header hash
 		/// </summary>

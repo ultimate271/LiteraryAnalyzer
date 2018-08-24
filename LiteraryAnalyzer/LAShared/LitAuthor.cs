@@ -38,6 +38,23 @@ namespace LiteraryAnalyzer.LAShared {
 			System.IO.File.WriteAllLines(LO.ToLongNotesFilename(info), sourceObjects.Notes.Lines);
 			System.IO.File.WriteAllLines(LO.ToLongTagFilename(info), sourceObjects.TagFile.Lines);
 		}
+		public static void WriteToFileSystemRaw(
+			this LitOptions LO,
+			MDAnnSource sourceObjects,
+			MDAnnSourceInfo info
+		){
+			foreach (var source in sourceObjects.Sources) {
+				String dir = String.Format("{0}\\{1}", info.BaseDir, info.Prefix);
+				if (!System.IO.Directory.Exists(dir)) {
+					System.IO.Directory.CreateDirectory(dir);
+				}
+				System.IO.File.WriteAllLines(
+					LO.ToLongSourceFilename(info, source),
+					source.Lines
+				);
+			}
+		}
+
 		public static String ToSourceLine(this LitAuthor sourceinfo) {
 			return ParsingTools.MakeLinkLine("Author", sourceinfo.Author);
 		}

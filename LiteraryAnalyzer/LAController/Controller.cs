@@ -18,14 +18,23 @@ namespace LiteraryAnalyzer {
 
 		public void DeveloperDebug () {
 			//var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
-			var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\source", Prefix = "dostoyevsky possessed.txt" };
+			var sourceInfo = new MDAnnSourceInfo() {
+				BaseDir = @"C:\Users\bwebster\Source\Repos\notes\source",
+				Prefix = "dostoyevsky possessed.txt" };
 			LO.BuildSourceFilenames = LO.BuildSourceFilenamesNovel;
 			LO.BuildSourceFiles = LO.BuildSourceFilesNovel;
-			LO.WriteElmText = (text) => LO.WriteElmTextGQQ(text, 80);
+			LO.WriteElmText = (text) => LO.WriteTextGQQ(text, 80);
+			LO.WriteAnnSource = LO.WriteAnnSourceNovel;
+			LO.WriteElmLinks = (e) => { return new List<String>(); };
+			LO.WriteToFileSystem = LO.WriteToFileSystemRaw;
+			LO.ToLongSourceFilename = LO.ToLongFilenameRaw;
 			var source = LO.BuildAnnSource(sourceInfo);
 			var novel = LO.ParseAnnSource(source);
 			var sourceOut = LO.WriteAnnSource(novel);
-			var writeInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\testout", Prefix = "sil" };
+			var writeInfo = new MDAnnSourceInfo() {
+				BaseDir = @"C:\Users\bwebster\Source\Repos\notes\достоевский",
+				Prefix = "possessed"
+			};
 			sourceOut.TagFile = LO.WriteTagFile(novel, writeInfo);
 			LO.WriteToFileSystem(sourceOut, writeInfo);
 

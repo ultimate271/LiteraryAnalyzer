@@ -158,7 +158,6 @@ namespace LiteraryAnalyzer.LAShared {
 
 		#endregion
 
-
 		#region "Source Writing"
 		public delegate MDAnnSource WriteAnnSourceDelegate(LitNovel novel);
 		public WriteAnnSourceDelegate WriteAnnSource { get; set; }

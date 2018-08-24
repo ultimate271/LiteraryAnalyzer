@@ -152,31 +152,31 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="LO"></param>
 		/// <param name="litElm"></param>
-		/// <param name="sourceinfo"></param>
+		/// <param name="author"></param>
 		/// <returns></returns>
-		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor sourceinfo) {
-			return ParsingTools.WriteSourceLinesDefault(LO, litElm, sourceinfo, 1);
+		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor author) {
+			return ParsingTools.WriteSourceLinesDefault(LO, litElm, author, 1);
 		}
 		/// <summary>
 		/// Takes a litelm and writes all of the lines for that elm that go into the source for a particular Author
 		/// </summary>
 		/// <param name="LO"></param>
 		/// <param name="litElm"></param>
-		/// <param name="sourceinfo"></param>
+		/// <param name="author"></param>
 		/// <param name="headerlevel"></param>
 		/// <returns></returns>
-		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor sourceinfo, int headerlevel) {
+		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor author, int headerlevel) {
 			var retVal = new List<String>();
 			retVal.Add(LO.WriteElmHeader(litElm, headerlevel));
 			retVal.AddRange(LO.WriteElmLinks(litElm));
 			if (litElm is LitEvent) { 
 				try {
-					retVal.AddRange(LO.WriteElmText((litElm as LitEvent).Source.Text[sourceinfo]));
+					retVal.AddRange(LO.WriteElmText((litElm as LitEvent).Source.Text[author]));
 				}
 				catch (KeyNotFoundException) { }
 			}
 			foreach (var child in litElm.Children) {
-				retVal.AddRange(WriteSourceLinesDefault(LO, child, sourceinfo, headerlevel + 1));
+				retVal.AddRange(WriteSourceLinesDefault(LO, child, author, headerlevel + 1));
 			}
 			return retVal;
 		}
@@ -222,7 +222,7 @@ namespace LiteraryAnalyzer.LAShared {
 						seekIndex++;
 					}
 					if (toIndex + seekIndex >= paragraph.Length) { toIndex = toIndex + seekIndex; }
-					retVal.Add(paragraph.Substring(fromIndex, toIndex - fromIndex));
+					retVal.Add(paragraph.Substring(fromIndex, toIndex - fromIndex).Trim());
 					toIndex++; //Skip the space
 					fromIndex = toIndex;
 					seekIndex = 1;

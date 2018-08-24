@@ -13,6 +13,17 @@ namespace LiteraryAnalyzer.LAShared {
 		public static String ToLongFilenameDefault(this LitOptions LO, MDAnnSourceInfo info, MDSourceFile source ) {
 			return String.Format("{0}\\{1}", info.BaseDir, ToShortFilenameDefault(LO, info, source));
 		}
+		public static String ToLongFilenameRaw(
+			this LitOptions LO,
+			MDAnnSourceInfo info,
+			MDSourceFile source
+		) {
+			return String.Format("{0}\\{1}\\{2}",
+				info.BaseDir,
+				info.Prefix,
+				LO.ToShortFilenameDefault(info, source)
+			);
+		}
 		public static String ToShortFilenameDefault(
 			this LitOptions LO, 
 			MDAnnSourceInfo info, 
@@ -132,12 +143,20 @@ namespace LiteraryAnalyzer.LAShared {
 						retVal.Add(line);
 						retVal.Add(String.Format(@"[Metadata]: # {{{0}}}", tag));
 						retVal.Add(String.Format(@"[Descriptor]: # {{{0}}}", tag));
-						retVal.Add(String.Format(@"[Author]: # {{{0}}}", author));
+						//TODO: Perhaps make this more elegant
+						if (lines
+							.Select(l => LO.ParseLink(l))
+							.Where(l => l != null)
+							.Where(l => l.Link.Equals("Author"))
+							.Count() == 0
+						){
+							retVal.Add(String.Format(@"[Author]: # {{{0}}}", author));
+						}
 					}
 					else if (lineHeaderLevel == headerLevel && adding) {
 						i++;
 						retVal.Add(line);
-						retVal.Add(String.Format(@"[TreeTag]: # {{{0}.{1:00}}}", tag, i));
+						retVal.Add(String.Format(@"[TreeTag]: # {{{0}.{1:00}}}", tag, i).TrimStart('.'));
 					}
 					else if (lineHeaderLevel > headerLevel) {
 						adding = false;
@@ -145,7 +164,7 @@ namespace LiteraryAnalyzer.LAShared {
 					}
 					else if (lineHeaderLevel == headerLevel && !adding) {
 						//Recursively call the lines we've gathered together, tag them, and add the range
-						retVal.AddRange(TagSourceFileDefault(LO, arg, String.Format(@"{0}.{1:00}", tag, i), author, headerLevel + 1));
+						retVal.AddRange(TagSourceFileDefault(LO, arg, String.Format(@"{0}.{1:00}", tag, i).TrimStart('.'), author, headerLevel + 1));
 
 						//Begin anew
 						arg = new List<string>();
@@ -154,7 +173,7 @@ namespace LiteraryAnalyzer.LAShared {
 						//Start with this header line
 						i++;
 						retVal.Add(line);
-						retVal.Add(String.Format(@"[TreeTag]: # {{{0}.{1:00}}}", tag, i));
+						retVal.Add(String.Format(@"[TreeTag]: # {{{0}.{1:00}}}", tag, i).TrimStart('.'));
 					}
 				}
 				else { //If this is not a header line, and just a regular line
