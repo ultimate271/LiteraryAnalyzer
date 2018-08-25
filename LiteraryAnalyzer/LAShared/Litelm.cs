@@ -201,9 +201,7 @@ namespace LiteraryAnalyzer.LAShared {
 			return retVal;
 		}
 		public static List<String> WriteElmTextDefault(this LitOptions LO, String Text) {
-			var retVal = new List<String>();
-			retVal.Add(Text);
-			return retVal;
+			return LO.WriteTextGQQ(Text, 80);
 		}
 		public static List<String> WriteTextGQQ(this LitOptions LO, String Text, int LineLength) {
 			var retVal = new List<String>();

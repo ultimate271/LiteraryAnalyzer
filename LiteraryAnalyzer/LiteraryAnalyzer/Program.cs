@@ -17,7 +17,13 @@ namespace LiteraryAnalyzer {
 	class Program {
 		static void Main(string[] args) {
 			Controller c = new Controller();
-			c.DeveloperDebug();
+			if (args.Length > 0) {
+				var info = new MDAnnSourceInfo() {
+					BaseDir = System.IO.Directory.GetCurrentDirectory(),
+					Prefix = args[0]
+				};
+				c.GenerateTags(info);
+			}
 			//Instructions for use.
 			//Replace Filename with the source txt, annotated with markdown
 			//Replace Prefix with where you want the output to be saved

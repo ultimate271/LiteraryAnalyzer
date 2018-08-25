@@ -24,7 +24,7 @@ namespace LiteraryAnalyzer.LAShared {
 		){
 			var retVal = new LitAuthor();
 			var links = metadatalines.Select(l => LO.ParseLink(l)).Where(link => link != null);
-			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag).FirstOrDefault();
+			retVal.Author = links.Where(link => link.Link.Equals("Author")).Select(link => link.Tag.ToLower()).FirstOrDefault();
 			return novel.AddAuthorDistinct(retVal);
 		} 
 

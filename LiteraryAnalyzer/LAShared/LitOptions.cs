@@ -231,6 +231,12 @@ namespace LiteraryAnalyzer.LAShared {
 		#region "Tag File Writing"
 		public delegate MDTagFile WriteTagFileDelegate(LitNovel novel, MDAnnSourceInfo info);
 		public WriteTagFileDelegate WriteTagFile { get; set; }
+
+		public delegate String WriteElmTagEXDelegate(LitElm elm);
+		public WriteElmTagEXDelegate WriteElmTagEX { get; set; }
+
+		public delegate String WriteTagLineDelegate(MDTag tag);
+		public WriteTagLineDelegate WriteTagLine { get; set; }
 		#endregion
 
 		public delegate void WriteToFileSystemDelegate(MDAnnSource source, MDAnnSourceInfo info);
@@ -307,6 +313,8 @@ namespace LiteraryAnalyzer.LAShared {
 			this.GetAllTags = this.GetAllTagsDefault;
 
 			this.WriteTagFile = this.WriteTagFileDefault;
+			this.WriteElmTagEX = this.WriteElmTagEXDefault;
+			this.WriteTagLine = this.WriteTagLineDefault;
 			this.ToShourtSourceFilename = this.ToShortFilenameDefault;
 			this.ToLongSourceFilename = this.ToLongFilenameDefault;
 			this.ToShortNotesFilename = this.ToShortNotesFilenameDefault;
@@ -348,7 +356,11 @@ namespace LiteraryAnalyzer.LAShared {
 
 			tempList.Add(elm.TreeTag);
 			tempList.AddRange(elm.UserTags);
-			retVal = tempList.Select(t => new MDTag() { TagName = t.Tag, TagFile = Filename, TagLine = LO.WriteElmHeader(elm, HeaderLevel) }).ToList();
+			retVal = tempList.Select(t => new MDTag() {
+				TagName = t.Tag,
+				TagFile = Filename,
+				TagLine = LO.WriteElmTagEX(elm)
+			}).ToList();
 
 			foreach (var child in elm.Children) {
 				retVal.AddRange(ParsingTools.GetAllTagsDefault(LO, child, Filename, HeaderLevel + 1));

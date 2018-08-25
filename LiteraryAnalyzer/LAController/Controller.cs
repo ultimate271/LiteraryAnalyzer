@@ -19,20 +19,14 @@ namespace LiteraryAnalyzer {
 		public void DeveloperDebug () {
 			//var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
 			var sourceInfo = new MDAnnSourceInfo() {
-				BaseDir = @"C:\Users\bwebster\Source\Repos\notes\source",
+				BaseDir = @"C:\Users\brett\Source\Repos\notes\source",
 				Prefix = "dostoyevsky possessed.txt" };
-			LO.BuildSourceFilenames = LO.BuildSourceFilenamesNovel;
-			LO.BuildSourceFiles = LO.BuildSourceFilesNovel;
-			LO.WriteElmText = (text) => LO.WriteTextGQQ(text, 80);
-			LO.WriteAnnSource = LO.WriteAnnSourceNovel;
-			LO.WriteElmLinks = (e) => { return new List<String>(); };
-			LO.WriteToFileSystem = LO.WriteToFileSystemRaw;
-			LO.ToLongSourceFilename = LO.ToLongFilenameRaw;
+			LO = LitOptionsFactory.CreateSourceNovel();
 			var source = LO.BuildAnnSource(sourceInfo);
 			var novel = LO.ParseAnnSource(source);
 			var sourceOut = LO.WriteAnnSource(novel);
 			var writeInfo = new MDAnnSourceInfo() {
-				BaseDir = @"C:\Users\bwebster\Source\Repos\notes\достоевский",
+				BaseDir = @"C:\Users\brett\Source\Repos\notes\достоевский",
 				Prefix = "possessed"
 			};
 			sourceOut.TagFile = LO.WriteTagFile(novel, writeInfo);
@@ -40,6 +34,14 @@ namespace LiteraryAnalyzer {
 
 			System.Console.WriteLine("Done");
 
+		}
+		public void GenerateTags(MDAnnSourceInfo info) {
+			LO = LitOptionsFactory.CreateDefault();
+			var source = LO.BuildAnnSource(info);
+			var novel = LO.ParseAnnSource(source);
+			var sourceOut = LO.WriteAnnSource(novel);
+			sourceOut.TagFile = LO.WriteTagFile(novel, info);
+			LO.WriteToFileSystem(sourceOut, info);
 		}
 		/// <summary>
 		/// Takes a markdown file and inserts records into the db for 

@@ -182,6 +182,15 @@ namespace LiteraryAnalyzer.LAShared {
 					retVal = new LitChar();
 					(retVal as LitChar).ParseLitChar(PartitionedLines);
 				}
+				else if (link.Tag.Equals("Place")) {
+					retVal = new LitPlace();
+				}
+				else if (link.Tag.Equals("Myth")) {
+					retVal = new LitMyth();
+				}
+				else if (link.Tag.Equals("Object")) {
+					retVal = new LitObject();
+				}
 			}
 
 			//Get the first tag of the reference

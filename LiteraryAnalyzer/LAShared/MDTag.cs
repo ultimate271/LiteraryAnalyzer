@@ -21,5 +21,11 @@ namespace LiteraryAnalyzer.LAShared {
 		public static MDTag ToMDTag(this LitTag tag) {
 			return new MDTag() { TagName = tag.Tag };
 		}
+		public static String WriteTagLineDefault(
+			this LitOptions LO,
+			MDTag tag
+		) {
+			return String.Format("{0}\t{1}\t{2}", tag.TagName, tag.TagFile, tag.TagLine);
+		}
 	}
 }

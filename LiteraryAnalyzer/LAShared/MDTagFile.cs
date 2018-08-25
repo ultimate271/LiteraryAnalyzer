@@ -49,8 +49,26 @@ namespace LiteraryAnalyzer.LAShared {
 				}
 			}
 
-			retVal.Lines = Tags.Select(t => t.ToString()).ToList();
+			retVal.Lines = Tags.Select(t => LO.WriteTagLine(t)).ToList();
 			return retVal;
+		}
+		public static String WriteElmTagEXDefault(
+			this LitOptions LO,
+			LitElm elm
+		) {
+			var link = new MDLinkLine {
+				Link = "TreeTag",
+				Tag = elm.TreeTag.Tag
+			};
+			var linkString = LO.WriteLink(link);
+			return String.Format(@"/\v^#.*(\n*{0})@=", SanitizeForRegex(linkString));
+		}
+		public static String SanitizeForRegex(String s) {
+			String[] escape = { "\\\\", "\\{", "\\}", "\\(", "\\)", "\\[", "\\]" };
+			foreach (var c in escape) {
+				s = System.Text.RegularExpressions.Regex.Replace(s, c, c);
+			}
+			return s;
 		}
 	}
 }
