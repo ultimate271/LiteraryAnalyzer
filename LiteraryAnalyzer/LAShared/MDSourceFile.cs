@@ -62,17 +62,17 @@ namespace LiteraryAnalyzer.LAShared {
 			LitNovel novel, 
 			MDSourceFile sourceFile
 		){
-			var PartitionedScenes = LO.ExtractFromSourceFile(sourceFile);
+			var PartitionedElms = LO.ExtractFromSourceFile(sourceFile);
 
 			//Extract and add the metadata
-			var MetadataLines = LO.ExtractMetadata(PartitionedScenes);
+			var MetadataLines = LO.ExtractMetadata(PartitionedElms);
 			var LitSceneMetadata = LO.ParseMetadata(novel, MetadataLines);
 			var Author = LO.ParseAuthor(novel, MetadataLines);
 
 			//Extract and add the scenes
-			var PartitionedSceneLines = LO.ExtractScenes(PartitionedScenes);
-			foreach (var Scenelines in PartitionedSceneLines) {
-				var scene = LO.ParseToScene(novel, LitSceneMetadata, Author, Scenelines);
+			var PartitionedElmLines = LO.ExtractElms(PartitionedElms);
+			foreach (var ElmLines in PartitionedElmLines) {
+				var scene = LO.ParseToElm(novel, LitSceneMetadata, Author, ElmLines);
 				novel.AddScene(scene);
 			}
 		}

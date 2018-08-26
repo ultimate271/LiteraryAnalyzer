@@ -27,8 +27,6 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.Add(locationHeader.ToString());
 			retVal.AddRange(
 				AllElms
-				.Where(e => e is LitScene)
-				.Select(e => e as LitScene)
 				.Where(s => s.Locations.Contains(place))
 				.Select(s => s.TreeTag.ToHyperlink())
 			);

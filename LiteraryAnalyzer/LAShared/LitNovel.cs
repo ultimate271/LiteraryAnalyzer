@@ -13,7 +13,7 @@ namespace LiteraryAnalyzer.LAShared {
 	/// (That's a programmer enforcement. I should make a test function which checks this requirement.)
 	/// </summary>
 	public class LitNovel {
-		public List<LitScene> Scenes { get; set; } = new List<LitScene>();
+		public List<LitElm> Scenes { get; set; } = new List<LitElm>();
 		public List<LitRef> References { get; set; } = new List<LitRef>();
 		public String Title { get; set; }
 		public List<LitRef> GeneratedReference { get; set; } = new List<LitRef>();
@@ -38,19 +38,6 @@ namespace LiteraryAnalyzer.LAShared {
 		/// <returns></returns>
 		public static IEnumerable<LitTag> ActorTags(this LitNovel novel, LitChar actor) {
 			return novel.Scenes.Where(s => s.Actors.Contains(actor)).Select(s => s.TreeTag);
-		}
-		/// <summary>
-		/// Returns every tag for the events that this speaker is contained in
-		/// </summary>
-		/// <param name="novel"></param>
-		/// <param name="speaker"></param>
-		/// <returns></returns>
-		public static IEnumerable<LitTag> SpeakerTags(this LitNovel novel, LitChar speaker) {
-			var retVal = new List<LitTag>();
-			foreach (var scene in novel.Scenes) {
-				retVal.AddRange(scene.SpeakerTags(speaker));
-			}
-			return retVal;
 		}
 		/// <summary>
 		/// Will add a new reference to the list of references of the novel, or,
@@ -118,10 +105,10 @@ namespace LiteraryAnalyzer.LAShared {
 		/// </summary>
 		/// <param name="novel"></param>
 		/// <param name="scene"></param>
-		public static void AddScene(this LitNovel novel, LitScene scene) {
+		public static void AddScene(this LitNovel novel, LitElm scene) {
 			foreach (var NovelScene in novel.Scenes) {
 				if (NovelScene.IsElmMergeable(scene)) {
-					NovelScene.MergeScene(scene);
+					NovelScene.MergeElm(scene);
 					return;
 				}
 			}

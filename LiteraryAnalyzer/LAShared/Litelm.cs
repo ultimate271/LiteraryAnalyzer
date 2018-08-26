@@ -9,13 +9,22 @@ namespace LiteraryAnalyzer.LAShared {
 	/// <summary>
 	/// Represents a scene or event in the novel.
 	/// </summary>
-	public abstract class LitElm {
+	public class LitElm {
 		public int LitelmID { get; set; }
 		public string Header { get; set; }
 		public List<LitTag> UserTags { get; set; } = new List<LitTag>();
 		public LitTag TreeTag { get; set; } = new LitTag();
-		public List<LitEvent> Children { get; set; } = new List<LitEvent>();
+		public List<LitElm> Children { get; set; } = new List<LitElm>();
+		
+		public List<LitChar> Actors { get; set; } = new List<LitChar>();
+		public List<LitChar> Speakers { get; set; } = new List<LitChar>();
+		public List<LitPlace> Locations { get; set; } = new List<LitPlace>();
+		public List<LitMyth> Events { get; set; } = new List<LitMyth>();
+		public List<LitObject> Items { get; set; } = new List<LitObject>();
 		public List<LitRef> References { get; set; } = new List<LitRef>();
+
+		public LitSceneMetadata Metadata { get; set; } = new LitSceneMetadata();
+		public LitSource Source { get; set; } = new LitSource();
 	}
 	public static partial class LitExtensions {
 		public static IEnumerable<LitElm> AllElms(
@@ -87,6 +96,109 @@ namespace LiteraryAnalyzer.LAShared {
 				.Select(l => LO.ParseLink(l))
 				.Where(l => l != null);
 		}
+		public static IEnumerable<IEnumerable<String>> ExtractSubElmsDefault(
+			this LitOptions LO,
+			IEnumerable<String> lines
+		) {
+			//Partition the events
+			int headerLevel = LO.ParseHeader(lines.First()).HeaderLevel + 1;
+			var pattern = String.Format(@"^{0}[^#]", new String('#', headerLevel));
+			return ParsingTools.PartitionLines(lines, line => System.Text.RegularExpressions.Regex.IsMatch(line, pattern));
+		}
+		public static void ParseElmTextDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitElm elm,
+			LitAuthor author,
+			IEnumerable<String> lines
+		){
+			elm.Source.Text[author] = LO.SourceLinesToString(lines);
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="lines"></param>
+		/// <returns></returns>
+		public static LitElm ParseToElmDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitSceneMetadata metadata,
+			LitAuthor author,
+			IEnumerable<String> lines
+		){
+			var retVal = new LitElm();
+
+			//Some checks
+			if (!novel.Authors.Contains(author)) { throw new Exception(String.Format("Novel does not contain source info. {0}", author.Author)); }
+			if (!novel.SceneMetadata.Contains(metadata)) { throw new Exception(String.Format("Novel does not contain metadata. {0}", metadata.Descriptor)); }
+
+			//Parse the header
+			LO.ParseElmHeader(novel, retVal, lines);
+
+			var PartitionedLines = LO.ExtractSubElms(lines);
+
+			LO.ParseElmLinks(
+				novel,
+				retVal, 
+				LO.ExtractElmLinkLines(PartitionedLines.First())
+			);
+
+			LO.ParseElmText(novel, retVal, author, PartitionedLines.First());
+
+			foreach (var eventLines in PartitionedLines.Skip(1)) {
+				var litEvent = LO.ParseToElm(novel, metadata, author, eventLines);
+				retVal.Children.Add(litEvent);
+			}
+
+			retVal.Metadata = metadata;
+			return retVal;
+		}
+		public static void ParseElmHeaderDefault(
+			this LitOptions LO,
+			LitNovel novel,
+			LitElm elm,
+			IEnumerable<String> SceneLines
+		) {
+			var headerInfo = LO.ParseHeader(SceneLines.First());
+			elm.Header = headerInfo.Text;
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="LO"></param>
+		/// <param name="PartitionedScenes"></param>
+		/// <returns></returns>
+		public static IEnumerable<IEnumerable<String>> ExtractElmsDefault(
+			this LitOptions LO,
+			IEnumerable<IEnumerable<String>> PartitionedScenes
+		) {
+			return PartitionedScenes.Where(lines =>
+				lines.Select(l => LO.ParseLink(l))
+					.Where(link => link != null)
+					.Where(link => link.Link.Equals("TreeTag"))
+					.Count() > 0
+				);
+		}
+		public static LitElm MergeElm(this LitElm elm1, LitElm elm2) {
+			elm1.Actors = new List<LitChar>(elm1.Actors.Union(elm2.Actors));
+			elm1.Locations = new List<LitPlace>(elm1.Locations.Union(elm2.Locations)); 
+			elm1.References = new List<LitRef>(elm1.References.Union(elm2.References));
+			elm1.Speakers = new List<LitChar>(elm1.Speakers.Union(elm2.Speakers));
+			elm1.Events = new List<LitMyth>(elm1.Events.Union(elm2.Events));
+			elm1.Items = new List<LitObject>(elm1.Items.Union(elm2.Items));
+			elm1.References = new List<LitRef>(elm1.References.Union(elm2.References));
+			var query = elm2.Source.Text.Keys.Where(k => !elm1.Source.Text.Keys.Contains(k));
+			foreach (var litSourceInfo in query) {
+				elm1.Source.Text[litSourceInfo] = elm2.Source.Text[litSourceInfo];
+			}
+			elm1.Children = new List<LitElm>(
+				elm1.Children.Zip(
+					elm2.Children, (e1, e2) => e1.MergeElm(e2)
+				)
+			);
+			return elm1;
+		}
+
 		public static void ParseElmLinksDefault(
 			this LitOptions LO,
 			LitNovel novel,
@@ -128,14 +240,27 @@ namespace LiteraryAnalyzer.LAShared {
 					novelRef = novel.AddReferenceDistinct(new LitObject(link.Tag));
 					elm.References.Add(novelRef as LitObject);
 				}
+				else if (link.Link.Equals("Actor")) {
+					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
+					elm.Actors.Add(novelRef as LitChar);
+				}
+				else if (link.Link.Equals("Location")) {
+					novelRef = novel.AddReferenceDistinct(new LitPlace(link.Tag));
+					elm.Locations.Add(novelRef as LitPlace);
+				}
+				else if (link.Link.Equals("Speaker")) {
+					novelRef = novel.AddReferenceDistinct(new LitChar(link.Tag));
+					elm.Speakers.Add(novelRef as LitChar);
+				}	
+				else if (link.Link.Equals("Event")) {
+					novelRef = novel.AddReferenceDistinct(new LitMyth(link.Tag));
+					elm.Events.Add(novelRef as LitMyth);
+				}
+				else if (link.Link.Equals("Item")) {
+					novelRef = novel.AddReferenceDistinct(new LitObject(link.Tag));
+					elm.Items.Add(novelRef as LitObject);
+				}
 			}
-			if (elm is LitScene) {
-				LO.ParseSceneLinks(novel, elm as LitScene, links);
-			}
-			if (elm is LitEvent) {
-				LO.ParseEventLinks(novel, elm as LitEvent, links);
-			}
-			
 		}
 		/// <summary>
 		/// Takes a litelm and writes it's header at a particular level
@@ -169,12 +294,10 @@ namespace LiteraryAnalyzer.LAShared {
 			var retVal = new List<String>();
 			retVal.Add(LO.WriteElmHeader(litElm, headerlevel));
 			retVal.AddRange(LO.WriteElmLinks(litElm));
-			if (litElm is LitEvent) { 
-				try {
-					retVal.AddRange(LO.WriteElmText((litElm as LitEvent).Source.Text[author]));
-				}
-				catch (KeyNotFoundException) { }
+			try {
+				retVal.AddRange(LO.WriteElmText(litElm.Source.Text[author]));
 			}
+			catch (KeyNotFoundException) { }
 			foreach (var child in litElm.Children) {
 				retVal.AddRange(WriteSourceLinesDefault(LO, child, author, headerlevel + 1));
 			}
@@ -188,15 +311,26 @@ namespace LiteraryAnalyzer.LAShared {
 		public static List<String> WriteElmLinksDefault(this LitOptions LO, LitElm litelm) {
 			var retVal = new List<String>();
 			retVal.Add( MakeLinkLine("TreeTag", litelm.TreeTag.Tag) );
-			retVal.AddRange(litelm.UserTags.Select(t => MakeLinkLine("UserTag", t.Tag) ));
+			retVal.AddRange(litelm.UserTags.Select(t => 
+				MakeLinkLine("UserTag", t.Tag) 
+			));
+			retVal.AddRange(litelm.Actors.Select(a => 
+				MakeLinkLine("Actor", a.Tags.First().Tag)
+			));
+			retVal.AddRange(litelm.Speakers.Select(a => 
+				MakeLinkLine("Speaker", a.Tags.First().Tag)
+			));
+			retVal.AddRange(litelm.Locations.Select(p => 
+				MakeLinkLine("Location", p.Tags.First().Tag)
+			));
+			retVal.AddRange(litelm.Events.Select(a =>
+				MakeLinkLine("Event", a.Tags.First().Tag)
+			));
+			retVal.AddRange(litelm.Items.Select(a =>
+				MakeLinkLine("Item", a.Tags.First().Tag)
+			));
 			foreach (var reference in litelm.References) {
 				retVal.Add( LO.WriteReferenceLink(reference) );
-			}
-			if (litelm is LitEvent) {
-				retVal.AddRange( LO.WriteEventLinks(litelm as LitEvent) );
-			}
-			if (litelm is LitScene) {
-				retVal.AddRange( LO.WriteSceneLinks(litelm as LitScene) );
 			}
 			return retVal;
 		}

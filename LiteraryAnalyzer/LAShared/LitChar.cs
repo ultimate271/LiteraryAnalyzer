@@ -38,8 +38,6 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.Add(actorHeader.ToString());
 			retVal.AddRange(
 				AllElms
-				.Where(e => e is LitScene)
-				.Select(e => e as LitScene)
 				.Where(s => s.Actors.Contains(character))
 				.Select(s => s.TreeTag.ToHyperlink())
 			);
@@ -52,8 +50,6 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.Add(speakerHeader.ToString());
 			retVal.AddRange(
 				AllElms
-				.Where(e => e is LitEvent)
-				.Select(e => e as LitEvent)
 				.Where(e => e.Speakers.Contains(character))
 				.Select(e => e.TreeTag.ToHyperlink())
 			);

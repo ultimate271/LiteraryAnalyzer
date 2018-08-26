@@ -63,14 +63,12 @@
     <Compile Include="LitChar.cs" />
     <Compile Include="Litelm.cs" />
     <Compile Include="LiteraryAnalyzerContext.cs" />
-    <Compile Include="LitEvent.cs" />
     <Compile Include="LitFootnote.cs" />
     <Compile Include="LitHeader.cs" />
     <Compile Include="LitMyth.cs" />
     <Compile Include="LitNovel.cs" />
     <Compile Include="LitPlace.cs" />
     <Compile Include="LitRef.cs" />
-    <Compile Include="LitScene.cs" />
     <Compile Include="LitSource.cs" />
     <Compile Include="LitAuthor.cs" />
     <Compile Include="LitTag.cs" />

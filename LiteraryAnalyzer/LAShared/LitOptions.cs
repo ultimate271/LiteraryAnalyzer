@@ -88,37 +88,24 @@ namespace LiteraryAnalyzer.LAShared {
 		public ExtractElmLinkLinesDelegate ExtractElmLinkLines { get; set; }
 
 		#region "Scene Parsing"
-		public delegate IEnumerable<IEnumerable<String>> ExtractScenesDelegate(IEnumerable<IEnumerable<String>> PartitionedScenes);
-		public ExtractScenesDelegate ExtractScenes { get; set; }
+		public delegate IEnumerable<IEnumerable<String>> ExtractElmsDelegate(IEnumerable<IEnumerable<String>> PartionedElms);
+		public ExtractElmsDelegate ExtractElms { get; set; }
 
-		public delegate LitScene ParseToSceneDelegate(LitNovel novel, LitSceneMetadata metadata, LitAuthor author, IEnumerable<String> scenelines);
-		public ParseToSceneDelegate ParseToScene { get; set; }
+		public delegate LitElm ParseToElmDelegate(LitNovel novel, LitSceneMetadata metadata, LitAuthor author, IEnumerable<String> scenelines);
+		public ParseToElmDelegate ParseToElm { get; set; }
 
-		public delegate void ParseSceneHeaderDelegate(LitNovel novel, LitScene scene, IEnumerable<String> scenelines);
-		public ParseSceneHeaderDelegate ParseSceneHeader { get; set; }
-
-		public delegate void ParseSceneLinksDelegate(LitNovel novel, LitScene scene, IEnumerable<MDLinkLine> scenelines);
-		public ParseSceneLinksDelegate ParseSceneLinks { get; set; }
+		public delegate void ParseElmHeaderDelegate(LitNovel novel, LitElm scene, IEnumerable<String> scenelines);
+		public ParseElmHeaderDelegate ParseElmHeader { get; set; }
 
 		#endregion
 
 		#region "Event Parsing"
-		public delegate IEnumerable<IEnumerable<String>> ExtractEventsDelegate(IEnumerable<String> lines, int HeaderLevel);
-		public ExtractEventsDelegate ExtractEvents { get; set; }
+		public delegate IEnumerable<IEnumerable<String>> ExtractSubElmsDelegate(IEnumerable<String> lines);
+		public ExtractSubElmsDelegate ExtractSubElms { get; set; }
 
-		public delegate LitEvent ParseToEventDelegate(LitNovel novel, LitAuthor author, IEnumerable<String> eventlines);
-		public ParseToEventDelegate ParseToEvent { get; set; }
-
-		public delegate void ParseEventHeaderDelegate(LitNovel novel, LitEvent litevent, IEnumerable<String> eventlines);
-		public ParseEventHeaderDelegate ParseEventHeader { get; set; }
-
-		public delegate void ParseEventLinksDelegate(
-			LitNovel novel, LitEvent litevent, IEnumerable<MDLinkLine> eventlines);
-		public ParseEventLinksDelegate ParseEventLinks { get; set; }
-
-		public delegate void ParseEventTextDelegate(
-			LitNovel novel, LitEvent litevent, LitAuthor author, IEnumerable<String> eventlines);
-		public ParseEventTextDelegate ParseEventText { get; set; }
+		public delegate void ParseElmTextDelegate(
+			LitNovel novel, LitElm litevent, LitAuthor author, IEnumerable<String> eventlines);
+		public ParseElmTextDelegate ParseElmText { get; set; }
 
 		#endregion
 
@@ -181,12 +168,6 @@ namespace LiteraryAnalyzer.LAShared {
 		public delegate String WriteReferenceLinkDelegate(LitRef reference);
 		public WriteReferenceLinkDelegate WriteReferenceLink { get; set; }
 
-		public delegate List<String> WriteSceneLinksDelegate(LitScene litscene);
-		public WriteSceneLinksDelegate WriteSceneLinks { get; set; }
-
-		public delegate List<String> WriteEventLinksDelegate(LitEvent litevent);
-		public WriteEventLinksDelegate WriteEventLinks { get; set; }
-
 		public delegate List<String> WriteElmTextDelegate(String Text);
 		public WriteElmTextDelegate WriteElmText { get; set; }
 
@@ -235,6 +216,9 @@ namespace LiteraryAnalyzer.LAShared {
 		public delegate String WriteElmTagEXDelegate(LitElm elm);
 		public WriteElmTagEXDelegate WriteElmTagEX { get; set; }
 
+		public delegate String WriteRefTagEXDelegate(LitRef reference);
+		public WriteRefTagEXDelegate WriteRefTagEX { get; set; }
+
 		public delegate String WriteTagLineDelegate(MDTag tag);
 		public WriteTagLineDelegate WriteTagLine { get; set; }
 		#endregion
@@ -275,19 +259,14 @@ namespace LiteraryAnalyzer.LAShared {
 			this.ParseMetadata = this.ParseMetadataDefault;
 			this.ParseAuthor = this.ParseAuthorDefault;
 
-			this.ExtractScenes = this.ExtractScenesDefault;
-			this.ParseToScene = this.ParseToSceneDefault;
+			this.ExtractElms = this.ExtractElmsDefault;
+			this.ParseToElm = this.ParseToElmDefault;
 			this.ExtractElmLinkLines = this.ExtractElmLinkLinesDefault;
 			this.ParseElmLinks = this.ParseElmLinksDefault;
-			this.ParseSceneHeader = this.ParseSceneHeaderDefault;
-			this.ParseSceneLinks = this.ParseSceneLinksDefault;
-
-			this.ExtractEvents = this.ExtractEventsDefault;
-			this.ParseToEvent = this.ParseToEventDefault;
-			this.ParseEventHeader = this.ParseEventHeaderDefault;
-			this.ParseEventLinks = this.ParseEventLinksDefault;
-			this.ParseEventText = this.ParseEventTextDefault;
-
+			this.ParseElmHeader = this.ParseElmHeaderDefault;
+			this.ExtractSubElms = this.ExtractSubElmsDefault;
+			this.ParseElmText = this.ParseElmTextDefault;
+			
 			this.WriteAnnSource = this.WriteAnnSourceDefault;
 			this.WriteSourceFile = this.WriteSourceFileDefault;
 			this.WriteMetadata = this.WriteMetadataDefault;
@@ -296,8 +275,6 @@ namespace LiteraryAnalyzer.LAShared {
 			this.WriteElmLinks = this.WriteElmLinksDefault;
 			this.WriteLink = this.WriteLinkDefault;
 			this.WriteReferenceLink = this.WriteReferenceLinkDefault;
-			this.WriteSceneLinks = this.WriteSceneLinksDefault;
-			this.WriteEventLinks = this.WriteEventLinksDefault;
 			this.WriteElmText = this.WriteElmTextDefault;
 
 			this.WriteNotesFile = this.WriteNotesFileDefault;
@@ -314,6 +291,7 @@ namespace LiteraryAnalyzer.LAShared {
 
 			this.WriteTagFile = this.WriteTagFileDefault;
 			this.WriteElmTagEX = this.WriteElmTagEXDefault;
+			this.WriteRefTagEX = this.WriteRefTagEXDefault;
 			this.WriteTagLine = this.WriteTagLineDefault;
 			this.ToShourtSourceFilename = this.ToShortFilenameDefault;
 			this.ToLongSourceFilename = this.ToLongFilenameDefault;

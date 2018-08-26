@@ -44,7 +44,7 @@ namespace LiteraryAnalyzer.LAShared {
 					Tags.Add(new MDTag() {
 						TagName = Tag.Tag,
 						TagFile = Filename,
-						TagLine = LO.WriteNotesHeader(novel, litRef)
+						TagLine = LO.WriteRefTagEX(litRef)
 					});
 				}
 			}
@@ -62,6 +62,12 @@ namespace LiteraryAnalyzer.LAShared {
 			};
 			var linkString = LO.WriteLink(link);
 			return String.Format(@"/\v^#.*(\n*{0})@=", SanitizeForRegex(linkString));
+		}
+		public static String WriteRefTagEXDefault(
+			this LitOptions LO,
+			LitRef reference
+		) {
+			return String.Format(@"/\v^# {0}$", SanitizeForRegex(reference.Tags.First().Tag));
 		}
 		public static String SanitizeForRegex(String s) {
 			String[] escape = { "\\\\", "\\{", "\\}", "\\(", "\\)", "\\[", "\\]" };

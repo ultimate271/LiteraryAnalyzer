@@ -27,8 +27,6 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.Add(itemHeader.ToString());
 			retVal.AddRange(
 				AllElms
-				.Where(e => e is LitEvent)
-				.Select(e => e as LitEvent)
 				.Where(e => e.Items.Contains(obj))
 				.Select(e => e.TreeTag.ToHyperlink())
 			);
