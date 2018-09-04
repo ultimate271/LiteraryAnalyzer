@@ -36,6 +36,7 @@ namespace LiteraryAnalyzer.LAShared {
 					WriteSourceFileNovel(
 						LO,
 						new[] { scene.Header },
+						new String [] { },
 						scene,
 						novel.Authors.First()
 					)
@@ -49,7 +50,8 @@ namespace LiteraryAnalyzer.LAShared {
 		//Make a LitOptionsFactory
 		public static List<MDSourceFile> WriteSourceFileNovel(
 			this LitOptions LO,
-			IEnumerable<String> Accumulator,
+			IEnumerable<String> HeaderAcc,
+			IEnumerable<String> MetadataAcc,
 			LitElm sourceElm,
 			LitAuthor author
 		){
@@ -58,9 +60,9 @@ namespace LiteraryAnalyzer.LAShared {
 			if (sourceElm.Children.Count == 0) {
 				var sourcefile = new MDSourceFile();
 				sourcefile.Metadata = new LitSceneMetadata() {
-					Text = Accumulator.ToList(),
+					Text = MetadataAcc.ToList(),
 					Descriptor = sourceElm.TreeTag.Tag.TrimStart('.'),
-					Header = String.Join(" - ", Accumulator)
+					Header = String.Join(" - ", HeaderAcc)
 				};
 				sourcefile.Author = author;
 
@@ -75,8 +77,17 @@ namespace LiteraryAnalyzer.LAShared {
 			//Inductive Case
 			else {
 				foreach (var child in sourceElm.Children) {
-					var newAcc = Accumulator.Concat(new [] {child.Header});
-					retVal.AddRange(WriteSourceFileNovel(LO, newAcc, child, author));
+					var newHeaderAcc = HeaderAcc.Concat(new [] {child.Header});
+					var newMetadataAcc = MetadataAcc.Concat(
+						LO.WriteElmTextDefault(sourceElm.Source.Text[author])
+					);
+					retVal.AddRange(WriteSourceFileNovel(
+						LO, 
+						newHeaderAcc, 
+						newMetadataAcc,
+						child, 
+						author
+					));
 				}
 			}
 			return retVal;

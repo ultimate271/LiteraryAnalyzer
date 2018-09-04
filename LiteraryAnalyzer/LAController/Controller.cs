@@ -20,14 +20,14 @@ namespace LiteraryAnalyzer {
 			//var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
 			var sourceInfo = new MDAnnSourceInfo() {
 				BaseDir = @"C:\Users\brett\Source\Repos\notes\source",
-				Prefix = "dostoyevsky possessed.txt" };
+				Prefix = "wells outline of history.txt" };
 			LO = LitOptionsFactory.CreateSourceNovel();
 			var source = LO.BuildAnnSource(sourceInfo);
 			var novel = LO.ParseAnnSource(source);
 			var sourceOut = LO.WriteAnnSource(novel);
 			var writeInfo = new MDAnnSourceInfo() {
-				BaseDir = @"C:\Users\brett\Source\Repos\notes\достоевский",
-				Prefix = "possessed"
+				BaseDir = @"C:\Users\brett\Source\Repos\notes\wells",
+				Prefix = "outlinehistory"
 			};
 			sourceOut.TagFile = LO.WriteTagFile(novel, writeInfo);
 			LO.WriteToFileSystem(sourceOut, writeInfo);

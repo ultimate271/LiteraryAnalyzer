@@ -17,6 +17,7 @@ namespace LiteraryAnalyzer {
 	class Program {
 		static void Main(string[] args) {
 			Controller c = new Controller();
+			c.DeveloperDebug();
 			if (args.Length > 0) {
 				var info = new MDAnnSourceInfo() {
 					BaseDir = System.IO.Directory.GetCurrentDirectory(),
