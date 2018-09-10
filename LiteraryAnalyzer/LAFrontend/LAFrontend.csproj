@@ -65,11 +65,20 @@
     <Compile Include="SourceWriterPanel.Designer.cs">
       <DependentUpon>SourceWriterPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="NovelPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NovelPanel.Designer.cs">
+      <DependentUpon>NovelPanel.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="BasePanel.resx">
       <DependentUpon>BasePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NovelPanel.resx">
+      <DependentUpon>NovelPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

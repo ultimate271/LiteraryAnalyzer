@@ -27,6 +27,17 @@ namespace LiteraryAnalyzer.LAShared {
 		public LitSource Source { get; set; } = new LitSource();
 	}
 	public static partial class LitExtensions {
+		public static String AllText(
+			this LitElm elm,
+			LitAuthor author
+		) {
+			var retVal = new StringBuilder();
+			retVal.AppendLine(elm.Source.Text[author]);
+			foreach (var child in elm.Children) {
+				retVal.AppendLine(child.AllText(author));
+			}
+			return retVal.ToString();
+		} 
 		public static IEnumerable<LitElm> AllElms(
 			this LitElm elm
 		) {

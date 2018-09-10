@@ -11,28 +11,35 @@ namespace LiteraryAnalyzer {
 	public class Controller {
 		private LiteraryAnalyzerContext db { get; set; } = new LiteraryAnalyzerContext();
 		public MarkdownOption MarkdownOption { get; set; } = new MarkdownOption();
-		public LitOptions LO { get; set; } = new LitOptions();
+		private LitOptions LO { get; set; } = new LitOptions();
 		
 		public Controller() : this (new LiteraryAnalyzerContext()) { }
 		public Controller(LiteraryAnalyzerContext db) { this.db = db; }
 
-		public void DeveloperDebug () {
-			//var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
+		public LitNovel DeveloperDebug () {
+			LO = LitOptionsFactory.CreateDefault();
 			var sourceInfo = new MDAnnSourceInfo() {
-				BaseDir = @"C:\Users\brett\Source\Repos\notes\source",
-				Prefix = "wells outline of history.txt" };
-			LO = LitOptionsFactory.CreateSourceNovel();
+				BaseDir = @"C:\Users\bwebster\Source\Repos\notes\достоевский\possessed",
+				Prefix = "possessed" };
 			var source = LO.BuildAnnSource(sourceInfo);
-			var novel = LO.ParseAnnSource(source);
-			var sourceOut = LO.WriteAnnSource(novel);
-			var writeInfo = new MDAnnSourceInfo() {
-				BaseDir = @"C:\Users\brett\Source\Repos\notes\wells",
-				Prefix = "outlinehistory"
-			};
-			sourceOut.TagFile = LO.WriteTagFile(novel, writeInfo);
-			LO.WriteToFileSystem(sourceOut, writeInfo);
+			return LO.ParseAnnSource(source);
 
-			System.Console.WriteLine("Done");
+			//var sourceInfo = new MDAnnSourceInfo() { BaseDir = @"C:\Users\brett\Source\Repos\notes\test", Prefix = "sil" };
+			//var sourceInfo = new MDAnnSourceInfo() {
+			//	BaseDir = @"C:\Users\bwebster\Source\Repos\notes\source",
+			//	Prefix = "plato euthyphro.txt" };
+			//LO = LitOptionsFactory.CreateSourceNovel();
+			//var source = LO.BuildAnnSource(sourceInfo);
+			//var novel = LO.ParseAnnSource(source);
+			//var sourceOut = LO.WriteAnnSource(novel);
+			//var writeInfo = new MDAnnSourceInfo() {
+			//	BaseDir = @"C:\Users\bwebster\Source\Repos\notes\plato",
+			//	Prefix = "Euthyphro"
+			//};
+			//sourceOut.TagFile = LO.WriteTagFile(novel, writeInfo);
+			//LO.WriteToFileSystem(sourceOut, writeInfo);
+
+			//System.Console.WriteLine("Done");
 
 		}
 		public void GenerateTags(MDAnnSourceInfo info) {

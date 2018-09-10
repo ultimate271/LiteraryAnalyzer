@@ -10,7 +10,11 @@ namespace LiteraryAnalyzer.LAShared {
 		public LitAuthor Author { get; set; } = new LitAuthor();
 	}
 	public static partial class ParsingTools {
-		public static String ToLongFilenameDefault(this LitOptions LO, MDAnnSourceInfo info, MDSourceFile source ) {
+		public static String ToLongFilenameDefault(
+			this LitOptions LO, 
+			MDAnnSourceInfo info,
+			MDSourceFile source
+		) {
 			return String.Format("{0}\\{1}", info.BaseDir, ToShortFilenameDefault(LO, info, source));
 		}
 		public static String ToLongFilenameRaw(

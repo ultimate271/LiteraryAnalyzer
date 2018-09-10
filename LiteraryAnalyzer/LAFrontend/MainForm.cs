@@ -18,6 +18,7 @@ namespace LiteraryAnalyzer.LAFrontend {
 
 		private void MainForm_Load(object sender, EventArgs e) {
 			sourceWriterPanel1.c = this.c;
+			novelPanel1.c = this.c;
 		}
 	}
 }
