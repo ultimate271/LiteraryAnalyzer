@@ -10,6 +10,18 @@ namespace LiteraryAnalyzer.LAShared {
 		public LitAuthor Author { get; set; } = new LitAuthor();
 	}
 	public static partial class ParsingTools {
+		public static String ToRawSourceLinesDefault(
+			this LitOptions LO,
+			IEnumerable<String> Lines
+		) {
+			var retVal = new StringBuilder();
+			foreach (var line in Lines) {
+				if (LO.IsSourceLine(line)) {
+					retVal.AppendLine(line);
+				}
+			}
+			return retVal.ToString();
+		}
 		public static String ToLongFilenameDefault(
 			this LitOptions LO, 
 			MDAnnSourceInfo info,

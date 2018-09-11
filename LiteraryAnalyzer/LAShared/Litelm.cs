@@ -301,7 +301,12 @@ namespace LiteraryAnalyzer.LAShared {
 		/// <param name="author"></param>
 		/// <param name="headerlevel"></param>
 		/// <returns></returns>
-		public static List<String> WriteSourceLinesDefault(this LitOptions LO, LitElm litElm, LitAuthor author, int headerlevel) {
+		public static List<String> WriteSourceLinesDefault(
+			this LitOptions LO, 
+			LitElm litElm, 
+			LitAuthor author, 
+			int headerlevel
+		) {
 			var retVal = new List<String>();
 			retVal.Add(LO.WriteElmHeader(litElm, headerlevel));
 			retVal.AddRange(LO.WriteElmLinks(litElm));

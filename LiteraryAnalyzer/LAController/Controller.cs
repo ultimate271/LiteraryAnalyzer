@@ -16,10 +16,17 @@ namespace LiteraryAnalyzer {
 		public Controller() : this (new LiteraryAnalyzerContext()) { }
 		public Controller(LiteraryAnalyzerContext db) { this.db = db; }
 
+		public MDAnnSource DeveloperDebugTwo() {
+			LO = LitOptionsFactory.CreateDefault();
+			var sourceInfo = new MDAnnSourceInfo() {
+				BaseDir = @"C:\Users\brett\Source\Repos\notes\достоевский\possessed",
+				Prefix = "possessed" };
+			return LO.BuildAnnSource(sourceInfo);
+		}
 		public LitNovel DeveloperDebug () {
 			LO = LitOptionsFactory.CreateDefault();
 			var sourceInfo = new MDAnnSourceInfo() {
-				BaseDir = @"C:\Users\bwebster\Source\Repos\notes\достоевский\possessed",
+				BaseDir = @"C:\Users\brett\Source\Repos\notes\достоевский\possessed",
 				Prefix = "possessed" };
 			var source = LO.BuildAnnSource(sourceInfo);
 			return LO.ParseAnnSource(source);
@@ -41,6 +48,9 @@ namespace LiteraryAnalyzer {
 
 			//System.Console.WriteLine("Done");
 
+		}
+		public String ToRawTextbox(IEnumerable<String> s) {
+			return LO.ToRawSourceLinesDefault(s);
 		}
 		public void GenerateTags(MDAnnSourceInfo info) {
 			LO = LitOptionsFactory.CreateDefault();
