@@ -51,6 +51,12 @@
     <Compile Include="BasePanel.Designer.cs">
       <DependentUpon>BasePanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="ElmDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ElmDialog.Designer.cs">
+      <DependentUpon>ElmDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,6 +79,9 @@
     </Compile>
     <EmbeddedResource Include="BasePanel.resx">
       <DependentUpon>BasePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ElmDialog.resx">
+      <DependentUpon>ElmDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

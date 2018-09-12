@@ -22,19 +22,22 @@ namespace LiteraryAnalyzer.LAFrontend {
 		}
 
 		private void NovelPanel_Load(object sender, EventArgs e) {
-			comboBox1.Items.Clear();
 			comboBox1.DisplayMember = "Author";
+
+			RefreshNovel();
+		}
+
+		private void RefreshNovel() {
+			comboBox1.Items.Clear();
 			comboBox1.Items.AddRange(this.Novel.Authors.ToArray());
 			comboBox1.SelectedIndex = 0;
 
-			var NovelNode = new TreeNode(this.Novel.Title);
-			NovelNode.Nodes.AddRange(
+			treeView1.Nodes.Clear();
+			treeView1.Nodes.AddRange(
 				this.Novel.Scenes.Select(
 					s => BuildTreeNode(s)
 				).ToArray()
 			);
-			treeView1.Nodes.Clear();
-			treeView1.Nodes.Add(NovelNode);
 
 			treeView2.Nodes.Clear();
 			foreach (var source in this.AnnSource.Sources) {
@@ -42,11 +45,6 @@ namespace LiteraryAnalyzer.LAFrontend {
 				SourceNode.Tag = source;
 				treeView2.Nodes.Add(SourceNode);
 			}
-
-			RefreshNovel();
-		}
-
-		private void RefreshNovel() {
 		}
 		private TreeNode BuildTreeNode(LAShared.LitElm elm) {
 			var retVal = new TreeNode(elm.Header);
@@ -67,6 +65,11 @@ namespace LiteraryAnalyzer.LAFrontend {
 		}
 		private void treeView1_Leave(object sender, EventArgs e) {
 			var tv = sender as TreeView;
+			this.SelectedNode = tv.SelectedNode.Tag as LitElm;
+			tv.SelectedNode = null;
+		}
+		private void treeView2_Leave(object sender, EventArgs e) {
+			var tv = sender as TreeView;
 			tv.SelectedNode = null;
 		}
 
@@ -83,6 +86,20 @@ namespace LiteraryAnalyzer.LAFrontend {
 			else {
 				System.Console.WriteLine((int)e.KeyCode);
 			}
+		}
+
+		private void btnAddElm_Click(object sender, EventArgs e) {
+			ElmDialog dialog = new ElmDialog();
+			dialog.ShowDialog();
+			var parent = this.SelectedNode;
+			var child = c.CreateElm(dialog.HeaderText);
+			if (parent != null) {
+				parent.AddElm(child);
+			}
+			else {
+				this.Novel.AddScene(child);
+			}
+			RefreshNovel();
 		}
 	}
 }

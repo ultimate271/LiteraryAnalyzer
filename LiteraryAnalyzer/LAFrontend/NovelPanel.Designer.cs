@@ -27,6 +27,8 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.treeView2 = new System.Windows.Forms.TreeView();
+			this.btnAddElm = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// treeView1
@@ -66,11 +68,32 @@
 			this.treeView2.Size = new System.Drawing.Size(250, 562);
 			this.treeView2.TabIndex = 3;
 			this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView2_AfterSelect);
-			this.treeView2.Leave += new System.EventHandler(this.treeView1_Leave);
+			this.treeView2.Leave += new System.EventHandler(this.treeView2_Leave);
+			// 
+			// btnAddElm
+			// 
+			this.btnAddElm.Location = new System.Drawing.Point(762, 2);
+			this.btnAddElm.Name = "btnAddElm";
+			this.btnAddElm.Size = new System.Drawing.Size(75, 23);
+			this.btnAddElm.TabIndex = 4;
+			this.btnAddElm.Text = "Add Elm";
+			this.btnAddElm.UseVisualStyleBackColor = true;
+			this.btnAddElm.Click += new System.EventHandler(this.btnAddElm_Click);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(843, 7);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(35, 13);
+			this.label1.TabIndex = 5;
+			this.label1.Text = "label1";
 			// 
 			// NovelPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.btnAddElm);
 			this.Controls.Add(this.treeView2);
 			this.Controls.Add(this.comboBox1);
 			this.Controls.Add(this.textBox1);
@@ -89,5 +112,7 @@
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.ComboBox comboBox1;
 		private System.Windows.Forms.TreeView treeView2;
+		private System.Windows.Forms.Button btnAddElm;
+		private System.Windows.Forms.Label label1;
 	}
 }

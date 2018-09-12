@@ -48,6 +48,12 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return retVal;
 		}
+		public static void AddElm(
+			this LitElm parent,
+			LitElm child
+		) {
+			parent.Children.Add(child);
+		}
 		//public static List<MDTag> GetAllTags(this LitElm elm, String Filename, int HeaderLevel) {
 		//	var retVal = new List<MDTag>();
 		//	var tempList = new List<LitTag>();
@@ -158,7 +164,7 @@ namespace LiteraryAnalyzer.LAShared {
 
 			foreach (var eventLines in PartitionedLines.Skip(1)) {
 				var litEvent = LO.ParseToElm(novel, metadata, author, eventLines);
-				retVal.Children.Add(litEvent);
+				retVal.AddElm(litEvent);
 			}
 
 			retVal.Metadata = metadata;
