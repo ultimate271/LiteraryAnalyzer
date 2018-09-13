@@ -32,7 +32,7 @@ namespace LiteraryAnalyzer.LAShared {
 			LitAuthor author
 		) {
 			var retVal = new StringBuilder();
-			retVal.AppendLine(elm.Source.Text[author]);
+			retVal.AppendLine(elm.Source[author]);
 			foreach (var child in elm.Children) {
 				retVal.AppendLine(child.AllText(author));
 			}
@@ -129,7 +129,7 @@ namespace LiteraryAnalyzer.LAShared {
 			LitAuthor author,
 			IEnumerable<String> lines
 		){
-			elm.Source.Text[author] = LO.SourceLinesToString(lines);
+			elm.Source[author] = LO.SourceLinesToString(lines);
 		}
 		/// <summary>
 		/// 
@@ -206,7 +206,7 @@ namespace LiteraryAnalyzer.LAShared {
 			elm1.References = new List<LitRef>(elm1.References.Union(elm2.References));
 			var query = elm2.Source.Text.Keys.Where(k => !elm1.Source.Text.Keys.Contains(k));
 			foreach (var litSourceInfo in query) {
-				elm1.Source.Text[litSourceInfo] = elm2.Source.Text[litSourceInfo];
+				elm1.Source[litSourceInfo] = elm2.Source[litSourceInfo];
 			}
 			elm1.Children = new List<LitElm>(
 				elm1.Children.Zip(
@@ -317,7 +317,7 @@ namespace LiteraryAnalyzer.LAShared {
 			retVal.Add(LO.WriteElmHeader(litElm, headerlevel));
 			retVal.AddRange(LO.WriteElmLinks(litElm));
 			try {
-				retVal.AddRange(LO.WriteElmText(litElm.Source.Text[author]));
+				retVal.AddRange(LO.WriteElmText(litElm.Source[author]));
 			}
 			catch (KeyNotFoundException) { }
 			foreach (var child in litElm.Children) {

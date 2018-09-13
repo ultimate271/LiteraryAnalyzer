@@ -15,6 +15,14 @@ namespace LiteraryAnalyzer.LAShared {
 		/// This is a dictionary to allow for concurrent source
 		/// </summary>
 		public Dictionary<LitAuthor, String> Text { get; set; } = new Dictionary<LitAuthor, string>();
+		public String this[LitAuthor author] {
+			get {
+				return this.Text[author] != null ? Text[author] : "";
+			}
+			set {
+				this.Text[author] = value;
+			}
+		}
 	}
 	public static partial class ParsingTools {
 	}

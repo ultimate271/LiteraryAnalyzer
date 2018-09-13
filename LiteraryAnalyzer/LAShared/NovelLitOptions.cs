@@ -79,7 +79,7 @@ namespace LiteraryAnalyzer.LAShared {
 				foreach (var child in sourceElm.Children) {
 					var newHeaderAcc = HeaderAcc.Concat(new [] {child.Header});
 					var newMetadataAcc = MetadataAcc.Concat(
-						LO.WriteElmTextDefault(sourceElm.Source.Text[author])
+						LO.WriteElmTextDefault(sourceElm.Source[author])
 					);
 					retVal.AddRange(WriteSourceFileNovel(
 						LO, 

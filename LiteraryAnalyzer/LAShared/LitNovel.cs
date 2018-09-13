@@ -114,6 +114,7 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			novel.Scenes.Add(scene);
 		}
+
 		/// <summary>
 		/// THIS FUNCTION MIGHT BE USEFUL FOR "CHECKING MY WORK" BUT NOT FOR ANYTHING ELSE
 		/// </summary>
