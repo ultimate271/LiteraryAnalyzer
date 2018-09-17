@@ -13,6 +13,7 @@ namespace LiteraryAnalyzer.LAShared {
 			var LO = new LitOptions();
 			LO.BuildSourceFilenames = LO.BuildSourceFilenamesNovel;
 			LO.BuildSourceFiles = LO.BuildSourceFilesNovel;
+			LO.BuildNotesFile = (info, files) => new MDNotesFile();
 			LO.WriteElmText = (text) => LO.WriteTextGQQ(text, 80);
 			LO.WriteAnnSource = LO.WriteAnnSourceNovel;
 			LO.WriteElmLinks = (e) => { return new List<String>(); };

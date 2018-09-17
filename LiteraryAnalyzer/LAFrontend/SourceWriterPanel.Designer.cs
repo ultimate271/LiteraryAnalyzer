@@ -36,12 +36,15 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
 			this.button3 = new System.Windows.Forms.Button();
+			this.button4 = new System.Windows.Forms.Button();
+			this.button5 = new System.Windows.Forms.Button();
+			this.label7 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(26, 151);
+			this.label6.Location = new System.Drawing.Point(27, 230);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(29, 13);
 			this.label6.TabIndex = 20;
@@ -50,7 +53,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(15, 124);
+			this.label5.Location = new System.Drawing.Point(16, 203);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(40, 13);
 			this.label5.TabIndex = 19;
@@ -60,7 +63,7 @@
 			// 
 			this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBox3.FormattingEnabled = true;
-			this.comboBox3.Location = new System.Drawing.Point(61, 148);
+			this.comboBox3.Location = new System.Drawing.Point(62, 227);
 			this.comboBox3.Name = "comboBox3";
 			this.comboBox3.Size = new System.Drawing.Size(121, 21);
 			this.comboBox3.TabIndex = 18;
@@ -70,7 +73,7 @@
 			// 
 			this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBox2.FormattingEnabled = true;
-			this.comboBox2.Location = new System.Drawing.Point(61, 121);
+			this.comboBox2.Location = new System.Drawing.Point(62, 200);
 			this.comboBox2.Name = "comboBox2";
 			this.comboBox2.Size = new System.Drawing.Size(121, 21);
 			this.comboBox2.TabIndex = 17;
@@ -79,7 +82,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(3, 97);
+			this.label4.Location = new System.Drawing.Point(4, 176);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(52, 13);
 			this.label4.TabIndex = 16;
@@ -89,7 +92,7 @@
 			// 
 			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Location = new System.Drawing.Point(61, 94);
+			this.comboBox1.Location = new System.Drawing.Point(62, 173);
 			this.comboBox1.Name = "comboBox1";
 			this.comboBox1.Size = new System.Drawing.Size(121, 21);
 			this.comboBox1.TabIndex = 15;
@@ -98,7 +101,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(19, 71);
+			this.label3.Location = new System.Drawing.Point(20, 150);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(36, 13);
 			this.label3.TabIndex = 14;
@@ -106,7 +109,7 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.Location = new System.Drawing.Point(61, 68);
+			this.textBox1.Location = new System.Drawing.Point(62, 147);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(100, 20);
 			this.textBox1.TabIndex = 13;
@@ -160,10 +163,42 @@
 			this.button3.UseVisualStyleBackColor = true;
 			this.button3.Click += new System.EventHandler(this.button3_Click);
 			// 
+			// button4
+			// 
+			this.button4.Location = new System.Drawing.Point(262, 574);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(106, 23);
+			this.button4.TabIndex = 24;
+			this.button4.Text = "Execute Alternate";
+			this.button4.UseVisualStyleBackColor = true;
+			this.button4.Click += new System.EventHandler(this.button4_Click);
+			// 
+			// button5
+			// 
+			this.button5.Location = new System.Drawing.Point(3, 66);
+			this.button5.Name = "button5";
+			this.button5.Size = new System.Drawing.Size(75, 23);
+			this.button5.TabIndex = 26;
+			this.button5.Text = "Write Dir";
+			this.button5.UseVisualStyleBackColor = true;
+			this.button5.Click += new System.EventHandler(this.button5_Click);
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(84, 71);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(35, 13);
+			this.label7.TabIndex = 25;
+			this.label7.Text = "label7";
+			// 
 			// SourceWriterPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.BackColor = System.Drawing.SystemColors.Control;
+			this.Controls.Add(this.button5);
+			this.Controls.Add(this.label7);
+			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
@@ -178,7 +213,6 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Name = "SourceWriterPanel";
-			this.Size = new System.Drawing.Size(450, 600);
 			this.Load += new System.EventHandler(this.SourceWriterPanel_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -200,5 +234,8 @@
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.Button button4;
+		private System.Windows.Forms.Button button5;
+		private System.Windows.Forms.Label label7;
 	}
 }

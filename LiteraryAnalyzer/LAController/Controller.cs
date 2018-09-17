@@ -19,17 +19,25 @@ namespace LiteraryAnalyzer {
 		public LitElm CreateElm(String Header) {
 			return new LitElm { Header = Header };
 		}
+		public void SeparateNovel(MDAnnSourceInfo infoIn, MDAnnSourceInfo infoOut) {
+			LO = LitOptionsFactory.CreateSourceNovel();
+			var source = LO.BuildAnnSource(infoIn);
+			var novel = LO.ParseAnnSource(source);
+			var sourceOut = LO.WriteAnnSource(novel);
+			sourceOut.TagFile = LO.WriteTagFile(novel, infoOut);
+			LO.WriteToFileSystem(sourceOut, infoOut);
+		}
 		public MDAnnSource DeveloperDebugTwo() {
 			LO = LitOptionsFactory.CreateDefault();
 			var sourceInfo = new MDAnnSourceInfo() {
-				BaseDir = @"C:\Users\bwebster\Source\Repos\notes\достоевский\possessed",
+				BaseDir = @"C:\Users\brett\Source\Repos\notes\достоевский\possessed",
 				Prefix = "possessed" };
 			return LO.BuildAnnSource(sourceInfo);
 		}
 		public LitNovel DeveloperDebug () {
 			LO = LitOptionsFactory.CreateDefault();
 			var sourceInfo = new MDAnnSourceInfo() {
-				BaseDir = @"C:\Users\bwebster\Source\Repos\notes\достоевский\possessed",
+				BaseDir = @"C:\Users\brett\Source\Repos\notes\достоевский\possessed",
 				Prefix = "possessed" };
 			var source = LO.BuildAnnSource(sourceInfo);
 			return LO.ParseAnnSource(source);
