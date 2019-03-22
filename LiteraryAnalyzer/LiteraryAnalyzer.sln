@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAFrontend", "LAFrontend\LA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAController", "LAController\LAController.csproj", "{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectedGraph", "DirectedGraph\DirectedGraph.csproj", "{ACC9FA76-F560-4C83-82ED-00E221ECED96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DB6EBEA-AF7E-4467-8D7B-09C9D0683B19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACC9FA76-F560-4C83-82ED-00E221ECED96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACC9FA76-F560-4C83-82ED-00E221ECED96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACC9FA76-F560-4C83-82ED-00E221ECED96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACC9FA76-F560-4C83-82ED-00E221ECED96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

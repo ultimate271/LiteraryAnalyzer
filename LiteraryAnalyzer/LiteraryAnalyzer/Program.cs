@@ -16,6 +16,11 @@ namespace LiteraryAnalyzer {
 	//}
 	class Program {
 		static void Main(string[] args) {
+			DirectedGraph.Tester.Main();
+			System.Console.ReadLine();
+		}
+
+		public static void Temp(string[] args) {
 			Controller c = new Controller();
 			c.DeveloperDebug();
 			if (args.Length > 0) {

@@ -102,6 +102,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DirectedGraph\DirectedGraph.csproj">
+      <Project>{acc9fa76-f560-4c83-82ed-00e221eced96}</Project>
+      <Name>DirectedGraph</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LAController\LAController.csproj">
       <Project>{4db6ebea-af7e-4467-8d7b-09c9d0683b19}</Project>
       <Name>LAController</Name>
