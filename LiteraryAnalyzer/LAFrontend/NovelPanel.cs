@@ -17,8 +17,8 @@ namespace LiteraryAnalyzer.LAFrontend {
 		public NovelPanel() {
 			InitializeComponent();
 
-			Novel = c.DeveloperDebug();
-			AnnSource = c.DeveloperDebugTwo();
+			//Novel = c.DeveloperDebug();
+			//AnnSource = c.DeveloperDebugTwo();
 		}
 
 		private void NovelPanel_Load(object sender, EventArgs e) {
