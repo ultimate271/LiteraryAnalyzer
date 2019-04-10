@@ -25,5 +25,11 @@ namespace DirectedGraph {
 			}
 			catch { }
 		}
+
+		public void CloseIdentity(E closure) {
+			for (int i = 0; i < this.Vertex.Count; i++) {
+				this.AddEdge(closure, i, i);
+			}
+		}
     }
 }

@@ -321,6 +321,13 @@ namespace LiteraryAnalyzer.LAShared {
 			}
 			return sb.ToString().Trim();
 		}
+		public static String SourceLinesToStringIdentity(this LitOptions LO, IEnumerable<string> lines) {
+			var sb = new StringBuilder();
+			foreach (var line in lines) {
+				sb.AppendLine(line);
+			}
+			return sb.ToString().Trim();
+		}
 		public static bool IsSourceLineDefault(this LitOptions LO, String line) {
 			return LO.ParseHeader(line) == null && LO.ParseLink(line) == null;
 		}

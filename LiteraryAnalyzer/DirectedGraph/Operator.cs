@@ -10,9 +10,6 @@ namespace DirectedGraph {
 		private List<List<V>> _Entries = new List<List<V>>();
 		public V nil { get; set; }
 
-		public static Operator<V> GetBlank (int Dimension, V nil) {
-			return new Operator<V>(Dimension, nil);
-		}
 		public Operator(int Dimension, V nil) {
 			this.Dimension = Dimension;
 			this.nil = nil;

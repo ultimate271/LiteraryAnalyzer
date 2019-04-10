@@ -39,6 +39,7 @@
 			this.button4 = new System.Windows.Forms.Button();
 			this.button5 = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
+			this.button6 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// label6
@@ -155,21 +156,21 @@
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(180, 574);
+			this.button3.Location = new System.Drawing.Point(7, 574);
 			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(75, 23);
+			this.button3.Size = new System.Drawing.Size(112, 23);
 			this.button3.TabIndex = 23;
-			this.button3.Text = "Execute";
+			this.button3.Text = "Execute Depricated";
 			this.button3.UseVisualStyleBackColor = true;
 			this.button3.Click += new System.EventHandler(this.button3_Click);
 			// 
 			// button4
 			// 
-			this.button4.Location = new System.Drawing.Point(262, 574);
+			this.button4.Location = new System.Drawing.Point(125, 574);
 			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(106, 23);
+			this.button4.Size = new System.Drawing.Size(133, 23);
 			this.button4.TabIndex = 24;
-			this.button4.Text = "Execute Alternate";
+			this.button4.Text = "Execute Novel";
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.button4_Click);
 			// 
@@ -192,10 +193,21 @@
 			this.label7.TabIndex = 25;
 			this.label7.Text = "label7";
 			// 
+			// button6
+			// 
+			this.button6.Location = new System.Drawing.Point(125, 545);
+			this.button6.Name = "button6";
+			this.button6.Size = new System.Drawing.Size(133, 23);
+			this.button6.TabIndex = 27;
+			this.button6.Text = "Execute Shakespeare";
+			this.button6.UseVisualStyleBackColor = true;
+			this.button6.Click += new System.EventHandler(this.button6_Click);
+			// 
 			// SourceWriterPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.BackColor = System.Drawing.SystemColors.Control;
+			this.Controls.Add(this.button6);
 			this.Controls.Add(this.button5);
 			this.Controls.Add(this.label7);
 			this.Controls.Add(this.button4);
@@ -237,5 +249,6 @@
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Button button5;
 		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Button button6;
 	}
 }

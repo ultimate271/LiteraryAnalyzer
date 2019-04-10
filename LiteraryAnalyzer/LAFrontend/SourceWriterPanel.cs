@@ -124,5 +124,24 @@ namespace LiteraryAnalyzer.LAFrontend {
 			MessageBox.Show("By golly it worked");
 		}
 
+		private void button6_Click(object sender, EventArgs e) {
+			var infoIn = new MDAnnSourceInfo() {
+				BaseDir = this.BaseDir,
+				Prefix = this.Filename
+			};
+			var infoOut = new MDAnnSourceInfo() {
+				BaseDir = this.WriteDir,
+				Prefix = this.textBox1.Text
+			};
+			try {
+				c.SeparateNovel(infoIn, infoOut, LitOptionsFactory.CreateShakespearePlay());
+			}
+			catch {
+				MessageBox.Show("Something got fuckarooed");
+				return;
+			}
+			MessageBox.Show("By golly it worked");
+
+		}
 	}
 }

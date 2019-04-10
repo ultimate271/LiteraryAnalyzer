@@ -75,6 +75,7 @@
 			this.sourceWriterPanel1.Name = "sourceWriterPanel1";
 			this.sourceWriterPanel1.Size = new System.Drawing.Size(450, 600);
 			this.sourceWriterPanel1.TabIndex = 0;
+			this.sourceWriterPanel1.Load += new System.EventHandler(this.sourceWriterPanel1_Load);
 			// 
 			// tabPage2
 			// 

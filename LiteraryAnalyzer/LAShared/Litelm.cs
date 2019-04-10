@@ -359,6 +359,9 @@ namespace LiteraryAnalyzer.LAShared {
 		public static List<String> WriteElmTextDefault(this LitOptions LO, String Text) {
 			return LO.WriteTextGQQ(Text, 80);
 		}
+		public static List<String> WriteTextIdentity(this LitOptions LO, String Text) {
+			return new List<String>(new String[] { Text });
+		}
 		public static List<String> WriteTextGQQ(this LitOptions LO, String Text, int LineLength) {
 			var retVal = new List<String>();
 			var paragraphs = System.Text.RegularExpressions.Regex.Split(Text, "\r\n");

@@ -20,7 +20,9 @@ namespace LiteraryAnalyzer {
 			return new LitElm { Header = Header };
 		}
 		public void SeparateNovel(MDAnnSourceInfo infoIn, MDAnnSourceInfo infoOut) {
-			LO = LitOptionsFactory.CreateSourceNovel();
+			this.SeparateNovel(infoIn, infoOut, LitOptionsFactory.CreateSourceNovel());
+		}
+		public void SeparateNovel(MDAnnSourceInfo infoIn, MDAnnSourceInfo infoOut, LitOptions LO) {
 			var source = LO.BuildAnnSource(infoIn);
 			var novel = LO.ParseAnnSource(source);
 			var sourceOut = LO.WriteAnnSource(novel);
